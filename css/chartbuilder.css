@@ -60,7 +60,7 @@ table {
 
 #interactiveContent {
   margin: 0;
-  padding-left: 650px;
+  padding-left: 370px;
   padding-right: 0px
 }
 
@@ -70,9 +70,9 @@ table {
 }
 
 #leftColumn {
-	width: 650px;
+	width: 370px;
 	margin-left: -100%;
-	right: 650px;
+	right: 370px;
 }
 
 #rightColumn {
@@ -115,8 +115,8 @@ table {
 }
 
 #chartContainer {
-	width: 600px;
-	height: 338px;
+	width: 320px;
+	height: 480px;
 	border: 1px solid #efefef;
 }
 

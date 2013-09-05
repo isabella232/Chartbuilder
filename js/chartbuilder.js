@@ -482,7 +482,7 @@ ChartBuilder = {
 				)
 		}
 		else {
-			$("#chartContainer").css("height",338)
+			$("#chartContainer").css("height", 480)
 		}
 	},
 	makeLegendAdjustable: function() {

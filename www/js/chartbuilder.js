@@ -1,11 +1,11 @@
 var chart;
 ChartBuilder = {
-	allColors: ["BF0053","FF70B0","E15D98","C44B81","A63869","882551","6B133A","4D0022",
-						"BF600A","FFC07E","E1A76A","C48D55","A67341","885A2D","6B4118","4D2704",
-						"BFAA00","FFF270","E1D55D","C4B84B","A69C38","887F25","6B6213","4D4500",
-						"00BFA5","70FFF7","5DE1D9","4BC4BC","38A69E","258880","136B63","004D45",
-						"006DBF","70B8FF","5DA1E1","4B89C4","3871A6","255A88","13436B","002B4D",
-						"9300BF","E770FF","CB5DE1","AE4BC4","9238A6","752588","59136B","3C004D"],
+	allColors: ["6d2217","72461d","776326","04403e","26546d",
+				"a43424","ab6a2d","b3943a","04605d","3a7ea3",
+				"db4730","e58d3c","f0c74f","04807e","4da9da",
+				"e47563","ebaa69","f3d576","4ca09e","7bbfe3",
+				"eea397","f2c69b","f7e3a2","88c0bf","7bbfe3",
+				"f6d1cb","f9e2cc","fbf1d0","c4dfdf","d2eaf6"],
 	curRaw: "",
 	getNewData: function(csv) {
 		// Split the csv information by lines
@@ -331,19 +331,19 @@ ChartBuilder = {
 			var color = ""
 			
 			if(s.type == "line") {
-				color = s.color ? s.color.replace("#","") : g.colors[lineIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[lineIndex+10].replace("#","")
 				lineIndex++
 			}
 			else if(s.type == "column") {
-				color = s.color ? s.color.replace("#","") : g.colors[colIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[colIndex+10].replace("#","")
 				colIndex++
 			}
 			else if(s.type =="bargrid") {
-				color = s.color ? s.color.replace("#","") : g.colors[bargridIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[bargridIndex+10].replace("#","")
 				bargridIndex++
 			}
 			else if(s.type =="scatter") {
-				color = s.color ? s.color.replace("#","") : g.colors[scatterIndex].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[scatterIndex+10].replace("#","")
 				scatterIndex++
 			}
 			
@@ -667,12 +667,12 @@ Gneiss.customYAxisFormat = function(axisGroup,i) {
 ChartBuilder.getDefaultConfig = function() {
   var chartConfig = {};
   
-  chartConfig.colors = ["#BF0053","#FF70B0","#E15D98","#C44B81","#A63869","#882551","#6B133A","#4D0022",
-						"#BF600A","#FFC07E","#E1A76A","#C48D55","#A67341","#885A2D","#6B4118","#4D2704",
-						"#BFAA00","#FFF270","#E1D55D","#C4B84B","#A69C38","#887F25","#6B6213","#4D4500",
-						"#00BFA5","#70FFF7","#5DE1D9","#4BC4BC","#38A69E","#258880","#136B63","#004D45",
-						"#006DBF","#70B8FF","#5DA1E1","#4B89C4","#3871A6","#255A88","#13436B","#002B4D",
-						"#9300BF","#E770FF","#CB5DE1","#AE4BC4","#9238A6","#752588","#59136B","#3C004D"]
+  chartConfig.colors = ["#6d2217","#72461d","#776326","#04403e","#26546d",
+						"#a43424","#ab6a2d","#b3943a","#04605d","#3a7ea3",
+						"#db4730","#e58d3c","#f0c74f","#04807e","#4da9da",
+						"#e47563","#ebaa69","#f3d576","#4ca09e","#7bbfe3",
+						"#eea397","#f2c69b","#f7e3a2","#88c0bf","#7bbfe3",
+						"#f6d1cb","#f9e2cc","#fbf1d0","#c4dfdf","#d2eaf6"],
   chartConfig.creditline = "Made with Chartbuilder";
   
   return chartConfig;

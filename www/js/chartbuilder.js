@@ -325,7 +325,6 @@ ChartBuilder = {
 					<option '+(s.type=="bargrid"?"selected":"")+' '+(g.xAxis.type == "date"?"disabled":"")+' value="bargrid">Bar Grid</option>\
 					<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
 				</select>\
-				<input id="'+this.idSafe(s.name)+'_check" name="'+this.idSafe(s.name)+'_check" type="checkbox" />\
 				<div class="clearfix"></div>\
 			</div>');
 			
@@ -351,7 +350,7 @@ ChartBuilder = {
 			seriesContainer.append(seriesItem);
 			var picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:this.allColors});
 			var typer = seriesItem.find("#"+this.idSafe(s.name)+"_type")
-			var axer = seriesItem.find("#"+this.idSafe(s.name)+"_check")
+			/*var axer = seriesItem.find("#"+this.idSafe(s.name)+"_check")
 			
 			if(g.series[i].axis == 1) {
 				axer.prop("checked",true)
@@ -362,7 +361,7 @@ ChartBuilder = {
 			}
 			else {
 				axer.prop("checked",false)
-			}
+			}*/
 												
 			seriesItem.data("index",i)
 			picker.change(function() {
@@ -382,7 +381,7 @@ ChartBuilder = {
 				ChartBuilder.redraw()
 			})
 			
-			axer.change(function() {
+			/*axer.change(function() {
 				var axis = $(this).is(':checked')?1:0;
 				chart.g.series[$(this).parent().data().index].axis = axis
 				
@@ -412,7 +411,7 @@ ChartBuilder = {
 					.setYAxes()
 					.setLineMakers();
 				ChartBuilder.redraw()
-			})
+			})*/
 			
 			chart.redraw()
 			this.makeLegendAdjustable()

@@ -287,7 +287,8 @@ ChartBuilder = {
 		})
 
 		var icon = this.setFavicon()*/
-		this.storeLocalChart(filename)	
+		this.storeLocalChart(filename);	
+        this.loadStoredCharts();
 		
 	},
 	/*setFavicon: function() {
@@ -678,7 +679,7 @@ ChartBuilder.getDefaultConfig = function() {
   return chartConfig;
 }
 
-function formatDate(d) {
+ChartBuilder.formatDate = function(d) {
     var date = (d.getMonth() + 1) +
         '-' + (d.getDate() + 1) +
         '-' + (d.getFullYear());
@@ -694,6 +695,21 @@ function formatDate(d) {
     return date + ' ' + time;
 }
 
+ChartBuilder.loadStoredCharts = function() {
+  	var savedCharts = ChartBuilder.getLocalCharts().reverse();
+  	var chartSelect = d3.select("#previous_charts");
+
+    chartSelect.selectAll("option").remove();
+  	
+  	chartSelect.selectAll("option")
+  		.data(savedCharts)
+  		.enter()
+  		.append("option")
+  		.text(function(d) {
+            var created = ChartBuilder.formatDate(new Date(d.created));
+            return d.name ? d.name + ' (' + created  + ')' : "Untitled Chart (" + created + ')'
+        })
+}
 
 // Starts applicatoin given config object
 ChartBuilder.start = function(config) {
@@ -731,23 +747,13 @@ ChartBuilder.start = function(config) {
   		}; 
   		return data.join("\n")
   	})
-  
-  
-  	//load previously made charts
-  	var savedCharts = ChartBuilder.getLocalCharts().reverse();
-  	var chartSelect = d3.select("#previous_charts")
+ 
+    var chartSelect = d3.select("#previous_charts")
         .on("change",function() {
             ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
-  		})
-  	
-  	chartSelect.selectAll("option")
-  		.data(savedCharts)
-  		.enter()
-  		.append("option")
-  		.text(function(d) {
-            var created = formatDate(new Date(d.created));
-            return d.name ? d.name + ' (' + created  + ')' : "Untitled Chart (" + created + ')'
-        })
+  		});
+ 
+    ChartBuilder.loadStoredCharts(); 
   			
   	$("#createImageButton").click(function() {
 		if($("#downloadLinksDiv").hasClass("hide")) {

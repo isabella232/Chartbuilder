@@ -513,6 +513,22 @@ ChartBuilder = {
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
+		axis_tick_override_change: function(index,that) {
+			var val = $(that).val()
+			val = val.split(",")
+			if(val.length > 1) {
+				for (var i = val.length - 1; i >= 0; i--){
+					val[i] = parseFloat(val[i])
+				};
+			}
+			else {
+				val = null
+			}
+			chart.g.yAxis[index].tickValues = val
+			chart.setYScales();
+			ChartBuilder.redraw()
+			ChartBuilder.inlineAllStyles();
+		}
 	},
 	showInvalidData: function() {
 		$("#inputDataHeading").addClass("inputDataHInvData");
@@ -753,30 +769,6 @@ ChartBuilder.start = function(config) {
   	
   	$("#right_axis_tick_override").keyup(function() {
   		ChartBuilder.actions.axis_tick_override_change(0,this)
-  	})
-  	
-  	$("#left_axis_prefix").keyup(function() {
-  		ChartBuilder.actions.axis_prefix_change(1,this)
-  	})
-  
-  	$("#left_axis_suffix").keyup(function() {
-  		ChartBuilder.actions.axis_suffix_change(1,this)
-  	})
-  
-  	$("#left_axis_tick_num").change(function() {
-  		ChartBuilder.actions.axis_tick_num_change(1,this)
-  	})
-  
-  	$("#left_axis_max").keyup(function() {
-  		ChartBuilder.actions.axis_max_change(1,this)
-  	})
-  
-  	$("#left_axis_min").keyup(function() {
-  		ChartBuilder.actions.axis_min_change(1,this)
-  	})
-  
-  	$("#left_axis_tick_override").keyup(function() {
-  		ChartBuilder.actions.axis_tick_override_change(1,this)
   	})
   	
   	$("#creditLine").keyup(function() {

@@ -261,9 +261,9 @@ ChartBuilder = {
 		
 		
 		var filename = [];
-		for (var i=0; i < chart.g.series.length; i++) {
+		/*for (var i=0; i < chart.g.series.length; i++) {
 			filename.push(chart.g.series[i].name);
-		};
+		};*/
 		
 		if(chart.g.title.length > 0) {
 			filename.unshift(chart.g.title)
@@ -273,8 +273,8 @@ ChartBuilder = {
 		
 		
 		$("#downloadImageLink").attr("href",canvas.toDataURL("png"))
-			.attr("download",function(){ return filename + "_chartbuilder.png"
-			});
+			.attr("download", function() { return filename + "_chartbuilder.png"
+		    });
 			
 			
 		// Create SVG image
@@ -530,6 +530,8 @@ ChartBuilder = {
 		var allcharts = JSON.parse(localStorage["savedCharts"])
 		newChart = this.getAllInputData()
 		newChart.name = name
+        newChart.created = (new Date()).valueOf();
+        
 		allcharts.push(newChart)
 		localStorage["savedCharts"] = JSON.stringify(allcharts);
 	},
@@ -544,7 +546,7 @@ ChartBuilder = {
 	},
 	loadLocalChart: function(d) {
 		for (var key in d) {
-			if(key != "name") {
+			if(key != "name" && key != "created") {
 				$("#"+key).val(d[key])
 				//$("#"+key).text(d[key])
 			}
@@ -676,6 +678,23 @@ ChartBuilder.getDefaultConfig = function() {
   return chartConfig;
 }
 
+function formatDate(d) {
+    var date = (d.getMonth() + 1) +
+        '-' + (d.getDate() + 1) +
+        '-' + (d.getFullYear());
+
+    var hours = d.getHours();
+    var minutes = d.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var time = hours + ':' + minutes + ' ' + ampm;
+
+    return date + ' ' + time;
+}
+
+
 // Starts applicatoin given config object
 ChartBuilder.start = function(config) {
 
@@ -715,20 +734,22 @@ ChartBuilder.start = function(config) {
   
   
   	//load previously made charts
-  	var savedCharts = ChartBuilder.getLocalCharts();
+  	var savedCharts = ChartBuilder.getLocalCharts().reverse();
   	var chartSelect = d3.select("#previous_charts")
-  					.on("change",function() {
-  						ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
-  					})
+        .on("change",function() {
+            ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
+  		})
   	
   	chartSelect.selectAll("option")
-  			.data(savedCharts)
-  			.enter()
-  			.append("option")
-  			.text(function(d){return d.name?d.name:"Untitled Chart"})
+  		.data(savedCharts)
+  		.enter()
+  		.append("option")
+  		.text(function(d) {
+            var created = formatDate(new Date(d.created));
+            return d.name ? d.name + ' (' + created  + ')' : "Untitled Chart (" + created + ')'
+        })
   			
-  	
-  		$("#createImageButton").click(function() {
+  	$("#createImageButton").click(function() {
   		ChartBuilder.inlineAllStyles();
 
 		if($("#downloadLinksDiv").hasClass("hide")) {

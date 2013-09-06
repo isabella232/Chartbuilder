@@ -278,7 +278,7 @@ ChartBuilder = {
 			
 			
 		// Create SVG image
-		var svgString = $("#chartContainer").html()
+		/*var svgString = $("#chartContainer").html()
 		//add in all the things that validate SVG
 		svgString = '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n<svg ' + svgString.split("<svg ")[1]
 		
@@ -286,11 +286,11 @@ ChartBuilder = {
 		.attr("download",function(){ return filename + "_chartbuilder.svg"
 		})
 
-		var icon = this.setFavicon()
+		var icon = this.setFavicon()*/
 		this.storeLocalChart(filename)	
 		
 	},
-	setFavicon: function() {
+	/*setFavicon: function() {
 		//set favicon to image of chart
 		var favicanvas = document.getElementById("favicanvas")
 		favicanvas.width = 64;
@@ -306,7 +306,7 @@ ChartBuilder = {
 		$("#favicon").attr("href",icon)
 		
 		return icon;
-	},
+	},*/
 	redraw: function() {
 		$(".seriesItemGroup").detach()
 		var g = chart.g, s, picker;

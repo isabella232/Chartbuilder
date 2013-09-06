@@ -1,6 +1,7 @@
 var chart;
 ChartBuilder = {
-	allColors: ["6d2217","72461d","776326","04403e","26546d",
+	allColors: ["db4730","e58d3c","f0c74f","04807e","4da9da",
+				"6d2217","72461d","776326","04403e","26546d",
 				"a43424","ab6a2d","b3943a","04605d","3a7ea3",
 				"db4730","e58d3c","f0c74f","04807e","4da9da",
 				"e47563","ebaa69","f3d576","4ca09e","7bbfe3",
@@ -331,19 +332,19 @@ ChartBuilder = {
 			var color = ""
 			
 			if(s.type == "line") {
-				color = s.color ? s.color.replace("#","") : g.colors[lineIndex+10].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[lineIndex].replace("#","")
 				lineIndex++
 			}
 			else if(s.type == "column") {
-				color = s.color ? s.color.replace("#","") : g.colors[colIndex+10].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[colIndex].replace("#","")
 				colIndex++
 			}
 			else if(s.type =="bargrid") {
-				color = s.color ? s.color.replace("#","") : g.colors[bargridIndex+10].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[bargridIndex].replace("#","")
 				bargridIndex++
 			}
 			else if(s.type =="scatter") {
-				color = s.color ? s.color.replace("#","") : g.colors[scatterIndex+10].replace("#","")
+				color = s.color ? s.color.replace("#","") : g.colors[scatterIndex].replace("#","")
 				scatterIndex++
 			}
 			
@@ -665,7 +666,8 @@ Gneiss.customYAxisFormat = function(axisGroup,i) {
 ChartBuilder.getDefaultConfig = function() {
   var chartConfig = {};
   
-  chartConfig.colors = ["#6d2217","#72461d","#776326","#04403e","#26546d",
+  chartConfig.colors = ["#db4730","#e58d3c","#f0c74f","#04807e","#4da9da",
+  						"#6d2217","#72461d","#776326","#04403e","#26546d",
 						"#a43424","#ab6a2d","#b3943a","#04605d","#3a7ea3",
 						"#db4730","#e58d3c","#f0c74f","#04807e","#4da9da",
 						"#e47563","#ebaa69","#f3d576","#4ca09e","#7bbfe3",

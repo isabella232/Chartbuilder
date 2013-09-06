@@ -897,7 +897,7 @@ var Gneiss = {
 					.append("path")
 						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M");  return pathString.indexOf("NaN")==-1?pathString:"M0,0"})
 						.attr("class","seriesLine seriesGroup")
-						.attr("stroke",function(d,i){return d.color? d.color : g.colors[i+10]})
+						.attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
 						.attr("stroke-width",3)
 						.attr("stroke-linejoin","round")
 						.attr("stroke-linecap","round")
@@ -907,7 +907,7 @@ var Gneiss = {
 					.enter()
 					.append("g")
 					.attr("class","lineSeriesDots seriesGroup")
-					.attr("fill", function(d,i){return d.color? d.color : g.colors[i+10]})
+					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 				
 				lineSeriesDotGroups
 					.filter(function(d){return d.data.length < 15})
@@ -929,7 +929,7 @@ var Gneiss = {
 					.enter()
 					.append("g")
 					.attr("class","seriesScatter seriesGroup")
-					.attr("fill", function(d,i){return d.color? d.color : g.colors[i+10]})
+					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
 				scatterDots = scatterGroups
 					.selectAll("circle")
@@ -960,12 +960,12 @@ var Gneiss = {
 				//add bars to chart
 				columnGroups = g.seriesContainer.selectAll("g.seriesColumn")
 					.data(sbt.bargrid)
-					.attr("fill",function(d,i){return d.color? d.color : g.colors[i+sbt.line.length+10]})
+					.attr("fill",function(d,i){return d.color? d.color : g.colors[i+sbt.line.length]})
 				
 				var seriesColumns = columnGroups.enter()
 					.append("g") 
 						.attr("class","seriesColumn")
-						.attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length+10]})
+						.attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
 						.attr("transform",function(d,i){return "translate(0,"+g.padding.top+")"})
 				
 				var bargridLabel = columnGroups.selectAll("text.bargridLabel")
@@ -1080,13 +1080,13 @@ var Gneiss = {
 				//add lines
 				lineSeries = g.seriesContainer.selectAll("path")
 					.data(sbt.line)
-					.attr("stroke",function(d,i){return d.color? d.color : g.colors[i+10]});
+					.attr("stroke",function(d,i){return d.color? d.color : g.colors[i]});
 
 				lineSeries.enter()
 					.append("path")
 						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
 						.attr("class","seriesLine")
-						.attr("stroke",function(d,i){return d.color? d.color : g.colors[i+10]})
+						.attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
 						.attr("stroke-width",3)
 						.attr("stroke-linejoin","round")
 						.attr("stroke-linecap","round")
@@ -1102,13 +1102,13 @@ var Gneiss = {
 				//Add dots to the appropriate line series
 				lineSeriesDotGroups = g.seriesContainer.selectAll("g.lineSeriesDots")
 					.data(sbt.line)
-					.attr("fill",function(d,i){return d.color? d.color : g.colors[i+10]})
+					.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
 			
 				lineSeriesDotGroups
 					.enter()
 					.append("g")
 					.attr("class","lineSeriesDots")
-					.attr("fill", function(d,i){return d.color? d.color : g.colors[i+10]})
+					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 				
 				lineSeriesDotGroups.exit().remove()
 			
@@ -1142,7 +1142,7 @@ var Gneiss = {
 				//add scatter
 				scatterGroups = g.seriesContainer.selectAll("g.seriesScatter")
 					.data(sbt.scatter)
-					.attr("fill", function(d,i){return d.color? d.color : g.colors[i+10]})
+					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 				
 				scatterGroups.enter()
 					.append("g")
@@ -1233,7 +1233,7 @@ var Gneiss = {
 					.attr("class","legendLabel")
 					.attr("x",12)
 					.attr("y",18)
-					.attr("fill",function(d,i){return d.color? d.color : g.colors[i+10]})
+					.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
 					.text(function(d,i){return d.name});
 			
 			//if there is more than one line
@@ -1243,7 +1243,7 @@ var Gneiss = {
 					.attr("height",10)
 					.attr("x",0)
 					.attr("y",8)
-					.attr("fill", function(d,i){return d.color? d.color : g.colors[i+10]})
+					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
 				legendGroups.filter(function(d){return d != g.series[0]})
 					.transition()

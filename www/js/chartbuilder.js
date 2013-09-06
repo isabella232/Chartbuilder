@@ -583,7 +583,7 @@ ChartBuilder = {
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
-		axis_max_change: function(index,that) {
+		/*axis_max_change: function(index,that) {
 			var val = parseFloat($(that).val())
 			if(isNaN(val)) {
 				val = null
@@ -602,7 +602,7 @@ ChartBuilder = {
 			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
-		},
+		},*/
 		axis_tick_override_change: function(index,that) {
 			var val = $(that).val()
 			val = val.split(",")
@@ -754,12 +754,10 @@ ChartBuilder.start = function(config) {
   			//cache the the raw textarea value
   			ChartBuilder.curRaw = $(this).val()
   			
-  			if($("#right_axis_max").val().length == 0 && $("#right_axis_min").val().length == 0) {
-  					chart.g.yAxis[0].domain = [null,null];
-  			}
+  			chart.g.yAxis[0].domain = [null,null];
   			
-  			if(chart.g.yAxis.length > 1 && $("#left_axis_max").val().length == 0 && $("#left_axis_min").val().length == 0) {
-  					chart.g.yAxis[1].domain = [null,null];
+  			if(chart.g.yAxis.length > 1) {
+  				chart.g.yAxis[1].domain = [null,null];
   			}
   			
   			var csv = $("#csvInput").val();
@@ -815,14 +813,6 @@ ChartBuilder.start = function(config) {
   	
   	$("#right_axis_tick_num").change(function() {
   		ChartBuilder.actions.axis_tick_num_change(0,this)
-  	})
-  	
-  	$("#right_axis_max").keyup(function() {
-  		ChartBuilder.actions.axis_max_change(0,this)
-  	})
-  	
-  	$("#right_axis_min").keyup(function() {
-  		ChartBuilder.actions.axis_min_change(0,this)
   	})
   	
   	$("#right_axis_tick_override").keyup(function() {

@@ -275,7 +275,7 @@ ChartBuilder = {
 		$("#downloadImageLink").attr("href",canvas.toDataURL("png"))
 			.attr("download", function() { return filename + "_chartbuilder.png"
 		    });
-			
+
 			
 		// Create SVG image
 		/*var svgString = $("#chartContainer").html()
@@ -750,11 +750,29 @@ ChartBuilder.start = function(config) {
         })
   			
   	$("#createImageButton").click(function() {
-  		ChartBuilder.inlineAllStyles();
-
 		if($("#downloadLinksDiv").hasClass("hide")) {
+            if ($("#chart_title").val() == "") {
+                alert("You must supply a chart title.");
+                return false;
+            }
+
+            if ($("#credit").val() == "") {
+                alert("You must supply a credit.");
+                return false;
+            }
+
+            if ($("#chart_source").val() == "") {
+                alert("You must supply a source.");
+                return false;
+            }
+
+            $("#createImageButton p").text("Reset");
+
+  		    ChartBuilder.inlineAllStyles();
 			ChartBuilder.createChartImage();
-		}
+		} else {
+            $("#createImageButton p").text("Create Image of Chart");
+        }
 
 		$("#downloadLinksDiv").toggleClass("hide");
   	})

@@ -294,7 +294,6 @@ ChartBuilder = {
 		this.customLegendLocaion = false;
 		var colIndex = g.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
 		var seriesContainer = $("#seriesItems")
-		var isMultiAxis = false;
 		for (var i=0; i < g.series.length; i++) {
 			s = g.series[i]
 			seriesItem = $('<div class="seriesItemGroup">\
@@ -375,14 +374,6 @@ ChartBuilder = {
 			type: g.xAxis.type,
 			formatter: g.xAxis.formatter
 		}
-		
-		if(isMultiAxis){
-			$("#leftAxisControls").removeClass("hide")
-		}
-		else {
-			$("#leftAxisControls").addClass("hide")
-		}
-		
 		
 		var state = {
 			container: g.container,
@@ -764,12 +755,6 @@ ChartBuilder.start = function(config) {
   		ChartBuilder.actions.axis_tick_override_change(0,this)
   	})
   	
-  	$("#x_axis_tick_num").change(function() {
-  		chart.g.xAxis.ticks = parseInt($(this).val())
-  		ChartBuilder.redraw()
-  		ChartBuilder.inlineAllStyles();
-  	})
-  	
   	$("#left_axis_prefix").keyup(function() {
   		ChartBuilder.actions.axis_prefix_change(1,this)
   	})
@@ -792,13 +777,6 @@ ChartBuilder.start = function(config) {
   
   	$("#left_axis_tick_override").keyup(function() {
   		ChartBuilder.actions.axis_tick_override_change(1,this)
-  	})
-  	
-  	$("#x_axis_date_format").change(function() {
-  		var val = $(this).val()
-  		chart.g.xAxis.formatter = val
-  		ChartBuilder.redraw()
-  		ChartBuilder.inlineAllStyles();
   	})
   	
   	$("#creditLine").keyup(function() {

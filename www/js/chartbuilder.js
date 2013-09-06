@@ -261,9 +261,6 @@ ChartBuilder = {
 		
 		
 		var filename = [];
-		/*for (var i=0; i < chart.g.series.length; i++) {
-			filename.push(chart.g.series[i].name);
-		};*/
 		
 		if(chart.g.title.length > 0) {
 			filename.unshift(chart.g.title)
@@ -291,23 +288,6 @@ ChartBuilder = {
         this.loadStoredCharts();
 		
 	},
-	/*setFavicon: function() {
-		//set favicon to image of chart
-		var favicanvas = document.getElementById("favicanvas")
-		favicanvas.width = 64;
-		favicanvas.height = 64;
-		
-		var faviCanvasContext = favicanvas.getContext("2d")
-		faviCanvasContext.translate(favicanvas.width / 2, favicanvas.height / 2);
-		
-		var svg = $.trim(document.getElementById("chartContainer").innerHTML)
-		faviCanvasContext.drawSvg(svg,-16,-8,32,32)
-		
-		var icon = favicanvas.toDataURL("png");
-		$("#favicon").attr("href",icon)
-		
-		return icon;
-	},*/
 	redraw: function() {
 		$(".seriesItemGroup").detach()
 		var g = chart.g, s, picker;
@@ -351,18 +331,6 @@ ChartBuilder = {
 			seriesContainer.append(seriesItem);
 			var picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:this.allColors});
 			var typer = seriesItem.find("#"+this.idSafe(s.name)+"_type")
-			/*var axer = seriesItem.find("#"+this.idSafe(s.name)+"_check")
-			
-			if(g.series[i].axis == 1) {
-				axer.prop("checked",true)
-				if(!g.yAxis[1].color || !isMultiAxis) {
-					g.yAxis[1].color = picker.val()
-				}
-				isMultiAxis = true;
-			}
-			else {
-				axer.prop("checked",false)
-			}*/
 												
 			seriesItem.data("index",i)
 			picker.change(function() {
@@ -381,38 +349,6 @@ ChartBuilder = {
 					.resize()
 				ChartBuilder.redraw()
 			})
-			
-			/*axer.change(function() {
-				var axis = $(this).is(':checked')?1:0;
-				chart.g.series[$(this).parent().data().index].axis = axis
-				
-				if(!chart.g.yAxis[axis]){
-					chart.g.yAxis[axis] = {
-											domain: [null,null],
-											tickValues: null,
-											prefix: {
-												value: "",
-												use: "top" //can be "top" "all" "positive" or "negative"
-											},
-											suffix: {
-												value: "",
-												use: "top"
-											},
-											ticks: 4,
-											formatter: null,
-											color: null,
-										}
-				}
-				
-				if(chart.g.yAxis.length > 1 && axis == 0) {
-					chart.g.yAxis.pop()
-				}
-				
-				chart.setYScales()
-					.setYAxes()
-					.setLineMakers();
-				ChartBuilder.redraw()
-			})*/
 			
 			chart.redraw()
 			this.makeLegendAdjustable()
@@ -586,42 +522,6 @@ ChartBuilder = {
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
-		/*axis_max_change: function(index,that) {
-			var val = parseFloat($(that).val())
-			if(isNaN(val)) {
-				val = null
-			}
-			chart.g.yAxis[index].domain[1] = val;
-			chart.setYScales();
-			ChartBuilder.redraw()
-			ChartBuilder.inlineAllStyles();
-		},
-		axis_min_change: function(index,that) {
-			var val = parseFloat($(that).val())
-			if(isNaN(val)) {
-				val = null
-			}
-			chart.g.yAxis[index].domain[0] = val;
-			chart.setYScales();
-			ChartBuilder.redraw()
-			ChartBuilder.inlineAllStyles();
-		},*/
-		axis_tick_override_change: function(index,that) {
-			var val = $(that).val()
-			val = val.split(",")
-			if(val.length > 1) {
-				for (var i = val.length - 1; i >= 0; i--){
-					val[i] = parseFloat(val[i])
-				};
-			}
-			else {
-				val = null
-			}
-			chart.g.yAxis[index].tickValues = val
-			chart.setYScales();
-			ChartBuilder.redraw()
-			ChartBuilder.inlineAllStyles();
-		}
 	},
 	showInvalidData: function() {
 		$("#inputDataHeading").addClass("inputDataHInvData");

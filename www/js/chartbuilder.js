@@ -738,6 +738,8 @@ ChartBuilder.start = function(config) {
   				chart.g.xAxis.type = "ordinal";
   			}
   			chart.g.xAxisRef = [dataObj.data.shift()]
+
+            chart.g.yAxis[0].domain[0] = 0;
   			
   			chart.g.series=dataObj.data
   			chart.setPadding();

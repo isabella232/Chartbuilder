@@ -43,7 +43,7 @@ var defaultGneissChartConfig = {
 	},
 	yAxis: [
 		{
-			domain: [null,null],
+			domain: [0,100],
 			tickValues: null,
 			prefix: {
 				value: "",

@@ -11,7 +11,7 @@ div.colorPicker-picker {
 div.colorPicker-palette {
   width: 135px;
   position: absolute;
-  border: 1px solid #598FEF;
+  border: 1px solid #ccc;
   background-color: #EFEFEF;
   padding: 1px;
   z-index: 9999;

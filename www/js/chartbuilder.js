@@ -582,8 +582,7 @@ ChartBuilder.getDefaultConfig = function() {
 						"#db4730","#e58d3c","#f0c74f","#04807e","#4da9da",
 						"#e47563","#ebaa69","#f3d576","#4ca09e","#7bbfe3",
 						"#eea397","#f2c69b","#f7e3a2","#88c0bf","#7bbfe3",
-						"#f6d1cb","#f9e2cc","#fbf1d0","#c4dfdf","#d2eaf6"],
-  chartConfig.creditline = "Made with Chartbuilder";
+						"#f6d1cb","#f9e2cc","#fbf1d0","#c4dfdf","#d2eaf6"];
   
   return chartConfig;
 }
@@ -628,7 +627,7 @@ ChartBuilder.start = function(config) {
   var chartConfig = $.extend(defaultGneissChartConfig, chartbuilderDefaultConfig, config);
   
   $(document).ready(function() {
-  	
+
   	//construct a Gneisschart using default data
   	//this should change to be more like this http://bost.ocks.org/mike/chart/
   	chart = Gneiss.build(chartConfig)
@@ -777,13 +776,13 @@ ChartBuilder.start = function(config) {
   		var val = $(this).val()
   		chart.g.creditline = val
   		chart.g.creditLine.text(chart.g.creditline)
-  	})
+  	}).keyup();
   	
   	$("#sourceLine").keyup(function() {
   		var val = $(this).val()
   		chart.g.sourceline = val
   		chart.g.sourceLine.text(chart.g.sourceline)
-  	})
+  	}).keyup();
   	
   	$("#chart_title").keyup(function() {
   		var val = $(this).val()
@@ -796,7 +795,7 @@ ChartBuilder.start = function(config) {
   		ChartBuilder.makeLegendAdjustable()
   		
   		chart.g.titleLine.text(chart.g.title)
-  	})
+  	}).keyup();
   	
   })
 };

@@ -29,17 +29,17 @@ svg .axis path {
 
 svg .axis text {
 	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 12px;
 }
 
 svg .legendItem text {
 	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size:  10px;
+	font-size:  12px;
 }
 
 svg text.metaText {
 	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size:  10px;
+	font-size:  12px;
 	text-rendering:   optimizeLegibility;
 	fill:  #999999;
 }
@@ -47,11 +47,11 @@ svg text.metaText {
 svg text.barLabel, 
 svg text.bargridLabel {
 	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size: 10px
+	font-size: 12px
 }
 	
 #titleLine {
 	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 12px;
 	fill: #666666;
 }

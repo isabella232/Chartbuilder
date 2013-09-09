@@ -186,9 +186,6 @@ ChartBuilder = {
 					.appendTo($table)
 			}				
 		};
-
-		// append to 
-		this.outputTableAsHtml($table);
 	},
 
 

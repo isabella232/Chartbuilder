@@ -97,14 +97,25 @@
 	    						<div class="optionGroup"><label for="right_axis_suffix">Unit label after value</label><input type="text" name="right_axis_suffix" value="" id="right_axis_suffix">
                     <cite>e.g. 75%</cite>
                   </div>
-	    						<div class="optionGroup"><label for="right_axis_tick_num">Number of Vertical Axis Marks</label><select name="right_axis_tick_num" id="right_axis_tick_num" size="1">
-	    							<option>2</option>
-	    							<option>3</option>
-	    							<option selected >4</option>
-	    							<option>5</option>
-	    							<option>6</option>
-	    						</select></div>
-    						</div>
+    							<div class="optionGroup"><label for="right_axis_max">Vertical Axis Maximum</label><input type="text" name="right_axis_max" value="" id="right_axis_max">
+                                    <cite>If blank, the maximum value in the data.</cite>
+                                </div>
+    							<div class="optionGroup"><label for="right_axis_min">Vertical Axis Minimum</label><input type="text" name="right_axis_min" value="0" id="right_axis_min">
+                                    <cite>If blank, the minimum value in the data. Should usually be 0.</cite>
+                                </div>
+	    						<div class="optionGroup"><label for="right_axis_tick_num">Number of Vertical Axis Ticks</label>
+                                    <select name="right_axis_tick_num" id="right_axis_tick_num" size="1">
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option selected >4</option>
+                                        <option>5</option>
+                                        <option>6</option>
+                                    </select></div>
+                                </div>
+    							<div class="optionGroup"><label for="right_axis_tick_override">Vertical Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override">
+                                    <cite>e.g. 5,10,15,20,25</cite>
+                                </div>
+                            </div>
     					</div>
             <div class="optionBlock full">
               <h2><span class="step-header">6</span> Export</h2>

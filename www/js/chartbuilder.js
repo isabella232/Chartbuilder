@@ -578,6 +578,8 @@ ChartBuilder.loadStoredCharts = function() {
             var created = ChartBuilder.formatDate(new Date(d.created));
             return d.name ? d.name + ' (' + created  + ')' : "Untitled Chart (" + created + ')'
         })
+
+    $("#previous_charts").trigger("chosen:updated");
 }
 
 // Starts applicatoin given config object
@@ -617,7 +619,7 @@ ChartBuilder.start = function(config) {
   		return data.join("\n")
   	})
  
-    var chartSelect = d3.select("#previous_charts")
+    var chartSelect = $("#previous_charts").chosen()
         .on("change",function() {
             ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
   		});

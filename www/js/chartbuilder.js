@@ -261,22 +261,18 @@ ChartBuilder = {
 		this.customLegendLocaion = false;
 		var colIndex = g.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
 		var seriesContainer = $("#seriesItems")
+			
+			
 		for (var i=0; i < g.series.length; i++) {
 			s = g.series[i]
 			seriesItem = $('<div class="seriesItemGroup">\
 				<label for="'+this.idSafe(s.name)+'_color">'+s.name+'</label>\
 				<input id="'+this.idSafe(s.name)+'_color" name="'+this.idSafe(s.name)+'" type="text" />\
-				<select class="typePicker" id="'+this.idSafe(s.name)+'_type">\
-					<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
-					<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
-					<option '+(s.type=="bargrid"?"selected":"")+' '+' value="bargrid">Bar Grid</option>\
-					<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
-				</select>\
 				<div class="clearfix"></div>\
 			</div>');
 			
 			var color = ""
-			
+
 			if(s.type == "line") {
 				color = s.color ? s.color.replace("#","") : g.colors[lineIndex].replace("#","")
 				lineIndex++
@@ -296,30 +292,29 @@ ChartBuilder = {
 			
 			seriesContainer.append(seriesItem);
 			var picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:this.allColors});
-			var typer = seriesItem.find("#"+this.idSafe(s.name)+"_type")
-												
+
 			seriesItem.data("index",i)
 			picker.change(function() {
 				chart.g.series[$(this).parent().data().index].color = $(this).val()
 				ChartBuilder.redraw()
 			})
 			
-			typer.change(function() {
-				var val = $(this).val(),
-				index = $(this).parent().data().index;
-				chart.g.series[index].type = val
-				var hasBargrid = false;
-				chart.setPadding();
-				ChartBuilder.setChartArea()
-				chart.setXScales()
-					.resize()
-				ChartBuilder.redraw()
-			})
-			
 			chart.redraw()
-			this.makeLegendAdjustable()
 		}
-		
+
+        $('#typePicker').off('change').on('change', function() {
+            var val = $(this).val();
+
+            for (var i=0; i < chart.g.series.length; i++) {
+                chart.g.series[i].type = val;
+            }
+
+            chart.setPadding();
+            ChartBuilder.setChartArea()
+            chart.setXScales()
+                .resize()
+            ChartBuilder.redraw()
+        });
 		
 		var yAxisObj = []
 		for (var i = g.yAxis.length - 1; i >= 0; i--){
@@ -379,36 +374,9 @@ ChartBuilder = {
 			$("#chartContainer").css("height", 480)
 		}
 	},
-	makeLegendAdjustable: function() {
-		
-		var legendLabelDrag = d3.behavior.drag()
-			.origin(Object)
-			.on("dragstart",function(d){
-				elem = d3.select(this)
-				d3.select(elem[0][0].parentElement).selectAll("rect").style("display","none")
-				if(!ChartBuilder.customLegendLocaion) {
-					chart.g.legend = false;
-					chart.redraw()
-					ChartBuilder.inlineAllStyles()
-					ChartBuilder.makeLegendAdjustable()
-					ChartBuilder.customLegendLocaion = true;
-				}
-				
-			})
-			.on("drag", function(d){
-				elem = d3.select(this)
-				elem.attr("x", Number(elem.attr("x")) + d3.event.dx)
-					.attr("y", Number(elem.attr("y")) + d3.event.dy);
-					
-				
-		});
-		d3.selectAll("text.legendLabel").call(legendLabelDrag);
-		
-		
-	},
 	getAllInputData: function() {
 		var d = {}, $el;
-		var elems = $("input, textarea, select:not(#previous_charts)").each(function() {
+		var elems = $("input:not([id^=colorPicker]), textarea, select:not(#previous_charts)").each(function() {
 			$el = $(this)
 			d[$el.attr("id")] = $el.val()
 		})
@@ -443,10 +411,9 @@ ChartBuilder = {
 		for (var key in d) {
 			if(key != "name" && key != "created") {
 				$("#"+key).val(d[key])
-				//$("#"+key).text(d[key])
 			}
 		}
-		$("input, textarea, select:not(#previous_charts)").keyup().change()
+		$("input:not([id^=colorPicker]), textarea, select:not(#previous_charts)").keyup().change();
 	},
 	idSafe: function(s) {
 		s = s.replace(/[^\w\d]+/gi,"-")
@@ -698,7 +665,7 @@ ChartBuilder.start = function(config) {
   			ChartBuilder.redraw();
   			ChartBuilder.inlineAllStyles();
   		}
-  
+
   	}).keyup() 
   	
   	$("#right_axis_prefix").keyup(function() {
@@ -733,7 +700,6 @@ ChartBuilder.start = function(config) {
   		ChartBuilder.setChartArea()
   		chart.setYScales()
   			.redraw();
-  		ChartBuilder.makeLegendAdjustable()
   		
   		chart.g.titleLine.text(chart.g.title)
   	}).keyup();

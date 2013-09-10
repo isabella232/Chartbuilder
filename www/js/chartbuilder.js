@@ -39,6 +39,14 @@ ChartBuilder = {
 			return null;
 		}
 
+        // Too many columns?
+        if (reader.rows[0].length > 10) {
+            alert('Your data has more than 10 columns. This probably won\'t work well with this tool.');
+        // Too many rows?
+        } else if (reader.rows.length > 10) {
+            alert('Your data has more than 10 rows. This probably won\'t work well with this tool.');
+        }
+
         return reader.rows;
 	},
 	// Given the matrix containing the well formated csv, create the object that

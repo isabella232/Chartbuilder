@@ -165,6 +165,10 @@ table {
 	width:96%;
 }
 
+#rightColumn .cbInner .optionBlock.half {
+	width:49%;
+}
+
 @media (min-width: 950px) {
 	#rightColumn .cbInner .optionBlock {
 		width: 46%;

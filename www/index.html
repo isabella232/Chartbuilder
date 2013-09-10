@@ -37,19 +37,24 @@
 			  </div>
       </div>
 
-			<div id="rightColumn" class="column">
-			  <div class="cbInner">
+		<div id="rightColumn" class="column">
+			<div class="cbInner">
 			    <h1>ChartBuilder</h1>
 			  
-  				<div id="chartOptions" class="interfaceCol">
-             <div id="datainput">
+  		    <div id="chartOptions" class="interfaceCol">
+
+             <div class="optionBlock half">
              	<div class="inputGroup">
-                    <h2 id="inputDataHeading"><span class="step-header">1</span> Input your data</h2>
+                    <h2 id="inputDataHeading"><span class="step-header">1</span> Import Data</h2>
+                    <h4>Copy and paste cells from your spreadsheet into this text field:</h4>
                     <span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
                     <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
              	</div>
+            </div>
+            <div class="optionBlock half">
              	<div class="inputGroup">
-             		<h4>Check the format of your data</h4>
+                    <h2 id="inputDataHeading"><span class="step-header">2</span> Verify Data</h2>
+             		<h4>Verify the data appears correct in this table:</h4>
                 <div id="dataTable" class="input-box">
                   <table border=0>
                     <tr><th>Header</th></tr>
@@ -57,23 +62,24 @@
                   </table>
               	</div>
              	</div>
+            </div>
              	<div class="clearfix"></div>
             </div>
 
             <div class="optionBlock topOptionBlock">
-              <h2><span class="step-header">2</span> Series Options</h2>
+              <h2><span class="step-header">3</span> Data Options</h2>
               <div id="seriesItems"></div>
             </div>
   					
   					<div class="optionBlock">
-    					<h2><span class="step-header">3</span> Chart Options</h2>
+    					<h2><span class="step-header">4</span> Chart Options</h2>
     						<div class="optionGroup"><label for="chart_title">Title</label><input type="text" name="chart_title" value="Stock Prices" id="chart_title"></div>
     						<div class="optionGroup"><label for="credit">Credit</label><input id="creditLine" type="text" name="credit" value="NPR"></div>
     						<div class="optionGroup"><label for="source">Source</label><input id="sourceLine" type="text" name="source" value="Data: NYSE">
     						<cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite></div>
     				</div>
     				<div class="optionBlock">
-   							<h2><span class="step-header">4</span> Y-Axis Options</h2>
+   							<h2><span class="step-header">5</span> Y-Axis Options</h2>
     						<div id="rightAxisControls">
     							<div class="optionGroup"><label for="right_axis_prefix">Unit label before value</label><input type="text" name="right_axis_prefix" value="" id="right_axis_prefix">
                     <cite>e.g. $50</cite>
@@ -88,11 +94,10 @@
 	    							<option>5</option>
 	    							<option>6</option>
 	    						</select></div>
-    							<div class="optionGroup"><label for="right_axis_tick_override">Y-Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override"></div>
     						</div>
     					</div>
             <div class="optionBlock full">
-              <h2><span class="step-header">5</span> Export</h2>
+              <h2><span class="step-header">6</span> Export</h2>
               <div class="updateButton" id="createImageButton">
                 <p>Create Image of Chart</p>
               </div>

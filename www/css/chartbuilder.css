@@ -1,384 +1,57 @@
-/**
- * Main CSS for ChartBuiler
- */
-
-
-/**
- * General
- */
 body {
-	font-family: "Gotham SSm", Helvetica, Arial, sans-serif;
-	min-width: 800px; 
-	width: 100%;
-	overflow-y: scroll;
-	overflow-x: hidden;
-	line-height: 1.1em;
-	font-size: 0.75em;
-	color: #666;
+	padding-top: 50px;
 }
 
-cite {
-	font-size: .85em;
-	color: #999;
-	margin-bottom: 1em;
-	line-height: 1em;
-	display: block;
+#main {
+	display: table;
 }
 
-h1,h2,h3,h4,h5,h6 { color: #333; font-weight: 300; }
-
-h1 {
-	font-size: 2em;
-	line-height: 1.5em;
-	text-transform: uppercase;
+#chart-column,
+#main {
+	display: table-cell;
+	vertical-align: top;
 }
 
-h2 {
-	font-size: 1.5em;
-	line-height: 1.5em;
-	margin-top: 0;
-}
-
-h3 {
-	font-size: 1.25em;
-}
-
-h4 {
-	font-size: 1em;
-}
-
-table {
-  width: 100%;
-}
-
-.hide {
-  display: none;
-}
- 
-/**
- * Layout
- */
-.cbInner {
-  margin: 0 1em;
-}
-
-#interactiveContent {
-  margin: 0;
-  padding-left: 370px;
-  padding-right: 0px
-}
-
-#interactiveContent .columns {
-	float:left;
-	position: relative;
-}
-
-#leftColumn {
-	width: 370px;
-	margin-left: -100%;
-	right: 370px;
+#chart-column {
+	width: 360px;
+	padding: 20px;
+	position: fixed;
+	overflow: hidden;
+	height: 100%;
 	background: #eee;
 }
 
-#rightColumn {
-  	min-width: 100px;
-	width: 100%;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
-	border-left: 1px solid #ccc;
-}
-
-#blankColumn {
-	width: 0px;
-	margin-right: 0px;
-}
-
-#leftColumn .cbInner {
-  margin-top: 1em;
-}
-
-#rightColumn .cbInner {
-  margin-bottom: 2em;
-}
-
-.inputDataHInvData {
-	margin-bottom: 4px;
-}
-
-#invalidDataSpan {
-	color: #ff0000;
-}
-
-/**
- * Chart
- */
-#staticContainer {
-	position: fixed;
-	left: 1em;
-	margin-top: 0.5;
-}
-
-#chartContainer {
-	width: 320px;
-	height: 480px;
-	border: 1px solid #efefef;
-}
-
-#interactiveContent svg .legendItem text {
-	cursor: move;
+#main {
+	padding-left: 380px;
+	padding-top: 10px;
 }
 
 #canvas, #favicanvas {
 	display: none;
 }
 
-/**
- * Form items.
- */
-#rightColumn .cbInner .optionGroup {
-	width:100%;
-	margin-left: 5px;
-	margin-right: 5px;
-	float: left;
+
+.navbar-brand {
+	text-transform: uppercase;
 }
 
-#rightColumn .cbInner .optionBlock {
-	box-sizing: border-box;
-	padding: 15px;
-	margin-right: 15px;
-	margin-top: 1em;
-	width: 100%;
-	float: left;
-	background-color: #f6f6f6;
-}
-#rightColumn .cbInner .optionBlock h2 {
-	margin-left: 5px;
-	margin-right: 5px;
+
+#rightAxisControls .form-control {
+	width: 100px;
 }
 
-#rightColumn .cbInner .optionBlock.topOptionBlock {
-	clear: both;
-}
-
-#rightColumn .cbInner .optionBlock.full {
-	width:96%;
-}
-
-#rightColumn .cbInner .optionBlock.half {
-	width:49%;
-}
-
-@media (min-width: 950px) {
-	#rightColumn .cbInner .optionBlock {
-		width: 46%;
-	}
-
-}
-
-@media (min-width: 1250px) {
-	#rightColumn .cbInner .optionBlock {
-		width: 29%;
-	}
-
-
-	#rightColumn .cbInner h2 {
-		clear: both;
-	}
-
-
-}
-
-input,
-textarea,
-select {
-	display: block;
-	margin-bottom: 1em;
-	font-family: 'Gotham SSm';
-	color: #666666;
-	border: 1px solid #ccc;
-	box-sizing: border-box;
-     -webkit-box-sizing:border-box;
-     -moz-box-sizing: border-box;
-}
-
-input[type="text"] {
-	padding: .25em 2%;
-	width: 96%;
-
-}
-
-textarea {
-	width: 100%;
-}
-
-select {
-	width: 96%;
-}
-
-label {
-	font-family: "Gotham SSm", Arial, "MS Trebuchet", sans-serif;
-	color: #666666;
-	display: block;
-	font-size: 1em;
-	font-weight: bold;
-	margin-bottom: .25em;
-}
-
-textarea {
-  font-size: .75em;
-}
-
-.input-box {
-	max-height: 100px;
-	overflow: scroll;
-	white-space: nowrap;
-	tab-size: 20;
-}
-
-#rightColumn cite {
-  margin-top: -.85em;
-}
-
-/**
- * Data input
- */
-
-#datainput textarea,
-#datainput table {
-	font-family: Monaco, sans-serif;
-}
-
-@media (min-width: 1250px) {
-	#datainput .inputGroup {
-		float: left;
-		width: 46%;
-		padding-right: 2%;
-		padding-left: 2%;
-
-	}
-}
-
-#dataTable .otherrow {
-	background-color: #eee;
-}
-
-#dataTable {
-	font-size: .85em;
-	overflow-x: scroll;
-	border: 1px solid #ccc;
-}
-
-#dataTable th {
-	font-weight: bold;
-	text-align: right;
-}
-
-#dataTable td {
-	text-align: right;
-	padding: .25em .5em;
-}
-
-/**
- * Chart options
- */
-
-
-/**
- * Series items
- */
-#seriesItems {
-	margin-bottom: 1em;
-}
-
-#seriesItems .seriesItemGroup {
-	clear: both;
-}
-
-#seriesItems .seriesItemGroup input, 
-#seriesItems .seriesItemGroup select,
-{
-	float: left;
-	margin-left: .5em;
-	width: 5%;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
-}
-#seriesItems .seriesItemGroup .colorPicker-picker {
-	float: left;
-	margin-left: .5em;
-	margin-right: .5em;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
-}
-
-#seriesItems .seriesItem p {
-	margin: 0;
-	margin-left: .5em;
-}
-
-#seriesItems select.typePicker  {
-	width: 60%;
-	float: left;
-}
-
-#seriesItems input[type="checkbox"] {
-	float: left;
-	margin-left: 5%;
-	margin-top: .25em;
-}
- 
-/**
- * Export/update buttons
- */
-.updateButton {
-	margin-top: 20px;
-	clear: both;
-	cursor: pointer;
-	width: 200px;
-	height: 30px;
-}
-
-.updateButton p {
-	font-family: "Gotham SSm", Arial, "MS Trebuchet", sans-serif;
-	padding: 5px;
-	background-color: #999;
-	color: #ffffff;
-	text-align: center;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-}
-
-.downloadLinks {
-  margin-bottom: 1em;
-}
-
-a.downloadLink {
-	line-height: 2em;
-}
-
-/**
-* Custom Picker Styles
-**/
-div.colorPicker-swatch {
-	border: none;
-}
-
-div.colorPicker_hexWrap {
-	display: none;
+h2 {
+	font-size: 24px;
 }
 
 .step-header {
-	background: #111;
+	background: #333;
 	color: #fff;
+	border-radius: 36px;
 	display: inline-block;
-	width: 30px;
-	height: 30px;
-	line-height: 30px;
+	width: 36px;
+	height: 36px;
 	text-align: center;
-	border-radius: 30px;
+	line-height: 36px;
+	font-size: 18px;
 }
-

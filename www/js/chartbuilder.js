@@ -157,7 +157,6 @@ ChartBuilder = {
 				};
 
 				$("<tr><td>"+r[i].join("</td><td>")+"</td></tr>")
-					.addClass(i%2 == 0? "otherrow":"row")
 					.appendTo($table)
 			}				
 		};

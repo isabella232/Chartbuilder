@@ -19,132 +19,180 @@
 		<link rel="stylesheet" href="bower_components/really-simple-color-picker/colorPicker.css" type="text/css" media="screen" charset="utf-8">
 		
 		<!-- Chartbuilder CSS -->
-		<link rel="stylesheet" href="css/chartbuilder.css" type="text/css" media="screen" charset="utf-8">
+		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="css/chartbuilder.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/gneisschart.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/colorPicker.css" type="text/css" media="screen" charset="utf-8">
 	</head>
 	<body>
 		<!-- Add your site or application content here -->
-		<div id="interactiveContent">
-			<div id="leftColumn" class="column">
-			  <div class="cbInner">
-  				<div id="staticContainer">
-  					<div id="chartContainer"></div>
 
-  
-  					<canvas id="canvas" width="640px" height="960px"></canvas> 
-  					<canvas id="favicanvas" width="16px" height="16px"></canvas> 
-  				</div>
-			  </div>
+
+    <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+      <a class="navbar-brand" href="#">Chart Builder</a>
+      <p class="navbar-text">Quickly produce mobile-friendly charts for small datasets.</p>
+    </nav>
+    <div class="main-wrapper">
+      <div id="chart-column">
+        <div id="staticContainer">
+          <div id="chartContainer"></div>
+          <canvas id="canvas" width="640px" height="960px"></canvas> 
+          <canvas id="favicanvas" width="16px" height="16px"></canvas> 
+        </div>
       </div>
+  		<div id="main" class="container">
+  		  <div id="rightColumn" class="column">
+  			<div class="cbInner">
 
-		<div id="rightColumn" class="column">
-			<div class="cbInner">
-			    <h1>Chart Builder</h1>
+                  
+            <p>Not getting the results you need? Email <a href="mailto:nprapps@npr.org">nprapps@npr.org</a> for help or to request a custom chart!</p>
+  			  
+    		    <div id="chartOptions" class="row">
 
-                <h3>Quickly produce mobile-friendly charts for small datasets.</h3>
-                <p>Not getting the results you need? Email <a href="mailto:nprapps@npr.org">nprapps@npr.org</a> for help or to request a custom chart!</p>
-			  
-  		    <div id="chartOptions" class="interfaceCol">
-
-             <div class="optionBlock half">
-             	<div class="inputGroup">
-                    <h2 id="inputDataHeading"><span class="step-header">1</span> Import Data</h2>
-                    <h4>Copy and paste cells from your spreadsheet into this text field. The first column will become labels for the horizontal axis. Remaining columns will be plotted on the vertical axis.</h4>
-                    <span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
-                    <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
-             	</div>
+               <div class="col-xs-12 col-sm-6">
+               	<div class="inputGroup">
+                      <h2 id="inputDataHeading"><span class="step-header">1</span> Import Data</h2>
+                      <h4>Copy and paste cells from your spreadsheet into this text field. The first column will become labels for the horizontal axis. Remaining columns will be plotted on the vertical axis.</h4>
+                      <span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
+                      <textarea id="csvInput" class="input-box form-control" name="csvInput" rows="8"></textarea>
+               	</div>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+               	<div class="inputGroup">
+                      <h2 id="inputDataHeading"><span class="step-header">2</span> Verify Data</h2>
+               		<h4>Verify your data appears correct in this table.</h4>
+                  <div id="dataTable" class="input-box">
+                    <table border=0 class=" table table-bordered table-striped">
+                      <tr><th>Header</th></tr>
+                      <tr><td>Data</td></tr>
+                    </table>
+                	</div>
+               	</div>
+              </div>
             </div>
-            <div class="optionBlock half">
-             	<div class="inputGroup">
-                    <h2 id="inputDataHeading"><span class="step-header">2</span> Verify Data</h2>
-             		<h4>Verify your data appears correct in this table.</h4>
-                <div id="dataTable" class="input-box">
-                  <table border=0>
-                    <tr><th>Header</th></tr>
-                    <tr><td>Data</td></tr>
-                  </table>
-              	</div>
-             	</div>
-            </div>
-             	<div class="clearfix"></div>
-            </div>
+            <div class="row">
+              <div class="col-sm-6 topOptionBlock">
+                <h2><span class="step-header">3</span> Data Options</h2>
+                <div class="form-group">
+                    <label for="typePicker">Chart Type</label>
+                    <select id="typePicker">
+                        <option selected="selected" value="line">Line</option>
+                        <option value="column">Column</option>
+                        <option value="bargrid">Bar Grid</option>
+                        <option value="scatter">Scatter</option>
+                    </select>
+                  </div>
 
-            <div class="optionBlock topOptionBlock">
-              <h2><span class="step-header">3</span> Data Options</h2>
-              <div class="optionGroup">
-                  <label for="typePicker">Chart Type</label>
-                  <select id="typePicker">
-                      <option selected="selected" value="line">Line</option>
-                      <option value="column">Column</option>
-                      <option value="bargrid">Bar Grid</option>
-                      <option value="scatter">Scatter</option>
-                  </select>
+                <div id="seriesItems"></div>
+              </div>
+    					
+    					<div class="col-sm-6 form-horizontal">
+      					<h2><span class="step-header">4</span> Chart Options</h2>
+    						<div class="form-group">
+                  <label class="col-lg-3 control-label" for="chart_title">Title</label>
+                  <div class="col-lg-4">
+                    <input type="text" class="form-control" name="chart_title" value="Stock Prices" id="chart_title">
+                  </div>
                 </div>
-
-              <div id="seriesItems"></div>
-            </div>
-  					
-  					<div class="optionBlock">
-    					<h2><span class="step-header">4</span> Chart Options</h2>
-    						<div class="optionGroup"><label for="chart_title">Title</label><input type="text" name="chart_title" value="Stock Prices" id="chart_title"></div>
-    						<div class="optionGroup"><label for="credit">Credit</label><input id="creditLine" type="text" name="credit" value="NPR"></div>
-    						<div class="optionGroup"><label for="source">Source</label><input id="sourceLine" type="text" name="source" value="Data: NYSE">
-    						<cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite></div>
-    				</div>
-    				<div class="optionBlock">
-   							<h2><span class="step-header">5</span> Vertical Axis Options</h2>
-    						<div id="rightAxisControls">
-    							<div class="optionGroup"><label for="right_axis_prefix">Unit label before value</label><input type="text" name="right_axis_prefix" value="" id="right_axis_prefix">
-                    <cite>e.g. $50</cite>
+    						<div class="form-group">
+                  <label class="col-lg-3 control-label" for="credit">Credit</label>
+                  <div class="col-lg-4">
+                    <input id="creditLine" type="text" class="form-control" name="credit" value="NPR">
                   </div>
-	    						<div class="optionGroup"><label for="right_axis_suffix">Unit label after value</label><input type="text" name="right_axis_suffix" value="" id="right_axis_suffix">
-                    <cite>e.g. 75%</cite>
+                </div>
+    						<div class="form-group">
+                  <label class="col-lg-3 control-label" for="source">Source</label>
+                  <div class="col-lg-4">
+                    <input id="sourceLine" type="text" class="form-control" name="source" value="Data: NYSE">
                   </div>
-    							<div class="optionGroup"><label for="right_axis_max">Vertical Axis Maximum</label><input type="text" name="right_axis_max" value="" id="right_axis_max">
-                                    <cite>If blank, the maximum value in the data.</cite>
-                                </div>
-    							<div class="optionGroup"><label for="right_axis_min">Vertical Axis Minimum</label><input type="text" name="right_axis_min" value="0" id="right_axis_min">
-                                    <cite>If blank, the minimum value in the data. Should usually be 0.</cite>
-                                </div>
-	    						<div class="optionGroup"><label for="right_axis_tick_num">Number of Vertical Axis Ticks</label>
-                                    <select name="right_axis_tick_num" id="right_axis_tick_num" size="1">
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option selected >4</option>
-                                        <option>5</option>
-                                        <option>6</option>
-                                    </select></div>
-                                </div>
-    							<div class="optionGroup"><label for="right_axis_tick_override">Vertical Axis Tick Override</label><input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override">
-                                    <cite>e.g. 5,10,15,20,25</cite>
-                                </div>
-                            </div>
-            <div class="optionBlock full">
-              <h2><span class="step-header">6</span> Export</h2>
-              <div class="updateButton" id="createImageButton">
-                <p>Create Image of Chart</p>
-              </div>
-              <div id="downloadLinksDiv" class="downloadLinks hide">
-                Image created! <a download="new_chart.png" id="downloadImageLink" class="downloadLink" href="#" target="_blank">Click to Download</a> 
+    						  <p class="help-block col-lg-5">Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</p>
+                </div>
+      				</div>
+            </div>
+            <div class="row">
+      				<div class="form-horizontal col-sm-12">
+                <div class="inputGroup">
+     							<h2><span class="step-header">5</span> Vertical Axis Options</h2>
+      						<div id="rightAxisControls form-inline">
+      							<div class="form-group">
+                      <label class="col-lg-3 control-label" for="right_axis_prefix">Unit label before value</label>
+                      <div class="col-lg-4">
+                        <input type="text" class="form-control" name="right_axis_prefix" value="" id="right_axis_prefix">
+                      </div>
+                      <p class="help-block col-lg-5">e.g. $50</p>
+                    </div>
+  	    						<div class="form-group">
+                      <label class="col-lg-3 control-label" for="right_axis_suffix">Unit label after value</label>
+                      <div class="col-lg-4">
+                        <input type="text" class="form-control" name="right_axis_suffix" value="" id="right_axis_suffix">
+                      </div>
+                      <p class="help-block col-lg-5">e.g. 75%</p>
+                    </div>
+      							<div class="form-group">
+                      <label class="col-lg-3 control-label" for="right_axis_max">Vertical Axis Maximum</label>
+                      <div class="col-lg-4">
+                        <input type="text" class="form-control" name="right_axis_max" value="" id="right_axis_max">
+                      </div>
+                      <p class="help-block col-lg-5">If blank, the maximum value in the data.</p>
+                    </div>
+      							<div class="form-group">
+                      <label class="col-lg-3 control-label" for="right_axis_min">Vertical Axis Minimum</label>
+                      <div class="col-lg-4">
+                        <input type="text" class="form-control" name="right_axis_min" value="0" id="right_axis_min">
+                      </div>
+                      <p class="help-block col-lg-5">If blank, the minimum value in the data. Should usually be 0.</p>
+                    </div>
+  	    						<div class="form-group">
+                      <label class="col-lg-3 control-label" for="right_axis_tick_num">Number of Vertical Axis Ticks</label>
+                      <div class="col-lg-4">
+                        <select  class="form-control" name="right_axis_tick_num" id="right_axis_tick_num" size="1">
+                            <option>2</option>
+                            <option>3</option>
+                            <option selected >4</option>
+                            <option>5</option>
+                            <option>6</option>
+                        </select>
+                      </div>
+                    </div>
+      							<div class="optionGroup">
+                      <label class="col-lg-3 control-label" for="right_axis_tick_override">Vertical Axis Tick Override</label>
+                      <div class="col-lg-4">
+                        <input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override">
+                      </div>
+                      <p class="help-block col-lg-5">e.g. 5,10,15,20,25</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="optionBlock full">           
-              <div class="previousCharts">
-                <div class="optionGroup"><label for="previous_charts">Load a previously created chart</label>
-                <select name="previous_charts" id="previous_charts"></select>
+            <div class="row">
+              <div class="col-sm-12 full">
+                <div class="inputGroup">
+                  <h2><span class="step-header">6</span> Export</h2>
+                  <div class="updateButton" id="createImageButton">
+                    <a class="btn btn-primary btn-lg">Create Image of Chart</a>
+                  </div>
+                  <div id="downloadLinksDiv" class="downloadLinks hide">
+                    Image created! <a download="new_chart.png" id="downloadImageLink" class="downloadLink" href="#" target="_blank">Click to Download</a> 
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="clearfix"></div>
-  				</div>
-  				
-  				<div id="currentSeries" class="interfaceCol"></div>
-  			</div>			
-			</div>
-      <div id="blankColumn" class="column"></div>
-      <div class="clearfix"></div>
-		</div>
-
+            <div class="row">
+              <div class="col-sm-12">           
+                <div class="previousCharts">
+                  <div class="optionGroup"><label for="previous_charts">Load a previously created chart</label>
+                    <select name="previous_charts" id="previous_charts"></select>
+                  </div>
+                </div>
+    				  </div>
+    				
+    				  <div id="currentSeries" class="interfaceCol"></div>
+    			  </div>			
+  			</div>
+        <div id="blankColumn" class="column"></div>
+  		</div>
+    </div>
     <!-- Libraries JS -->
 		<script src="bower_components/modernizr/modernizr.js" charset="utf-8"></script>
 		<script src="bower_components/jquery/jquery.min.js" charset="utf-8"></script>

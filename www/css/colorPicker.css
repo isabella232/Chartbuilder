@@ -9,7 +9,7 @@ div.colorPicker-picker {
 }
 
 div.colorPicker-palette {
-  width: 135px;
+  width: 140px;
   position: absolute;
   border: 1px solid #ccc;
   background-color: #EFEFEF;
@@ -27,4 +27,5 @@ div.colorPicker-swatch {
   float: left;
   cursor: pointer;
   line-height: 12px;
+  border: none;
 }

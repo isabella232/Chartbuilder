@@ -1,4 +1,8 @@
+var COMMA = ',';
+var TAB = String.fromCharCode(9);
+
 var chart;
+
 ChartBuilder = {
 	allColors: ["db4730","e58d3c","f0c74f","04807e","4da9da",
 				"6d2217","72461d","776326","04403e","26546d",
@@ -9,8 +13,17 @@ ChartBuilder = {
 				"f6d1cb","f9e2cc","fbf1d0","c4dfdf","d2eaf6"],
 	curRaw: "",
 	getNewData: function(csv) {
+        var separator = COMMA;
+
+        var comma_count = csv.split(COMMA).length - 1;
+        var tab_count = csv.split(TAB).length - 1;
+
+        if (tab_count >= comma_count) {
+            separator = TAB;
+        }
+
         var reader = new CSVKit.Reader({
-            separator: String.fromCharCode(9),
+            separator: separator,
             columns_from_header: false
         });
 

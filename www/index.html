@@ -46,7 +46,7 @@
              <div class="optionBlock half">
              	<div class="inputGroup">
                     <h2 id="inputDataHeading"><span class="step-header">1</span> Import Data</h2>
-                    <h4>Copy and paste cells from your spreadsheet into this text field:</h4>
+                    <h4>Copy and paste cells from your spreadsheet into this text field. The first column will become labels for the horizontal axis. Remaining columns will be plotted on the vertical axis.</h4>
                     <span id="invalidDataSpan" class="hide">Warning: Data is Invalid</span>
                     <textarea id="csvInput" class="input-box" name="csvInput" rows="8"></textarea>
              	</div>
@@ -54,7 +54,7 @@
             <div class="optionBlock half">
              	<div class="inputGroup">
                     <h2 id="inputDataHeading"><span class="step-header">2</span> Verify Data</h2>
-             		<h4>Verify the data appears correct in this table:</h4>
+             		<h4>Verify your data appears correct in this table.</h4>
                 <div id="dataTable" class="input-box">
                   <table border=0>
                     <tr><th>Header</th></tr>
@@ -79,7 +79,7 @@
     						<cite>Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</cite></div>
     				</div>
     				<div class="optionBlock">
-   							<h2><span class="step-header">5</span> Y-Axis Options</h2>
+   							<h2><span class="step-header">5</span> Vertical Axis Options</h2>
     						<div id="rightAxisControls">
     							<div class="optionGroup"><label for="right_axis_prefix">Unit label before value</label><input type="text" name="right_axis_prefix" value="" id="right_axis_prefix">
                     <cite>e.g. $50</cite>
@@ -87,7 +87,7 @@
 	    						<div class="optionGroup"><label for="right_axis_suffix">Unit label after value</label><input type="text" name="right_axis_suffix" value="" id="right_axis_suffix">
                     <cite>e.g. 75%</cite>
                   </div>
-	    						<div class="optionGroup"><label for="right_axis_tick_num">Number of Y-Axis Ticks</label><select name="right_axis_tick_num" id="right_axis_tick_num" size="1">
+	    						<div class="optionGroup"><label for="right_axis_tick_num">Number of Vertical Axis Marks</label><select name="right_axis_tick_num" id="right_axis_tick_num" size="1">
 	    							<option>2</option>
 	    							<option>3</option>
 	    							<option selected >4</option>
@@ -107,7 +107,7 @@
             </div>
             <div class="optionBlock full">           
               <div class="previousCharts">
-                <div class="optionGroup"><label for="previous_charts">Previously Created Charts</label>
+                <div class="optionGroup"><label for="previous_charts">Load a previously created chart</label>
                 <select name="previous_charts" id="previous_charts"></select>
               </div>
             </div>

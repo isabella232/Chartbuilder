@@ -39,16 +39,8 @@ ChartBuilder = {
 
 			// Make the obj
 			for(var j=1; j<csv_matrix.length; j++) {
-				// If this is a date column
-				if((/date/gi).test(obj.name)) {
-					var value = Date.create(csv_matrix[j][i]);
-					if(value == "Invalid Date") {
-						return null;
-					}
-					obj.data.push(value);
-				}
 				// If it is the first column, containing the names
-				else if(i == 0) {
+				if(i == 0) {
 					obj.data.push(csv_matrix[j][i]);
 				}
 				// If it's a data point
@@ -73,16 +65,13 @@ ChartBuilder = {
 			data.push(obj);
 		}
 
-		return {data: data, datetime: (/date/gi).test(data[0].name)};
+		return {data: data};
 	},
 	parseData: function(a) {
 		var d = []
 		var parseFunc;
 		for (var i=0; i < a.length; i++) {
-			if((/date/gi).test(a[i][0])){ //relies on the word date 
-				parseFunc = this.dateAll
-			}
-			else if (i == 0) {
+			if (i == 0) {
 				parseFunc = this.doNothing
 			}
 			else {
@@ -186,12 +175,6 @@ ChartBuilder = {
 		};
 		return a
 	},
-	dateAll: function(a) {
-		for (var i=0; i < a.length; i++) {
-			a[i] = Date.create(a[i])
-		};
-		return a
-	},
 	doNothing: function(a) {
 		return a
 	},
@@ -273,7 +256,7 @@ ChartBuilder = {
 				<select class="typePicker" id="'+this.idSafe(s.name)+'_type">\
 					<option '+(s.type=="line"?"selected":"")+' value="line">Line</option>\
 					<option '+(s.type=="column"?"selected":"")+' value="column">Column</option>\
-					<option '+(s.type=="bargrid"?"selected":"")+' '+(g.xAxis.type == "date"?"disabled":"")+' value="bargrid">Bar Grid</option>\
+					<option '+(s.type=="bargrid"?"selected":"")+' '+' value="bargrid">Bar Grid</option>\
 					<option '+(s.type=="scatter"?"selected":"")+' value="scatter">Scatter</option>\
 				</select>\
 				<div class="clearfix"></div>\
@@ -681,20 +664,13 @@ ChartBuilder.start = function(config) {
   			}
 			ChartBuilder.hideInvalidData();
   
-  			ChartBuilder.createTable(newData, dataObj.datetime);
+  			ChartBuilder.createTable(newData);
   			
   			chart.g.series.unshift(chart.g.xAxisRef)
   			dataObj = ChartBuilder.mergeData(dataObj)
   			
-  			if(dataObj.datetime) {
-  				chart.g.xAxis.type = "date";
-  				chart.g.xAxis.formatter = chart.g.xAxis.formatter?chart.g.xAxis.formatter:"Mdd";
-  			}
-  			else {
-  				chart.g.xAxis.type = "ordinal";
-  			}
+  			chart.g.xAxis.type = "ordinal";
   			chart.g.xAxisRef = [dataObj.data.shift()]
-
             chart.g.yAxis[0].domain[0] = 0;
   			
   			chart.g.series=dataObj.data

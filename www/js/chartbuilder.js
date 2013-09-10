@@ -9,51 +9,24 @@ ChartBuilder = {
 				"f6d1cb","f9e2cc","fbf1d0","c4dfdf","d2eaf6"],
 	curRaw: "",
 	getNewData: function(csv) {
-		// Split the csv information by lines
-		var csv_array = csv.split("\n");
+        var reader = new CSVKit.Reader({
+            separator: String.fromCharCode(9),
+            columns_from_header: false
+        });
 
-        // Split the first element of the array by the designated separator
-        // tab in this case
-        var csv_matrix = [];
-        var delim = String.fromCharCode(9);
-        csv_matrix.push(csv_array[0].split(delim));
-
-		// Get the number of columns
-		var cols_num = csv_matrix[0].length;
+        reader.parse(csv);
 
 		// If there aren't at least two columns, return null
-		if(cols_num < 2) {
+		if(reader.rows[0].length < 2) {
 			return null;
-		}
-
-		// Knowing the number of columns that every line should have, split
-		// those lines by the designated separator. While doing this, count
-		// the number of rows
-		var rows_num = 0;
-		for(var i=1; i<csv_array.length; i++) {
-			// If the row is empty, that is, if it is just an \n symbol, continue
-			if(csv_array[i] == "") {
-				continue;
-			}
-
-			// Split the row. If the row doesn't have the right amount of cols
-			// then the csv is not well formated, therefore, return null
-			var row = csv_array[i].split(delim);
-			if(row.length != cols_num) {
-				return null;
-			}
-
-			// Push row to matrix, increment row count, loop
-			csv_matrix.push(row);
-			rows_num++; 
-		}
+        }
 
 		// If there aren't at least two non empty rows, return null
-		if(rows_num < 2) {
+		if(reader.rows.length < 2) {
 			return null;
 		}
 
-		return csv_matrix;
+        return reader.rows;
 	},
 	// Given the matrix containing the well formated csv, create the object that
 	// is going to be used later

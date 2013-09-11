@@ -38,31 +38,31 @@ svg .yAxis .zero .tick {
 }
 
 svg .axis text {
-	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size: 12px;
+	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
+	font-size: 14px;
 }
 
 svg .legendItem text {
-	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size:  12px;
+	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
+	font-size:  14px;
 }
 
 svg text.metaText {
-	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size:  12px;
+	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
+	font-size:  14px;
 	text-rendering:   optimizeLegibility;
 	fill:  #999999;
 }
 
 svg text.barLabel, 
 svg text.bargridLabel {
-	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size: 12px
+	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
+	font-size: 14px
 }
 	
 #titleLine {
-	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size: 14px;
+	font-family: 'HelveticaNeueW01-77BdCn 692722','Gotham SSm',Helvetica, sans-serif;
+	font-size: 18px;
 	font-weight: bold;
 	fill: #333;
 }

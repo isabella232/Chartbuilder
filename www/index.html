@@ -61,68 +61,45 @@
                       <p>Copy and paste cells from your spreadsheet into this text field. The first column will become labels for the horizontal axis. Remaining columns will be plotted on the vertical axis.</p>
                       <span id="invalidDataSpan" class="hide">Data could not be parsed.</span>
                       <textarea id="csvInput" class="input-box form-control" name="csvInput" rows="8"></textarea>
-               	</div>
-              </div>
-              <div class="col-xs-12 col-md-12">
-               	<div class="inputGroup">
-                      <h2 id="inputDataHeading"><span class="step-header">2</span> Verify Data</h2>
-               		<p>Verify your data appears correct in this table.</p>
-                  <div id="dataTable" class="input-box">
-                    <table border=0 class=" table table-bordered table-striped table-responsive">
-                      <tr><th>Header</th></tr>
-                      <tr><td>Data</td></tr>
-                    </table>
-                	</div>
+
+                      <p>Verify your data appears correct in this table.</p>
+                      <div id="dataTable" class="input-box">
+                         <table border=0 class=" table table-bordered table-striped table-responsive">
+                           <tr><th>Header</th></tr>
+                           <tr><td>Data</td></tr>
+                         </table>
+                      </div>
                	</div>
               </div>
             </div>
             <div class="row">
               <div class="col-md-12 topOptionBlock form-inline">
-                <h2><span class="step-header">3</span> Data Options</h2>
+                <h2><span class="step-header">2</span> Chart Options</h2>
                 <div class="row">
-                  <div class="form-group col-md-3">
-                      <label for="typePicker" class="control-label">Select Chart Type</label>
-                        <select id="typePicker" class="form-control">
-                            <option selected="selected" value="line">Line</option>
-                            <option value="column">Column</option>
-                            <option value="scatter">Scatter</option>
-                        </select>
-                  </div>
-
-                  <div id="seriesItems" class="col-md-9">
+                  <div id="seriesItems" class="col-md-4 form-group">
+                    <label for="typePicker" class="control-label">Select Chart Type</label>
+                      <select id="typePicker" class="form-control">
+                          <option selected="selected" value="line">Line</option>
+                          <option value="column">Column</option>
+                          <option value="scatter">Scatter</option>
+                      </select>
                     <h5>Select Series Colors</h5>
+                  </div>
+                  <div class="form-group col-md-8">
+                    <label class="control-label" for="chart_title">Title</label>
+                    <input type="text" class="form-control" name="chart_title" value="Stock Prices" id="chart_title">
+
 
                   </div>
+                  
                 </div>
-              </div>
-    					
-    					<div class="col-md-12 form-horizontal">
-      					<h2><span class="step-header">4</span> Chart Options</h2>
-    						<div class="form-group">
-                  <label class="col-md-3 control-label" for="chart_title">Title</label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" name="chart_title" value="Stock Prices" id="chart_title">
-                  </div>
-                </div>
-    						<div class="form-group">
-                  <label class="col-md-3 control-label" for="credit">Credit</label>
-                  <div class="col-md-9">
-                    <input id="creditLine" type="text" class="form-control" name="credit" value="NPR">
-                  </div>
-                </div>
-    						<div class="form-group">
-                  <label class="col-md-3 control-label" for="source">Source</label>
-                  <div class="col-md-9">
-                    <input id="sourceLine" type="text" class="form-control" name="source" value="Data: NYSE">
-                  </div>
-    						  <p class="help-block col-md-9 col-md-offset-3">Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</p>
-                </div>
+
       				</div>
             </div>
             <div class="row">
       				<div class="form-horizontal col-md-12">
                 <div class="inputGroup">
-     							<h2><span class="step-header">5</span> Vertical Axis Options</h2>
+     							<h2><span class="step-header">3</span> Vertical Axis Options</h2>
       						<div id="rightAxisControls form-inline">
       							<div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_prefix">Unit Label Before Value</label>
@@ -178,7 +155,7 @@
             <div class="row">
               <div class="col-md-12 full">
                 <div class="inputGroup">
-                  <h2><span class="step-header">6</span> Export</h2>
+                  <h2><span class="step-header">4</span> Export</h2>
                   <div class="updateButton" id="createImageButton">
                     <a class="btn btn-success btn-lg">Create Chart Image</a>
                   </div>

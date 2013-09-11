@@ -30,6 +30,9 @@ div.colorPicker-palette {
   background-color: #EFEFEF;
   padding: 1px;
   z-index: 9999;
+  -webkit-box-shadow: 0 1px 10px rgba(0,0,0,.3);
+     -moz-box-shadow: 0 1px 10px rgba(0,0,0,.3);
+          box-shadow: 0 1px 10px rgba(0,0,0,.3);
 }
   div.colorPicker_hexWrap {width: 100%; float:left }
   div.colorPicker_hexWrap label {font-size: 95%; color: #2F2F2F; margin: 5px 2px; width: 25%}

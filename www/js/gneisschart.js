@@ -916,7 +916,7 @@ var Gneiss = {
 					.data(function(d){ return d.data})
 					.enter()
 						.append("circle")
-						.attr("r",4)
+						.attr("r",1)
 						.attr("transform",function(d,i){
 							yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
 							return "translate("+(g.xAxis.type=="date" ?

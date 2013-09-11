@@ -168,13 +168,11 @@ var Gneiss = {
 			.attr("width",g.width)
 			.attr("height",g.height)
 				
-		
 		this.calculateColumnWidths()
 			.setYScales(true)
 			.setXScales(true)
 			.setYAxes(true)
 			.setXAxis(true);
-		
 		
 		g.titleLine = g.chart.append("text")
 			// .attr("y",0)
@@ -185,18 +183,14 @@ var Gneiss = {
 		
         this.setLineMakers(true)
 		
-		var columnWidth = this.g.columnWidth;
-		var columnGroupShift = this.g.columnGroupShift;
-
-        //create a group to contain series
         g.seriesContainer = g.chart.append("g")
             .attr("id","seriesContainer")
             
-        //create a group to contain the legend items
         g.legendItemContainer = g.chart.append("g")
             .attr("id","legendItemContainer")
 
-		this.drawSeriesAndLegend();
+        this.drawSeries();
+        this.drawLegend();
 		
 		g.metaInfo = g.chart.append("g")
 			.attr("id","metaInfo")
@@ -406,7 +400,7 @@ var Gneiss = {
 		}
 		var rangeArray = []
 		//set the range of the x axis
-		if (g.xAxis.hasColumns) {
+		if (g.type == 'column') {
 			rangeArray = [
 				g.padding.left + this.g.columnGroupWidth/2 + (g.yAxis.length==1?0:this.g.columnGroupWidth/2),
 				g.width - g.padding.right - this.g.columnGroupWidth
@@ -783,22 +777,16 @@ var Gneiss = {
 		//make sure width is >= 1
 		columnWidth = Math.max(columnWidth, 1);
 		columnWidth = Math.min(columnWidth, (g.width-g.padding.right-g.padding.left) * 0.075)
-		var columnGroupShift = columnWidth + 1;
 		
 		this.g.columnWidth = columnWidth;
 		this.g.columnGroupWidth = (columnWidth + 1) * g.series.length;
-		this.g.columnGroupShift = columnWidth +1;
-		
+		this.g.columnGroupShift = columnWidth + 1;
+
 		return this
 	},
     calculateBarHeights: function() {
         // TODO: placeholder
     },
-	drawSeriesAndLegend: function(){
-		this.drawSeries()
-		this.drawLegend()
-		return this
-	},
 	drawSeries: function() {
 		/*
 		*
@@ -808,8 +796,6 @@ var Gneiss = {
 		var g = this.g
 		
 		//construct line maker helper functions for each yAxis
-		this.setLineMakers(false)
-		
 		var columnWidth = this.g.columnWidth;
 		var columnGroupShift = this.g.columnGroupShift;
 		
@@ -1044,16 +1030,7 @@ var Gneiss = {
                     }
                     return "translate("+x+","+legendItemY+")"
             })
-            //.filter(function(d,i){console.log(i,g.series.slice(0).pop()==d);return d == g.series.slice(0).pop()})
-            //.each("end", function(d,i) {
-            //	//the filter above makes sure this only hapens on the last one
-            //	if (legendItemY > 0 && g.defaults.padding.top != legendItemY + 25) { //CHANGE
-            //		g.defaults.padding.top = legendItemY + 25;
-            //		g.all.redraw();
-            //				
-            //	};
-            //})		
-            //test if the chart needs more top margin because of a large number of legend items
+
 			this.g = g;	
 		}
 		
@@ -1066,18 +1043,6 @@ var Gneiss = {
 		this.g = g
 		return this
 	},
-	update: function() {
-		/*
-			Nothing yet
-		*/
-		return this
-	},
-	updateSeries: function() {
-		/*
-			Nothing yet
-		*/
-		return this
-	},
 	redraw: function() {
 		/*
 			Redraw the chart
@@ -1085,13 +1050,15 @@ var Gneiss = {
 		var g = this.g
 		
 		this.calculateColumnWidths()
-		
+        this.setLineMakers(false)
+
 		this.setPadding()
 			.setYScales()
 			.setXScales()
 			.setYAxes()
 			.setXAxis()
-			.drawSeriesAndLegend()
+			.drawSeries()
+            .drawLegend()
 			.updateMetaAndTitle();	
 		return this
 	},

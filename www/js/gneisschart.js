@@ -999,7 +999,7 @@ var Gneiss = {
             
             lineSeriesDots.enter()
                 .append("circle")
-                .attr("r",4)
+                .attr("r",1)
                 .attr("transform",function(d,i){
                     yAxisIndex = d3.select(this.parentElement).data()[0].axis;
                         var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;

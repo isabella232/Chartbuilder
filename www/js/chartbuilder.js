@@ -121,10 +121,6 @@ ChartBuilder = {
 			if(i < chart.g.series.length) {
 				a.data[i] = $.extend({},chart.g.series[i],d)
 			}
-			else {
-				//defaults for new series
-				a.data[i].type = "line"
-			}
 			
 		};
 		
@@ -266,7 +262,6 @@ ChartBuilder = {
 		$(".seriesItemGroup").detach()
 		var g = chart.g, s, picker;
 		this.customLegendLocaion = false;
-		var colIndex = g.sbt.line.length, lineIndex = 0, scatterIndex = 0;
 		var seriesContainer = $("#seriesItems")
 			
 			
@@ -278,20 +273,7 @@ ChartBuilder = {
 				<div class="clearfix"></div>\
 			</div>');
 			
-			var color = ""
-
-			if(s.type == "line") {
-				color = s.color ? s.color.replace("#","") : g.colors[lineIndex].replace("#","")
-				lineIndex++
-			}
-			else if(s.type == "column") {
-				color = s.color ? s.color.replace("#","") : g.colors[colIndex].replace("#","")
-				colIndex++
-			}
-			else if(s.type =="scatter") {
-				color = s.color ? s.color.replace("#","") : g.colors[scatterIndex].replace("#","")
-				scatterIndex++
-			}
+            var color = s.color ? s.color.replace("#","") : g.colors[i].replace("#","")
 			
 			seriesContainer.append(seriesItem);
 			var picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:this.allColors});
@@ -308,9 +290,7 @@ ChartBuilder = {
         $('#typePicker').off('change').on('change', function() {
             var val = $(this).val();
 
-            for (var i=0; i < chart.g.series.length; i++) {
-                chart.g.series[i].type = val;
-            }
+            chart.g.type = val;
 
             chart.setPadding();
             ChartBuilder.setChartArea()

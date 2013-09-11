@@ -6,20 +6,20 @@ div.colorPicker-picker {
   background: none;
   cursor: pointer;
   line-height: 25px;
-  margin-right: 20px;
+  margin-right: 25px;
   position: relative;
 }
 
 div.colorPicker-picker:after {
   content: ' ';
-  background: url(arrow.gif) no-repeat bottom right;
+  background: url('http://media.npr.org/chrome_svg/chevron-small.svg');
+  background-size: 95%;
   display: block;
-  width: 25px;
-  height: 25px;
+  width: 15px;
+  height: 8px;
   position: absolute;
-  right: -20px;
-  top: -15px;
-  -webkit-transform: rotate(45deg);
+  right: -18px;
+  top: 7px;
 
 }
 

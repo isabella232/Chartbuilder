@@ -1232,9 +1232,9 @@ var Gneiss = {
 			var legLabels = legItems.append("text")
 					.filter(function(){return g.series.length > 1})
 					.attr("class","legendLabel")
-					.attr("x",12)
+					.attr("x",15)
 					.attr("y",10)
-					.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
+					//.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
 					.text(function(d,i){return d.name});
 			
 			//if there is more than one line
@@ -1261,7 +1261,7 @@ var Gneiss = {
 						var curCoords = g.all.helper.transformCoordOf(cur)
 
 						legendItemY = prevCoords.y;
-						var x = prevCoords.x + prevWidth + 5
+						var x = prevCoords.x + prevWidth + 15
 						if(x + curWidth > g.width) {
 							x = g.padding.left
 							legendItemY += 15;						

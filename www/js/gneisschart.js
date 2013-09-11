@@ -293,24 +293,12 @@ var Gneiss = {
 			};
 			
 		
-		if(g.isBargrid) {
-			for (var i = g.yAxis.length - 1; i >= 0; i--){
-				g.yAxis[i].domain[0] = Math.min(g.yAxis[i].domain[0],0)
-				g.yAxis[i].scale.range([
-					g.padding.left,
-					(g.width/g.sbt.bargrid.length) - g.padding.right
-					]).nice()
-					
-			};
-		}
-		else {
-			for (var i = g.yAxis.length - 1; i >= 0; i--){
-				g.yAxis[i].scale.range([
-					g.height - g.padding.bottom,
-					g.padding.top
-					]).nice()
-			};
-		}
+        for (var i = g.yAxis.length - 1; i >= 0; i--){
+            g.yAxis[i].scale.range([
+                g.height - g.padding.bottom,
+                g.padding.top
+                ]).nice()
+        };
 		
 		this.g = g;
 		return this
@@ -327,12 +315,7 @@ var Gneiss = {
 			padding_top = 5;
 		}
 		padding_top += g.title == "" || g.series.length == 1 ? 0:25
-		padding_top += (g.yAxis.length == 1 && !g.isBargrid) ? 0:25
-		
-		if(g.isBargrid) {
-			padding_top += -15
-			padding_bottom -= 15 
-		}
+		padding_top += (g.yAxis.length == 1) ? 0:25
 		
 		g.padding.top = padding_top
 		g.padding.bottom = padding_bottom
@@ -413,13 +396,7 @@ var Gneiss = {
 		}
 		var rangeArray = []
 		//set the range of the x axis
-		if(g.isBargrid) {
-			rangeArray = [
-				g.padding.top,
-				g.height - g.padding.bottom
-			]
-		}
-		else if (g.xAxis.hasColumns) {
+		if (g.xAxis.hasColumns) {
 			rangeArray = [
 				g.padding.left + this.g.columnGroupWidth/2 + (g.yAxis.length==1?0:this.g.columnGroupWidth/2),
 				g.width - g.padding.right - this.g.columnGroupWidth
@@ -633,34 +610,26 @@ var Gneiss = {
 			
 		};
 		
-		if(g.isBargrid){
-			d3.selectAll(".yAxis").style("display","none")
-			g.titleLine.attr("y",g.padding.top - 36)
-			
-		}
-		else {
-			//isn't a bargrid
-			d3.selectAll(".yAxis").style("display",null)
-			
-			if(g.yAxis.length==1) {
-				//only has one axis
-				try{
-					if(!g.legend || g.series.length == 1) {
-						//no legend or only one seriesgit 
-						g.titleLine.attr("y",g.topAxisItem.y - 4)
-					}
-					else {
-						g.titleLine.attr("y",g.topAxisItem.y - 25)
-					}
-				}catch(e){} //fail silently
-					
-			}
-			else {
-				try{
-					g.titleLine.attr("y",g.padding.top - 36)
-				}catch(e){} //fail silently
-			}
-		}
+        d3.selectAll(".yAxis").style("display",null)
+        
+        if(g.yAxis.length==1) {
+            //only has one axis
+            try{
+                if(!g.legend || g.series.length == 1) {
+                    //no legend or only one seriesgit 
+                    g.titleLine.attr("y",g.topAxisItem.y - 4)
+                }
+                else {
+                    g.titleLine.attr("y",g.topAxisItem.y - 25)
+                }
+            }catch(e){} //fail silently
+                
+        }
+        else {
+            try{
+                g.titleLine.attr("y",g.padding.top - 36)
+            }catch(e){} //fail silently
+        }
 		
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})
@@ -681,7 +650,7 @@ var Gneiss = {
 			*/
 			g.xAxis.axis = d3.svg.axis()
 				.scale(g.xAxis.scale)
-				.orient(g.isBargrid?"left":"bottom")
+				.orient("bottom")
 				.tickFormat(g.xAxis.formatter ? this.dateParsers[g.xAxis.formatter] : function(d) {return d})
 				.ticks(g.xAxis.ticks)
 				
@@ -716,7 +685,7 @@ var Gneiss = {
 			g.chart.append("g")
 				.attr("class",'axis')
 				.attr("id","xAxis")
-				.attr("transform",g.isBargrid?"translate("+g.padding.left+",0)":"translate(0,"+(g.height - g.padding.bottom + 8)+")")
+				.attr("transform","translate(0,"+(g.height - g.padding.bottom + 8)+")")
 				.call(g.xAxis.axis)
 				
 			
@@ -724,8 +693,8 @@ var Gneiss = {
 		else {
 			g.xAxis.axis.scale(g.xAxis.scale)
 				.tickFormat(g.xAxis.formatter ? this.dateParsers[g.xAxis.formatter] : function(d) {return d})
-				.ticks(g.isBargrid?g.series[0].data.length:g.xAxis.ticks)
-				.orient(g.isBargrid?"left":"bottom")
+				.ticks(g.xAxis.ticks)
+				.orient("bottom")
 			
 			if(g.xAxis.type == "date") {
 				var timeSpan = g.xAxis.scale.domain()[1]-g.xAxis.scale.domain()[0],
@@ -765,38 +734,27 @@ var Gneiss = {
 			}
 			
 			g.chart.selectAll("#xAxis")
-				.attr("transform",g.isBargrid?"translate("+g.padding.left+",0)":"translate(0,"+(g.height - g.padding.bottom + 8)+")")
+				.attr("transform","translate(0,"+(g.height - g.padding.bottom + 8)+")")
 				.call(g.xAxis.axis)
 		}
 		
 		g.chart.selectAll("#xAxis text")
-			.attr("text-anchor", g.xAxis.type == "date" ? (g.sbt.column.length>0 && g.sbt.line.length == 0 && g.sbt.scatter.length == 0 ? "middle":"start"): (g.isBargrid ? "end":"middle"))
-			//.attr("text-anchor", g.isBargrid ? "end":"middle")
+			.attr("text-anchor", g.xAxis.type == "date" ? (g.sbt.column.length>0 && g.sbt.line.length == 0 && g.sbt.scatter.length == 0 ? "middle":"start"): ("middle"))
 			.each(function() {
 				var pwidth = this.parentNode.getBBox().width
 				var attr = this.parentNode.getAttribute("transform")
 				var attrx = Number(attr.split("(")[1].split(",")[0])
 				var attry = Number(attr.split(")")[0].split(",")[1])
-				if(!g.isBargrid) {
-					// fix labels to not fall off edge when not bargrid
-					if (pwidth/2 + attrx > g.width) {
-						this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - g.width + g.padding.right))
-						this.setAttribute("text-anchor","start")
-					}
-					else if (attrx - pwidth/2 < 0) {
-						this.setAttribute("text-anchor","start")
-					}
-					g.padding.left = g.defaults.padding.left
-				}
-				else {
-					//adjust padding for bargrid
-					if(g.padding.left - pwidth < g.defaults.padding.left) {
-						g.padding.left = pwidth + g.defaults.padding.left;
-						g.all.redraw() //CHANGE (maybe)
-					}
-					
-				}
-				
+
+                // fix labels to not fall off edge 
+                if (pwidth/2 + attrx > g.width) {
+                    this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - g.width + g.padding.right))
+                    this.setAttribute("text-anchor","start")
+                }
+                else if (attrx - pwidth/2 < 0) {
+                    this.setAttribute("text-anchor","start")
+                }
+                g.padding.left = g.defaults.padding.left
 			})
 		
 		this.g = g
@@ -957,222 +915,139 @@ var Gneiss = {
 			var columnGroups
 			var columnRects
 			
-			if(g.isBargrid) {
-				//add bars to chart
-				columnGroups = g.seriesContainer.selectAll("g.seriesColumn")
-					.data(sbt.bargrid)
-					.attr("fill",function(d,i){return d.color? d.color : g.colors[i+sbt.line.length]})
-				
-				var seriesColumns = columnGroups.enter()
-					.append("g") 
-						.attr("class","seriesColumn")
-						.attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
-						.attr("transform",function(d,i){return "translate(0,"+g.padding.top+")"})
-				
-				var bargridLabel = columnGroups.selectAll("text.bargridLabel")
-					.data(function(d,i){return [d]})
-				
-						
-				bargridLabel.enter()
-						.append("text")
-						.attr("class","bargridLabel")
-						.text(function(d,i){return d.name})
-						.attr("x",g.yAxis[0].scale(0))
-						.attr("y",g.padding.top-18)
-								
-				bargridLabel.transition()
-					.text(function(d,i){return d.name})
-					.attr("x",g.yAxis[0].scale(0))
-					.attr("y",g.padding.top-18)
-				
-				bargridLabel.exit().remove()
-				
-				columnSeries.transition()
-					.duration(500)
-					.attr("transform",function(d,i){return "translate("+(i * (g.width-g.padding.left)/g.series.length)+",0)"})
-					
-				columnGroups.exit().remove()
-				
-				
-				columnRects = columnGroups.selectAll("rect")
-					.data(function(d,i){return d.data})
-				
-				columnRects.enter()
-						.append("rect")
-						.attr("height",20)
-						.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
-						.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d)):0)})
-						.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})
-				
-				columnRects.transition()
-					.duration(500)
-					.attr("height",20)
-					.attr("width", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0)})
-					.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})
-				
-				//add label to each bar
-				var barLabels = columnGroups.selectAll("text.barLabel")
-					.data(function(d,i){return d.data})
-					
-				barLabels.enter()
-					.append("text")
-					.attr("class","barLabel")
-					.text(function(d,i){return g.all.numberFormat(d)})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
-					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
-					
-				barLabels.transition()
-					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].prefix.value) + g.all.numberFormat(d) + (g.yAxis[yAxisIndex].suffix.value)})
-					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
-					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
-				
-				//remove non bargrid stuff
-				scatterSeries.remove()
-				columnRects.exit().remove()
-				lineSeriesDotGroups.remove()
-				lineSeries.remove()
-			}
-			else {
-				//Not a bargrid
-				
-				//add columns to chart
-				columnGroups = g.seriesContainer.selectAll("g.seriesColumn")
-					.data(sbt.column)
-					.attr("fill",function(d,i){return d.color? d.color : g.colors[i+sbt.line.length]})
-				
-				//remove bargrid labels
-				columnGroups.selectAll("text.barLabel").remove()
-				
-				columnGroups.enter()
-					.append("g") 
-						.attr("class","seriesColumn")
-						.attr("fill",function(d,i){return d.color? d.color : g.colors[i+sbt.line.length]})
-						.attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
-					
-				columnSeries.transition()
-					.duration(500)
-					.attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
-			
-				columnGroups.exit().remove()
-			
-				columnRects = columnGroups.selectAll("rect")
-					.data(function(d,i){return d.data})
-				
-				columnRects.enter()
-						.append("rect")
-						.attr("width",columnWidth)
-						.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
-						.attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
-						.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
-			
-				columnRects.transition()
-					.duration(500)
-					.attr("width",columnWidth)
-					.attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
-					.attr("x",g.xAxis.type =="date" ? 
-							function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2}:
-							function(d,i) {return g.xAxis.scale(i) - columnWidth/2}
-					)
-					.attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
-				
-				columnRects.exit().remove()
-			
-				//add lines
-				lineSeries = g.seriesContainer.selectAll("path")
-					.data(sbt.line)
-					.attr("stroke",function(d,i){return d.color? d.color : g.colors[i]});
+            //add columns to chart
+            columnGroups = g.seriesContainer.selectAll("g.seriesColumn")
+                .data(sbt.column)
+                .attr("fill",function(d,i){return d.color? d.color : g.colors[i+sbt.line.length]})
+            
+            columnGroups.enter()
+                .append("g") 
+                    .attr("class","seriesColumn")
+                    .attr("fill",function(d,i){return d.color? d.color : g.colors[i+sbt.line.length]})
+                    .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
+                
+            columnSeries.transition()
+                .duration(500)
+                .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (sbt.column.length-1)/2))+",0)"})
+        
+            columnGroups.exit().remove()
+        
+            columnRects = columnGroups.selectAll("rect")
+                .data(function(d,i){return d.data})
+            
+            columnRects.enter()
+                    .append("rect")
+                    .attr("width",columnWidth)
+                    .attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+                    .attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
+                    .attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+        
+            columnRects.transition()
+                .duration(500)
+                .attr("width",columnWidth)
+                .attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+                .attr("x",g.xAxis.type =="date" ? 
+                        function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2}:
+                        function(d,i) {return g.xAxis.scale(i) - columnWidth/2}
+                )
+                .attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+            
+            columnRects.exit().remove()
+        
+            //add lines
+            lineSeries = g.seriesContainer.selectAll("path")
+                .data(sbt.line)
+                .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]});
 
-				lineSeries.enter()
-					.append("path")
-						.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
-						.attr("class","seriesLine")
-						.attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
-						.attr("stroke-width",3)
-						.attr("stroke-linejoin","round")
-						.attr("stroke-linecap","round")
-						.attr("fill","none");
+            lineSeries.enter()
+                .append("path")
+                    .attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
+                    .attr("class","seriesLine")
+                    .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
+                    .attr("stroke-width",3)
+                    .attr("stroke-linejoin","round")
+                    .attr("stroke-linecap","round")
+                    .attr("fill","none");
 
-				lineSeries.transition()
-					.duration(500)
-					.attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0M"); return pathString;})
+            lineSeries.transition()
+                .duration(500)
+                .attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0M"); return pathString;})
 
-				lineSeries.exit().remove()
-			
-			
-				//Add dots to the appropriate line series
-				lineSeriesDotGroups = g.seriesContainer.selectAll("g.lineSeriesDots")
-					.data(sbt.line)
-					.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
-			
-				lineSeriesDotGroups
-					.enter()
-					.append("g")
-					.attr("class","lineSeriesDots")
-					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
-				
-				lineSeriesDotGroups.exit().remove()
-			
-				lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
-					.selectAll("circle")
-					.data(function(d,i){return d.data})
-					
-				lineSeriesDotGroups.filter(function(d){return d.data.length > 15})
-					.remove()
-				
-				
-				lineSeriesDots.enter()
-					.append("circle")
-					.attr("r",4)
-					.attr("transform",function(d,i){
-						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-							var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
-							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
-						})
-			
-				lineSeriesDots.transition()
-					.duration(500)
-					.attr("transform",function(d,i){
-						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-							var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
-							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
-						})
-			
-				lineSeriesDots.exit().remove()
-								
-				//add scatter
-				scatterGroups = g.seriesContainer.selectAll("g.seriesScatter")
-					.data(sbt.scatter)
-					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
-				
-				scatterGroups.enter()
-					.append("g")
-					.attr("class","seriesScatter")
-					.attr("fill",function(d,i){return d.color? d.color : g.colors[i+sbt.line.length+sbt.column.length]})
-				
-				scatterGroups.exit().remove()
-				
-				scatterDots = scatterGroups
-					.selectAll("circle")
-					.data(function(d){return d.data})
-					
-				scatterDots.enter()
-						.append("circle")
-						.attr("r",4)
-						.attr("stroke","#fff")
-						.attr("stroke-width","1")
-						.attr("transform",function(d,i){
-							yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-							return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
-							})
-					
-				scatterDots.transition()
-						.duration(500)
-						.attr("transform",function(d,i){
-							yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-							return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
-							})
-			}
+            lineSeries.exit().remove()
+        
+        
+            //Add dots to the appropriate line series
+            lineSeriesDotGroups = g.seriesContainer.selectAll("g.lineSeriesDots")
+                .data(sbt.line)
+                .attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
+        
+            lineSeriesDotGroups
+                .enter()
+                .append("g")
+                .attr("class","lineSeriesDots")
+                .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
+            
+            lineSeriesDotGroups.exit().remove()
+        
+            lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
+                .selectAll("circle")
+                .data(function(d,i){return d.data})
+                
+            lineSeriesDotGroups.filter(function(d){return d.data.length > 15})
+                .remove()
+            
+            
+            lineSeriesDots.enter()
+                .append("circle")
+                .attr("r",4)
+                .attr("transform",function(d,i){
+                    yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+                        var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
+                        return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
+                    })
+        
+            lineSeriesDots.transition()
+                .duration(500)
+                .attr("transform",function(d,i){
+                    yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+                        var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
+                        return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
+                    })
+        
+            lineSeriesDots.exit().remove()
+                            
+            //add scatter
+            scatterGroups = g.seriesContainer.selectAll("g.seriesScatter")
+                .data(sbt.scatter)
+                .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
+            
+            scatterGroups.enter()
+                .append("g")
+                .attr("class","seriesScatter")
+                .attr("fill",function(d,i){return d.color? d.color : g.colors[i+sbt.line.length+sbt.column.length]})
+            
+            scatterGroups.exit().remove()
+            
+            scatterDots = scatterGroups
+                .selectAll("circle")
+                .data(function(d){return d.data})
+                
+            scatterDots.enter()
+                    .append("circle")
+                    .attr("r",4)
+                    .attr("stroke","#fff")
+                    .attr("stroke-width","1")
+                    .attr("transform",function(d,i){
+                        yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+                        return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+                        })
+                
+            scatterDots.transition()
+                    .duration(500)
+                    .attr("transform",function(d,i){
+                        yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+                        return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+                        })
 			
 		}
 		
@@ -1210,81 +1085,74 @@ var Gneiss = {
 		//remove current legends
 		g.legendItemContainer.selectAll("g.legendItem").remove()
 		
-		if(!g.isBargrid) {
-			//add legend to chart
-			var legendGroups = g.legendItemContainer.selectAll("g")
-				.data(g.series);
+        //add legend to chart
+        var legendGroups = g.legendItemContainer.selectAll("g")
+            .data(g.series);
 
-			var legItems = 	legendGroups.enter()
-				.append("g")
-				.attr("class","legendItem")
-				.attr("transform",function(d,i) {
-					if(g.yAxis.length == 1) {
-						return "translate("+g.padding.left+","+(g.padding.top-25)+")"
-					}
-					else {
-						return "translate("+g.padding.left+","+(g.padding.top-50)+")"
-					}
-				});
+        var legItems = 	legendGroups.enter()
+            .append("g")
+            .attr("class","legendItem")
+            .attr("transform",function(d,i) {
+                if(g.yAxis.length == 1) {
+                    return "translate("+g.padding.left+","+(g.padding.top-25)+")"
+                }
+                else {
+                    return "translate("+g.padding.left+","+(g.padding.top-50)+")"
+                }
+            });
 
-			legendGroups.exit().remove()
+        legendGroups.exit().remove()
 
-			var legLabels = legItems.append("text")
-					.filter(function(){return g.series.length > 1})
-					.attr("class","legendLabel")
-					.attr("x",15)
-					.attr("y",10)
-					//.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
-					.text(function(d,i){return d.name});
-			
-			//if there is more than one line
-			if(g.series.length > 1) {
-				legItems.append("rect")
-					.attr("width",10)
-					.attr("height",10)
-					.attr("x",0)
-					.attr("y",2)
-					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
+        var legLabels = legItems.append("text")
+                .filter(function(){return g.series.length > 1})
+                .attr("class","legendLabel")
+                .attr("x",15)
+                .attr("y",10)
+                //.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
+                .text(function(d,i){return d.name});
+        
+        //if there is more than one line
+        if(g.series.length > 1) {
+            legItems.append("rect")
+                .attr("width",10)
+                .attr("height",10)
+                .attr("x",0)
+                .attr("y",2)
+                .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
-				legendGroups.filter(function(d){return d != g.series[0]})
-					.transition()
-					.duration(50)
-					.delay(function(d,i){return i * 50 + 50})
-					.attr("transform",function(d,i) {
-						//label isn't for the first series
-						var prev = d3.select(legendGroups[0][i])
-						var prevWidth = parseFloat(prev.node().getBBox().width)
-						var prevCoords = g.all.helper.transformCoordOf(prev)
+            legendGroups.filter(function(d){return d != g.series[0]})
+                .transition()
+                .duration(50)
+                .delay(function(d,i){return i * 50 + 50})
+                .attr("transform",function(d,i) {
+                    //label isn't for the first series
+                    var prev = d3.select(legendGroups[0][i])
+                    var prevWidth = parseFloat(prev.node().getBBox().width)
+                    var prevCoords = g.all.helper.transformCoordOf(prev)
 
-						var cur = d3.select(this)
-						var curWidth = parseFloat(cur.node().getBBox().width)
-						var curCoords = g.all.helper.transformCoordOf(cur)
+                    var cur = d3.select(this)
+                    var curWidth = parseFloat(cur.node().getBBox().width)
+                    var curCoords = g.all.helper.transformCoordOf(cur)
 
-						legendItemY = prevCoords.y;
-						var x = prevCoords.x + prevWidth + 15
-						if(x + curWidth > g.width) {
-							x = g.padding.left
-							legendItemY += 15;						
-						}
-						return "translate("+x+","+legendItemY+")"
-				})
-				//.filter(function(d,i){console.log(i,g.series.slice(0).pop()==d);return d == g.series.slice(0).pop()})
-				//.each("end", function(d,i) {
-				//	//the filter above makes sure this only hapens on the last one
-				//	if (legendItemY > 0 && g.defaults.padding.top != legendItemY + 25) { //CHANGE
-				//		g.defaults.padding.top = legendItemY + 25;
-				//		g.all.redraw();
-				//				
-				//	};
-				//})		
-				//test if the chart needs more top margin because of a large number of legend items
-				this.g = g;	
-				
-			} else {
-				if(g.title == "") {
-					g.titleLine.text(g.series[0].name)
-				}
-			}
+                    legendItemY = prevCoords.y;
+                    var x = prevCoords.x + prevWidth + 15
+                    if(x + curWidth > g.width) {
+                        x = g.padding.left
+                        legendItemY += 15;						
+                    }
+                    return "translate("+x+","+legendItemY+")"
+            })
+            //.filter(function(d,i){console.log(i,g.series.slice(0).pop()==d);return d == g.series.slice(0).pop()})
+            //.each("end", function(d,i) {
+            //	//the filter above makes sure this only hapens on the last one
+            //	if (legendItemY > 0 && g.defaults.padding.top != legendItemY + 25) { //CHANGE
+            //		g.defaults.padding.top = legendItemY + 25;
+            //		g.all.redraw();
+            //				
+            //	};
+            //})		
+            //test if the chart needs more top margin because of a large number of legend items
+			this.g = g;	
 		}
 		
 		this.g = g
@@ -1303,7 +1171,6 @@ var Gneiss = {
 		var o = {
 			"line":[],
 			"column":[],
-			"bargrid":[],
 			"scatter":[]
 		}
 		for (var i=0; i < series.length; i++) {
@@ -1315,13 +1182,6 @@ var Gneiss = {
 		}
 		else {
 			this.g.xAxis.hasColumns = false;
-		}
-		
-		if(o.bargrid.length > 0) {
-			this.g.isBargrid = true;
-		}
-		else {
-			this.g.isBargrid = false;
 		}
 		
 		return o

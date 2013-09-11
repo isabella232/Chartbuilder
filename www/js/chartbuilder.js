@@ -266,7 +266,7 @@ ChartBuilder = {
 		$(".seriesItemGroup").detach()
 		var g = chart.g, s, picker;
 		this.customLegendLocaion = false;
-		var colIndex = g.sbt.line.length, lineIndex = 0, bargridIndex = 0, scatterIndex = 0;
+		var colIndex = g.sbt.line.length, lineIndex = 0, scatterIndex = 0;
 		var seriesContainer = $("#seriesItems")
 			
 			
@@ -287,10 +287,6 @@ ChartBuilder = {
 			else if(s.type == "column") {
 				color = s.color ? s.color.replace("#","") : g.colors[colIndex].replace("#","")
 				colIndex++
-			}
-			else if(s.type =="bargrid") {
-				color = s.color ? s.color.replace("#","") : g.colors[bargridIndex].replace("#","")
-				bargridIndex++
 			}
 			else if(s.type =="scatter") {
 				color = s.color ? s.color.replace("#","") : g.colors[scatterIndex].replace("#","")
@@ -362,24 +358,7 @@ ChartBuilder = {
 		ChartBuilder.inlineAllStyles();
 	},
 	setChartArea: function() {
-		var hasBargrid = false;
-		for (var i = chart.g.series.length - 1; i >= 0; i--){
-			if(chart.g.series[i].type == "bargrid") {
-				hasBargrid = true;
-				break;
-			}
-		};
-		
-		if(hasBargrid) {
-			$("#chartContainer").css("height",
-				chart.g.series[0].data.length*22 + 
-				chart.g.padding.top + 
-				chart.g.padding.bottom
-				)
-		}
-		else {
-			$("#chartContainer").css("height", 480)
-		}
+		$("#chartContainer").css("height", 480)
 	},
 	getAllInputData: function() {
 		var d = {}, $el;

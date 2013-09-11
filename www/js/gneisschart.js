@@ -1022,7 +1022,7 @@ var Gneiss = {
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 					
 				barLabels.transition()
-					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (i==0?g.yAxis[yAxisIndex].prefix.value:"") + g.all.numberFormat(d) + (i==0?g.yAxis[yAxisIndex].suffix.value:"")})
+					.text(function(d,i){var yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].prefix.value) + g.all.numberFormat(d) + (g.yAxis[yAxisIndex].suffix.value)})
 					.attr("x", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return 3 + g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0)):0) + Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
 					.attr("y",function(d,i) {return g.xAxis.scale(i) + 5})
 				

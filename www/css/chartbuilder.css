@@ -70,6 +70,12 @@ div.colorPicker-picker {
 	margin-top: 30px;
 }
 
+#seriesItems h5 {
+	font-weight: bold;
+	margin-top: 0;
+	line-height: 20px;
+}
+
 #downloadLinksDiv {
 	display: inline-block;
 	height: 45px;

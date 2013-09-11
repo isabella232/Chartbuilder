@@ -77,19 +77,24 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12 topOptionBlock">
+              <div class="col-md-12 topOptionBlock form-inline">
                 <h2><span class="step-header">3</span> Data Options</h2>
-                <div class="form-group">
-                    <label for="typePicker">Chart Type</label>
-                    <select id="typePicker" class="form-control">
-                        <option selected="selected" value="line">Line</option>
-                        <option value="column">Column</option>
-                        <option value="bargrid">Bar Grid</option>
-                        <option value="scatter">Scatter</option>
-                    </select>
+                <div class="row">
+                  <div class="form-group col-md-4">
+                      <label for="typePicker" class="control-label">Select a Chart Type</label>
+                        <select id="typePicker" class="form-control">
+                            <option selected="selected" value="line">Line</option>
+                            <option value="column">Column</option>
+                            <option value="bargrid">Bar Grid</option>
+                            <option value="scatter">Scatter</option>
+                        </select>
                   </div>
 
-                <div id="seriesItems"></div>
+                  <div id="seriesItems" class="col-md-7 col-md-offset-1">
+                    <h5>Select Series Colors</h5>
+
+                  </div>
+                </div>
               </div>
     					
     					<div class="col-md-12 form-horizontal">
@@ -121,14 +126,14 @@
      							<h2><span class="step-header">5</span> Vertical Axis Options</h2>
       						<div id="rightAxisControls form-inline">
       							<div class="form-group">
-                      <label class="col-md-3 control-label" for="right_axis_prefix">Unit label before value</label>
+                      <label class="col-md-3 control-label" for="right_axis_prefix">Unit Label Before Value</label>
                       <div class="col-md-4">
                         <input type="text" class="form-control" name="right_axis_prefix" value="" id="right_axis_prefix">
                       </div>
                       <p class="help-block col-md-5">e.g. $50</p>
                     </div>
   	    						<div class="form-group">
-                      <label class="col-md-3 control-label" for="right_axis_suffix">Unit label after value</label>
+                      <label class="col-md-3 control-label" for="right_axis_suffix">Unit Label After Value</label>
                       <div class="col-md-4">
                         <input type="text" class="form-control" name="right_axis_suffix" value="" id="right_axis_suffix">
                       </div>

@@ -734,7 +734,7 @@ var Gneiss = {
 			}
 			
 			g.chart.selectAll("#xAxis")
-				.attr("transform","translate(0,"+(g.height - g.padding.bottom + 8)+")")
+				.attr("transform","translate(0,"+(g.height - g.padding.bottom + 0)+")")
 				.call(g.xAxis.axis)
 		}
 		

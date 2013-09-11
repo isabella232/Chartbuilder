@@ -15,7 +15,7 @@ svg .axis g.zero line {
 }
 
 svg #xAxis line {
-	stroke: #e6e6e6;
+	stroke: #666;
 }
 
 svg #xAxis{
@@ -25,6 +25,16 @@ svg #xAxis{
 svg .axis path {
 	stroke: none;
 	fill: none;
+}
+
+svg .yAxis .tick {
+	stroke: #e5e5e5;
+	stroke-dasharray: 2;
+}
+
+svg .yAxis .zero .tick {
+	stroke: #666;
+	stroke-dasharray: 0;
 }
 
 svg .axis text {
@@ -52,6 +62,7 @@ svg text.bargridLabel {
 	
 #titleLine {
 	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size: 12px;
-	fill: #666666;
+	font-size: 14px;
+	font-weight: bold;
+	fill: #333;
 }

@@ -15,7 +15,7 @@ svg .axis g.zero line {
 }
 
 svg #xAxis line {
-	stroke: #e6e6e6;
+	stroke: #666;
 }
 
 svg #xAxis{
@@ -27,31 +27,42 @@ svg .axis path {
 	fill: none;
 }
 
+svg .yAxis .tick {
+	stroke: #e5e5e5;
+	stroke-dasharray: 2;
+}
+
+svg .yAxis .zero .tick {
+	stroke: #666;
+	stroke-dasharray: 0;
+}
+
 svg .axis text {
-	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size: 12px;
+	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
+	font-size: 14px;
 }
 
 svg .legendItem text {
-	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size:  12px;
+	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
+	font-size:  14px;
 }
 
 svg text.metaText {
-	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size:  12px;
+	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
+	font-size:  14px;
 	text-rendering:   optimizeLegibility;
 	fill:  #999999;
 }
 
 svg text.barLabel, 
 svg text.bargridLabel {
-	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size: 12px
+	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
+	font-size: 14px
 }
 	
 #titleLine {
-	font-family: 'Gotham SSm',Helvetica, sans-serif;
-	font-size: 12px;
-	fill: #666666;
+	font-family: 'HelveticaNeueW01-77BdCn 692722','Gotham SSm',Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	fill: #333;
 }

@@ -183,7 +183,20 @@ var Gneiss = {
 			.attr("transform","translate(" + g.padding.left + ",-10)")
 			.text(g.title)
 		
-		this.drawSeriesAndLegend(true);
+        this.setLineMakers(true)
+		
+		var columnWidth = this.g.columnWidth;
+		var columnGroupShift = this.g.columnGroupShift;
+
+        //create a group to contain series
+        g.seriesContainer = g.chart.append("g")
+            .attr("id","seriesContainer")
+            
+        //create a group to contain the legend items
+        g.legendItemContainer = g.chart.append("g")
+            .attr("id","legendItemContainer")
+
+		this.drawSeriesAndLegend();
 		
 		g.metaInfo = g.chart.append("g")
 			.attr("id","metaInfo")
@@ -781,12 +794,12 @@ var Gneiss = {
     calculateBarHeights: function() {
         // TODO: placeholder
     },
-	drawSeriesAndLegend: function(first){
-		this.drawSeries(first)
+	drawSeriesAndLegend: function(){
+		this.drawSeries()
 		this.drawLegend()
 		return this
 	},
-	drawSeries: function(first) {
+	drawSeries: function() {
 		/*
 		*
 		* Series Drawing Section
@@ -794,288 +807,174 @@ var Gneiss = {
 		*/
 		var g = this.g
 		
-		var lineSeries;
-		
 		//construct line maker helper functions for each yAxis
-		this.setLineMakers(first)
+		this.setLineMakers(false)
 		
 		var columnWidth = this.g.columnWidth;
 		var columnGroupShift = this.g.columnGroupShift;
 		
-		
-		if(first) {
-			
-			//create a group to contain series
-			g.seriesContainer = g.chart.append("g")
-				.attr("id","seriesContainer")
-				
-				
-			lineSeries = g.seriesContainer.selectAll("path");
-			columnSeries = g.seriesContainer.selectAll("g.seriesColumn")
-			var columnGroups
-			var columnRects
-			var lineSeriesDots = g.seriesContainer.selectAll("g.lineSeriesDots")
-			var scatterSeries = g.seriesContainer.selectAll("g.seriesScatter")
-			
-			
-				
-			//create a group to contain the legend items
-			g.legendItemContainer = g.chart.append("g")
-				.attr("id","legendItemContainer")
-				
-				//add columns to chart
-                if (g.type == 'column') {
-                    columnGroups = columnSeries.data(g.series)
-                        .enter()
-                        .append("g") 
-                            .attr("class","seriesColumn seriesGroup")
-                            .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
-                            .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (g.series.length-1)/2))+",0)"})
-                            
-                    columnGroups.selectAll("rect")
-                        .data(function(d,i){return d.data})
-                        .enter()
-                            .append("rect")
-                            .attr("width",columnWidth)
-                            .attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
-                            .attr("x", function(d,i) {
-                                return g.xAxis.scale(g.xAxisRef[0].data[i])  - columnWidth/2
-                                })
-                            .attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
-				}
-				
-				//add lines to chart
-                if (g.type == 'line') {
-                    lineSeries.data(g.series)
-                        .enter()
-                        .append("path")
-                            .attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M");  return pathString.indexOf("NaN")==-1?pathString:"M0,0"})
-                            .attr("class","seriesLine seriesGroup")
-                            .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
-                            .attr("stroke-width",3)
-                            .attr("stroke-linejoin","round")
-                            .attr("stroke-linecap","round")
-                            .attr("fill","none")
-                    
-                    lineSeriesDotGroups = lineSeriesDots.data(g.series)
-                        .enter()
-                        .append("g")
-                        .attr("class","lineSeriesDots seriesGroup")
-                        .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
-                    
-                    lineSeriesDotGroups
-                        .filter(function(d){return d.data.length < 15})
-                        .selectAll("circle")
-                        .data(function(d){ return d.data})
-                        .enter()
-                            .append("circle")
-                            .attr("r",1)
-                            .attr("transform",function(d,i){
-                                yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
-                                return "translate("+(g.xAxis.type=="date" ?
-                                    g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]):
-                                    g.xAxis.scale(i)) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
-                                })
-				}
-				
-				//add scatter to chart
-                if (g.type == 'scatter') {
-                    scatterGroups = scatterSeries.data(g.series)
-                        .enter()
-                        .append("g")
-                        .attr("class","seriesScatter seriesGroup")
-                        .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
-
-                    scatterDots = scatterGroups
-                        .selectAll("circle")
-                        .data(function(d){ return d.data})
-                    scatterDots.enter()
-                            .append("circle")
-                            .attr("r",4)
-                            .attr("stroke","#fff")
-                            .attr("stroke-width","1")
-                            .attr("transform",function(d,i){
-                                yAxisIndex = d3.select(this.parentElement).data()[0].axis; 
-                                return "translate("+(g.xAxis.type=="date" ?
-                                    g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]):
-                                    g.xAxis.scale(i)) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
-                                })
-                }
-		}
-		else {
-			//update don't create
-			
-			lineSeries = g.seriesContainer.selectAll("path");
-			columnSeries = g.seriesContainer.selectAll("g.seriesColumn")
-			scatterSeries = g.seriesContainer.selectAll("g.seriesScatter")
-			lineSeriesDotGroups = g.seriesContainer.selectAll("g.lineSeriesDots")
-			var columnGroups
-			var columnRects
-			
-            //add columns to chart
-            if (g.type == 'column') {
-                columnGroups = g.seriesContainer.selectAll("g.seriesColumn")
-                    .data(g.series)
+        // COLUMNS
+        var columnGroups = g.seriesContainer.selectAll("g.seriesColumn");
+        
+        if (g.type == 'column') {
+            columnGroups = columnGroups
+                .data(g.series)
+                .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
+            
+            columnGroups.enter()
+                .append("g") 
+                    .attr("class","seriesColumn")
                     .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
-                
-                columnGroups.enter()
-                    .append("g") 
-                        .attr("class","seriesColumn")
-                        .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
-                        .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (g.series.length-1)/2))+",0)"})
-                    
-                columnSeries.transition()
-                    .duration(500)
                     .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (g.series.length-1)/2))+",0)"})
-            
-                columnGroups.exit().remove()
-            
-                columnRects = columnGroups.selectAll("rect")
-                    .data(function(d,i){return d.data})
                 
-                columnRects.enter()
-                        .append("rect")
-                        .attr("width",columnWidth)
-                        .attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
-                        .attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
-                        .attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+            columnGroups.transition()
+                .duration(500)
+                .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (g.series.length-1)/2))+",0)"})
+        
+            columnGroups.exit().remove()
+        
+            columnRects = columnGroups.selectAll("rect")
+                .data(function(d,i){return d.data})
             
-                columnRects.transition()
-                    .duration(500)
+            columnRects.enter()
+                    .append("rect")
                     .attr("width",columnWidth)
                     .attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
-                    .attr("x",g.xAxis.type =="date" ? 
-                            function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2}:
-                            function(d,i) {return g.xAxis.scale(i) - columnWidth/2}
-                    )
+                    .attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
                     .attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
-                
-                columnRects.exit().remove()
-            }
         
-            //add lines
-            if (g.type == 'line') {
-                lineSeries = g.seriesContainer.selectAll("path")
-                    .data(g.series)
-                    .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]});
-
-                lineSeries.enter()
-                    .append("path")
-                        .attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
-                        .attr("class","seriesLine")
-                        .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
-                        .attr("stroke-width",3)
-                        .attr("stroke-linejoin","round")
-                        .attr("stroke-linecap","round")
-                        .attr("fill","none");
-
-                lineSeries.transition()
-                    .duration(500)
-                    .attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0M"); return pathString;})
-
-                lineSeries.exit().remove()
-        
-        
-                //Add dots to the appropriate line series
-                lineSeriesDotGroups = g.seriesContainer.selectAll("g.lineSeriesDots")
-                    .data(g.series)
-                    .attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
+            columnRects.transition()
+                .duration(500)
+                .attr("width",columnWidth)
+                .attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+                .attr("x",g.xAxis.type =="date" ? 
+                        function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2}:
+                        function(d,i) {return g.xAxis.scale(i) - columnWidth/2}
+                )
+                .attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
             
-                lineSeriesDotGroups
-                    .enter()
-                    .append("g")
-                    .attr("class","lineSeriesDots")
-                    .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
-                
-                lineSeriesDotGroups.exit().remove()
+            columnRects.exit().remove()
+
+            columnGroups.each(function(){this.parentNode.appendChild(this);})
+        } else {
+            columnGroups.remove();
+        }
+    
+        // LINES
+        var lineSeries = g.seriesContainer.selectAll("path");
+        var lineSeriesDotGroups = g.seriesContainer.selectAll("g.lineSeriesDots");
+
+        if (g.type == 'line') {
+            lineSeries = lineSeries
+                .data(g.series)
+                .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]});
+
+            lineSeries.enter()
+                .append("path")
+                    .attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
+                    .attr("class","seriesLine")
+                    .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
+                    .attr("stroke-width",3)
+                    .attr("stroke-linejoin","round")
+                    .attr("stroke-linecap","round")
+                    .attr("fill","none");
+
+            lineSeries.transition()
+                .duration(500)
+                .attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0M"); return pathString;})
+
+            lineSeries.exit().remove()
+    
+    
+            //Add dots to the appropriate line series
+            lineSeriesDotGroups = lineSeriesDotGroups
+                .data(g.series)
+                .attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
+        
+            lineSeriesDotGroups
+                .enter()
+                .append("g")
+                .attr("class","lineSeriesDots")
+                .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
             
-                lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
-                    .selectAll("circle")
-                    .data(function(d,i){return d.data})
-                    
-                lineSeriesDotGroups.filter(function(d){return d.data.length > 15})
-                    .remove()
+            lineSeriesDotGroups.exit().remove()
+        
+            lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
+                .selectAll("circle")
+                .data(function(d,i){return d.data})
                 
+            lineSeriesDotGroups.filter(function(d){return d.data.length > 15})
+                .remove()
+            
+            
+            lineSeriesDots.enter()
+                .append("circle")
+                .attr("r",4)
+                .attr("transform",function(d,i){
+                    yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+                        var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
+                        return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
+                    })
+        
+            lineSeriesDots.transition()
+                .duration(500)
+                .attr("transform",function(d,i){
+                    yAxisIndex = d3.select(this.parentElement).data()[0].axis;
+                        var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
+                        return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
+                    })
+        
+            lineSeriesDots.exit().remove()
+
+            lineSeries.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
+			lineSeriesDotGroups.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
+        } else {
+            lineSeries.remove();
+            lineSeriesDotGroups.remove();
+        }
+                        
+        // SCATTER
+        var scatterGroups = g.seriesContainer.selectAll("g.seriesScatter");
+
+        if (g.type == 'scatter') {
+            scatterGroups = scatterGroups
+                .data(g.series)
+                .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
+            
+            scatterGroups.enter()
+                .append("g")
+                .attr("class","seriesScatter")
+                .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length+g.series.length]})
+            
+            scatterGroups.exit().remove()
+            
+            scatterDots = scatterGroups
+                .selectAll("circle")
+                .data(function(d){return d.data})
                 
-                lineSeriesDots.enter()
+            scatterDots.enter()
                     .append("circle")
                     .attr("r",4)
+                    .attr("stroke","#fff")
+                    .attr("stroke-width","1")
                     .attr("transform",function(d,i){
                         yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-                            var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
-                            return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
+                        return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
                         })
-            
-                lineSeriesDots.transition()
+                
+            scatterDots.transition()
                     .duration(500)
                     .attr("transform",function(d,i){
                         yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-                            var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
-                            return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
+                        return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
                         })
-            
-                lineSeriesDots.exit().remove()
-            }
-                            
-            //add scatter
-            if (g.type == 'scatter') {
-                scatterGroups = g.seriesContainer.selectAll("g.seriesScatter")
-                    .data(g.series)
-                    .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
-                
-                scatterGroups.enter()
-                    .append("g")
-                    .attr("class","seriesScatter")
-                    .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length+g.series.length]})
-                
-                scatterGroups.exit().remove()
-                
-                scatterDots = scatterGroups
-                    .selectAll("circle")
-                    .data(function(d){return d.data})
-                    
-                scatterDots.enter()
-                        .append("circle")
-                        .attr("r",4)
-                        .attr("stroke","#fff")
-                        .attr("stroke-width","1")
-                        .attr("transform",function(d,i){
-                            yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-                            return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
-                            })
-                    
-                scatterDots.transition()
-                        .duration(500)
-                        .attr("transform",function(d,i){
-                            yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-                            return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
-                            })
-            }
-			
-		}
-		
-		//arrange elements in propper order	
-		
-		//bring bars to front
-		if(g.type == 'column') {
-			columnGroups.each(function(){this.parentNode.appendChild(this);})
-			columnSeries.each(function(){this.parentNode.appendChild(this);})
-		}
-		
-		
-		//bring lines to front
-		if(g.type == 'line'){
-			lineSeries.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
-			//bring dots to front
-			lineSeriesDotGroups.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
-		}
-		
-		//bring scatter to front
-		if(g.type == 'scatter') {
-			scatterGroups.each(function(){this.parentNode.appendChild(this);})
+
+            scatterGroups.each(function(){this.parentNode.appendChild(this);})
 			scatterDots.each(function(){this.parentNode.appendChild(this);})
-		}
-		
+        } else {
+            scatterGroups.remove();
+        }
+			
 		this.g = g;
 		return this
 		

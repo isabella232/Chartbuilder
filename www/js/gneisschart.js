@@ -27,8 +27,8 @@ var defaultGneissChartConfig = {
 	title: "", // the chart title 
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], //this is the order of colors that the 
 	padding :{
-		top: 25,
-		bottom: 50,
+		top: 30,
+		bottom: 55,
 		left: 10,
 		right: 10
 	},
@@ -180,9 +180,10 @@ var Gneiss = {
 		
 		
 		g.titleLine = g.chart.append("text")
-			.attr("y",18)
-			.attr("x", g.padding.left)
+			// .attr("y",0)
+			// .attr("x", g.padding.left)
 			.attr("id","titleLine")
+			.attr("transform","translate(" + g.padding.left + ",-10)")
 			.text(g.title)
 		
 		this.drawSeriesAndLegend(true);
@@ -1232,7 +1233,7 @@ var Gneiss = {
 					.filter(function(){return g.series.length > 1})
 					.attr("class","legendLabel")
 					.attr("x",12)
-					.attr("y",18)
+					.attr("y",10)
 					.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
 					.text(function(d,i){return d.name});
 			
@@ -1242,7 +1243,7 @@ var Gneiss = {
 					.attr("width",10)
 					.attr("height",10)
 					.attr("x",0)
-					.attr("y",8)
+					.attr("y",2)
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
 				legendGroups.filter(function(d){return d != g.series[0]})

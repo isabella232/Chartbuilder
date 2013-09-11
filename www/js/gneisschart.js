@@ -28,7 +28,7 @@ var defaultGneissChartConfig = {
 	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], //this is the order of colors that the 
 	padding :{
 		top: 30,
-		bottom: 55,
+		bottom: 40,
 		left: 10,
 		right: 10
 	},
@@ -83,7 +83,7 @@ var defaultGneissChartConfig = {
 		}
 	],
 	sourceline: "",
-	creditline: "Made with Chartbuilder"
+	creditline: ""
 }
 
 var Gneiss = {
@@ -1123,7 +1123,7 @@ var Gneiss = {
 				
 				lineSeriesDots.enter()
 					.append("circle")
-					.attr("r",4)
+					.attr("r",1)
 					.attr("transform",function(d,i){
 						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
 							var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;

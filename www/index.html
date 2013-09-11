@@ -40,9 +40,14 @@
           <canvas id="canvas" width="640px" height="960px"></canvas> 
           <canvas id="favicanvas" width="16px" height="16px"></canvas> 
         </div>
+        <div class="previousCharts">
+          <div class="form-group"><label for="previous_charts">Load a previously created chart</label>
+            <select name="previous_charts" id="previous_charts" class="form-control"></select>
+          </div>
+        </div>
       </div>
-  		<div id="main" class="container">
-  		  <div id="rightColumn" class="column">
+  		<div id="main">
+  		  <div id="rightColumn" class="container">
   			<div class="cbInner">
 
                   
@@ -50,20 +55,20 @@
   			  
     		    <div id="chartOptions" class="row">
 
-               <div class="col-xs-12 col-sm-6">
+               <div class="col-xs-12 col-md-6">
                	<div class="inputGroup">
                       <h2 id="inputDataHeading"><span class="step-header">1</span> Import Data</h2>
-                      <h4>Copy and paste cells from your spreadsheet into this text field. The first column will become labels for the horizontal axis. Remaining columns will be plotted on the vertical axis.</h4>
+                      <p>Copy and paste cells from your spreadsheet into this text field. The first column will become labels for the horizontal axis. Remaining columns will be plotted on the vertical axis.</p>
                       <span id="invalidDataSpan" class="hide">Data could not be parsed.</span>
                       <textarea id="csvInput" class="input-box form-control" name="csvInput" rows="8"></textarea>
                	</div>
               </div>
-              <div class="col-xs-12 col-sm-6">
+              <div class="col-xs-12 col-md-6">
                	<div class="inputGroup">
                       <h2 id="inputDataHeading"><span class="step-header">2</span> Verify Data</h2>
-               		<h4>Verify your data appears correct in this table.</h4>
+               		<p>Verify your data appears correct in this table.</p>
                   <div id="dataTable" class="input-box">
-                    <table border=0 class=" table table-bordered table-striped">
+                    <table border=0 class=" table table-bordered table-striped table-responsive">
                       <tr><th>Header</th></tr>
                       <tr><td>Data</td></tr>
                     </table>
@@ -72,11 +77,11 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-6 topOptionBlock">
+              <div class="col-md-6 topOptionBlock">
                 <h2><span class="step-header">3</span> Data Options</h2>
                 <div class="form-group">
                     <label for="typePicker">Chart Type</label>
-                    <select id="typePicker">
+                    <select id="typePicker" class="form-control">
                         <option selected="selected" value="line">Line</option>
                         <option value="column">Column</option>
                         <option value="bargrid">Bar Grid</option>
@@ -87,66 +92,66 @@
                 <div id="seriesItems"></div>
               </div>
     					
-    					<div class="col-sm-6 form-horizontal">
+    					<div class="col-md-6 form-horizontal">
       					<h2><span class="step-header">4</span> Chart Options</h2>
     						<div class="form-group">
-                  <label class="col-lg-3 control-label" for="chart_title">Title</label>
-                  <div class="col-lg-4">
+                  <label class="col-md-3 control-label" for="chart_title">Title</label>
+                  <div class="col-md-9">
                     <input type="text" class="form-control" name="chart_title" value="Stock Prices" id="chart_title">
                   </div>
                 </div>
     						<div class="form-group">
-                  <label class="col-lg-3 control-label" for="credit">Credit</label>
-                  <div class="col-lg-4">
+                  <label class="col-md-3 control-label" for="credit">Credit</label>
+                  <div class="col-md-9">
                     <input id="creditLine" type="text" class="form-control" name="credit" value="NPR">
                   </div>
                 </div>
     						<div class="form-group">
-                  <label class="col-lg-3 control-label" for="source">Source</label>
-                  <div class="col-lg-4">
+                  <label class="col-md-3 control-label" for="source">Source</label>
+                  <div class="col-md-9">
                     <input id="sourceLine" type="text" class="form-control" name="source" value="Data: NYSE">
                   </div>
-    						  <p class="help-block col-lg-5">Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</p>
+    						  <p class="help-block col-md-9 col-md-offset-3">Something like "Data: Bureau of Labor Statistics" or "Data compiled by Factset"</p>
                 </div>
       				</div>
             </div>
             <div class="row">
-      				<div class="form-horizontal col-sm-12">
+      				<div class="form-horizontal col-md-12">
                 <div class="inputGroup">
      							<h2><span class="step-header">5</span> Vertical Axis Options</h2>
       						<div id="rightAxisControls form-inline">
       							<div class="form-group">
-                      <label class="col-lg-3 control-label" for="right_axis_prefix">Unit label before value</label>
-                      <div class="col-lg-4">
+                      <label class="col-md-3 control-label" for="right_axis_prefix">Unit label before value</label>
+                      <div class="col-md-4">
                         <input type="text" class="form-control" name="right_axis_prefix" value="" id="right_axis_prefix">
                       </div>
-                      <p class="help-block col-lg-5">e.g. $50</p>
+                      <p class="help-block col-md-5">e.g. $50</p>
                     </div>
   	    						<div class="form-group">
-                      <label class="col-lg-3 control-label" for="right_axis_suffix">Unit label after value</label>
-                      <div class="col-lg-4">
+                      <label class="col-md-3 control-label" for="right_axis_suffix">Unit label after value</label>
+                      <div class="col-md-4">
                         <input type="text" class="form-control" name="right_axis_suffix" value="" id="right_axis_suffix">
                       </div>
-                      <p class="help-block col-lg-5">e.g. 75%</p>
+                      <p class="help-block col-md-5">e.g. 75%</p>
                     </div>
       							<div class="form-group">
-                      <label class="col-lg-3 control-label" for="right_axis_max">Vertical Axis Maximum</label>
-                      <div class="col-lg-4">
+                      <label class="col-md-3 control-label" for="right_axis_max">Vertical Axis Maximum</label>
+                      <div class="col-md-4">
                         <input type="text" class="form-control" name="right_axis_max" value="" id="right_axis_max">
                       </div>
-                      <p class="help-block col-lg-5">If blank, the maximum value in the data.</p>
+                      <p class="help-block col-md-5">If blank, the maximum value in the data.</p>
                     </div>
       							<div class="form-group">
-                      <label class="col-lg-3 control-label" for="right_axis_min">Vertical Axis Minimum</label>
-                      <div class="col-lg-4">
+                      <label class="col-md-3 control-label" for="right_axis_min">Vertical Axis Minimum</label>
+                      <div class="col-md-4">
                         <input type="text" class="form-control" name="right_axis_min" value="0" id="right_axis_min">
                       </div>
-                      <p class="help-block col-lg-5">If blank, the minimum value in the data. Should usually be 0.</p>
+                      <p class="help-block col-md-5">If blank, the minimum value in the data. Should usually be 0.</p>
                     </div>
   	    						<div class="form-group">
-                      <label class="col-lg-3 control-label" for="right_axis_tick_num">Number of Vertical Axis Ticks</label>
-                      <div class="col-lg-4">
-                        <select  class="form-control" name="right_axis_tick_num" id="right_axis_tick_num" size="1">
+                      <label class="col-md-3 control-label" for="right_axis_tick_num">Number of Vertical Axis Ticks</label>
+                      <div class="col-md-4">
+                        <select class="form-control" name="right_axis_tick_num" id="right_axis_tick_num">
                             <option>2</option>
                             <option>3</option>
                             <option selected >4</option>
@@ -155,23 +160,23 @@
                         </select>
                       </div>
                     </div>
-      							<div class="optionGroup">
-                      <label class="col-lg-3 control-label" for="right_axis_tick_override">Vertical Axis Tick Override</label>
-                      <div class="col-lg-4">
-                        <input type="text" name="right_axis_tick_override" value="" id="right_axis_tick_override">
+      							<div class="form-group">
+                      <label class="col-md-3 control-label" for="right_axis_tick_override">Vertical Axis Tick Override</label>
+                      <div class="col-md-4">
+                        <input type="text" class="form-control" name="right_axis_tick_override" value="" id="right_axis_tick_override">
                       </div>
-                      <p class="help-block col-lg-5">e.g. 5,10,15,20,25</p>
+                      <p class="help-block col-md-5">e.g. 5,10,15,20,25</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-12 full">
+              <div class="col-md-12 full">
                 <div class="inputGroup">
                   <h2><span class="step-header">6</span> Export</h2>
                   <div class="updateButton" id="createImageButton">
-                    <a class="btn btn-primary btn-lg">Create Image of Chart</a>
+                    <a class="btn btn-success btn-lg">Create Chart Image</a>
                   </div>
                   <div id="downloadLinksDiv" class="downloadLinks hide">
                     Image created! <a download="new_chart.png" id="downloadImageLink" class="downloadLink" href="#" target="_blank">Click to Download</a> 
@@ -180,12 +185,8 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-12">           
-                <div class="previousCharts">
-                  <div class="optionGroup"><label for="previous_charts">Load a previously created chart</label>
-                    <select name="previous_charts" id="previous_charts"></select>
-                  </div>
-                </div>
+              <div class="col-md-12">           
+                
     				  </div>
     				
     				  <div id="currentSeries" class="interfaceCol"></div>
@@ -209,6 +210,7 @@
 		<!-- Chartbuilder JS -->
 		<script src="js/csvkit.js" charset="utf-8"></script>
 		<script src="js/chosen.jquery.min.js" charset="utf-8"></script>
+    <script src="js/bootstrap.min.js" charset="utf-8"></script>
 		<script src="js/gneisschart.js" charset="utf-8"></script>
 		<script src="js/chartbuilder.js"></script>
 

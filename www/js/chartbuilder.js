@@ -31,12 +31,12 @@ ChartBuilder = {
 
 		// If there aren't at least two columns, return null
 		if(reader.rows[0].length < 2) {
-			return null;
+            throw 'At least two columns are required.';
         }
 
 		// If there aren't at least two non empty rows, return null
 		if(reader.rows.length < 2) {
-			return null;
+            throw 'At least two rows are required.';
 		}
 
         // Too many columns?
@@ -491,7 +491,10 @@ ChartBuilder = {
 			ChartBuilder.inlineAllStyles();
 		}
 	},
-	showInvalidData: function() {
+	showInvalidData: function(e) {
+        e = e || 'Data could not be parsed.';
+
+        $("#invalidDataSpan").text(e);
 		$("#inputDataHeading").addClass("inputDataHInvData");
 		$("#invalidDataSpan").removeClass("hide");
 	},
@@ -676,11 +679,13 @@ ChartBuilder.start = function(config) {
   			}
   			
   			var csv = $("#csvInput").val();
-  			var newData = ChartBuilder.getNewData(csv);
-  			if(newData == null) {
-				ChartBuilder.showInvalidData();
+
+            try {
+  			    var newData = ChartBuilder.getNewData(csv);
+            } catch(e) {
+				ChartBuilder.showInvalidData(e);
   				return;
-  			}
+            }
   
   			dataObj = ChartBuilder.makeDataObj(newData);
   			if(dataObj == null) {

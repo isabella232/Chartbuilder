@@ -299,40 +299,6 @@ ChartBuilder = {
             ChartBuilder.redraw()
         });
 		
-		var yAxisObj = []
-		for (var i = g.yAxis.length - 1; i >= 0; i--){
-			var cur = g.yAxis[i]
-			yAxisObj[i] = {
-				domain: cur.domain,
-				tickValues: cur.tickValues,
-				prefix: cur.prefix,
-				suffix: cur.suffix,
-				ticks: cur.ticks,
-				formatter: cur.formatter
-			}
-		};
-		
-		var xAxisObj = {
-			domain: g.xAxis.domain,
-			prefix: g.xAxis.prefix,
-			suffix: g.xAxis.suffix,
-			type: g.xAxis.type,
-			formatter: g.xAxis.formatter
-		}
-		
-		var state = {
-			container: g.container,
-			colors: g.colors,
-			title: g.title,
-			padding : g.padding,
-			xAxis: xAxisObj,
-			yAxis: yAxisObj,
-			series: g.series,
-			xAxisRef: g.xAxisRef,
-			sourceline: g.sourceline,
-			creditline: g.creditline
-		}
-
 		
 		chart.g = g;
 		ChartBuilder.inlineAllStyles();
@@ -399,17 +365,17 @@ ChartBuilder = {
 	},
 	actions: {
 		axis_prefix_change: function(index,that) {
-			chart.g.yAxis[index].prefix.value = $(that).val()
+			chart.g.yAxis.prefix.value = $(that).val()
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_suffix_change: function(index,that) {
-			chart.g.yAxis[index].suffix.value = $(that).val()
+			chart.g.yAxis.suffix.value = $(that).val()
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_tick_num_change: function(index,that) {
-			chart.g.yAxis[index].ticks = parseInt($(that).val())
+			chart.g.yAxis.ticks = parseInt($(that).val())
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
@@ -418,7 +384,7 @@ ChartBuilder = {
 			if(isNaN(val)) {
 				val = null
 			}
-			chart.g.yAxis[index].domain[1] = val;
+			chart.g.yAxis.domain[1] = val;
 			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -428,7 +394,7 @@ ChartBuilder = {
 			if(isNaN(val)) {
 				val = null
 			}
-			chart.g.yAxis[index].domain[0] = val;
+			chart.g.yAxis.domain[0] = val;
 			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -444,7 +410,7 @@ ChartBuilder = {
 			else {
 				val = null
 			}
-			chart.g.yAxis[index].tickValues = val
+			chart.g.yAxis.tickValues = val
 			chart.setYScales();
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -487,7 +453,7 @@ Gneiss.customYAxisFormat = function(axisGroup,i) {
 			//align the text right position it on top of the line
 			axisItem.text = d3.select(this).select("text")
 				.attr("text-anchor",i==0?"end":"start")
-				.attr("fill",i==0?"#666666":g.yAxis[i].color)
+				.attr("fill",i==0?"#666666":g.yAxis.color)
 				.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
 				.attr("y",-9)
 			})
@@ -631,11 +597,7 @@ ChartBuilder.start = function(config) {
   			//cache the the raw textarea value
   			ChartBuilder.curRaw = $(this).val()
   			
-  			chart.g.yAxis[0].domain = [null,null];
-  			
-  			if(chart.g.yAxis.length > 1) {
-  				chart.g.yAxis[1].domain = [null,null];
-  			}
+  			chart.g.yAxis.domain = [null,null];
   			
   			var csv = $("#csvInput").val();
 
@@ -660,8 +622,8 @@ ChartBuilder.start = function(config) {
   			
   			chart.g.xAxis.type = "ordinal";
   			chart.g.xAxisRef = [dataObj.data.shift()]
-            chart.g.yAxis[0].domain[0] = 0;
-  			
+            chart.g.yAxis.domain[0] = 0;
+
   			chart.g.series=dataObj.data
   			chart.setPadding();
   			

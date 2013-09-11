@@ -11,8 +11,6 @@
 ```````````***`````**```````````***````````***`````````````***````***``````***`````````***```````````************````
 `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
 */
-var yAxisIndex
-
 //add prepend ability
 Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
 
@@ -42,36 +40,32 @@ var defaultGneissChartConfig = {
 		mixed: true,
 		ticks: 5
 	},
-	yAxis: [
-		{
-			domain: [0,100],
-			tickValues: null,
-			prefix: {
-				value: "",
-				use: "top" //can be "top" "all" "positive" or "negative"
-			},
-			suffix: {
-				value: "",
-				use: "top"
-			},
-			ticks: 4,
-			formatter: null,
-			color: null
-		}
-	],
+	yAxis: {
+        domain: [null, null],
+        tickValues: null,
+        prefix: {
+            value: "",
+            use: "top" //can be "top" "all" "positive" or "negative"
+        },
+        suffix: {
+            value: "",
+            use: "top"
+        },
+        ticks: 4,
+        formatter: null,
+        color: null
+    },
 	series: [
 		{
 			name: "apples",
 			data: [5.5,10.2,6.1,3.8],
 			source: "Some Org",
-			axis: 0,
 			color: null
 		},
 		{
 			name: "oranges",
 			data: [23,10,13,7],
 			source: "Some Org",
-			axis: 0,
 			color: null
 		}
 	],
@@ -240,69 +234,46 @@ var Gneiss = {
 		*/	
 		//calculate number of yaxes and their maxes and mins
 		var axisIndex = 0;
-		var extremes = [], ex;
+		var extremes = [];
 		for (var i = g.series.length - 1; i >= 0; i--){
 			
-			//CHANGE if there is no axis set to 0
-			if(!g.series[i].axis) {
-				g.series[i].axis = 0;
-			}
-			
-			
-			axisIndex = g.series[i].axis;
-			
-			
 			//CHANGE check if there are any extremes for the current axis
-			if(extremes[axisIndex] === undefined) {
-				extremes[axisIndex] = []
-			}
-			
-			
-			if(g.yAxis[axisIndex] === undefined) {
-				console.error(g.series[i].name + " ["+i+"] is associated with axis " + axisIndex + ", but that axis does not exist")
+			if(extremes === undefined) {
+				extremes = []
 			}
 			
 			//calculate extremes of current series and add them to extremes array
 			e = d3.extent(g.series[i].data)
-			extremes[axisIndex].push(e[0])
-			extremes[axisIndex].push(e[1])
+			extremes.push(e[0])
+			extremes.push(e[1])
 		};
-		
-		for (var i = extremes.length - 1; i >= 0; i--){
-			var ex = d3.extent(extremes[i])
-			if(g.yAxis[i].domain[0] == null) {
-				g.yAxis[i].domain[0] = ex[0]
-			}
-			
-			if(g.yAxis[i].domain[1]  == null) {
-				g.yAxis[i].domain[1] = ex[1]
-			}
-		};
-		
-			//set extremes in y axis objects and create scales
-			for (var i = g.yAxis.length - 1; i >= 0; i--){
-				//g.yAxis[i].domain = d3.extent(extremes[i])
-				if(first || !g.yAxis[i].scale) {
-					g.yAxis[i].scale = d3.scale.linear()
-						.domain(g.yAxis[i].domain)
-				}
-				else {
-					//set extremes in y axis objects and update scales
-					g.yAxis[i].domain = d3.extent(g.yAxis[i].domain)
-					g.yAxis[i].scale
-						.domain(g.yAxis[i].domain)
-				}
-				
-					
-			};
-			
-		
-        for (var i = g.yAxis.length - 1; i >= 0; i--){
-            g.yAxis[i].scale.range([
-                g.height - g.padding.bottom,
-                g.padding.top
-                ]).nice()
-        };
+
+        var ex = d3.extent(extremes);
+
+        if(g.yAxis.domain[0] == null) {
+            g.yAxis.domain[0] = ex[0]
+        }
+        
+        if(g.yAxis.domain[1]  == null) {
+            g.yAxis.domain[1] = ex[1]
+        }
+
+        //set extremes in y axis objects and create scales
+        if(first || !g.yAxis.scale) {
+            g.yAxis.scale = d3.scale.linear()
+                .domain(g.yAxis.domain)
+        }
+        else {
+            //set extremes in y axis objects and update scales
+            g.yAxis.domain = d3.extent(g.yAxis.domain)
+            g.yAxis.scale
+                .domain(g.yAxis.domain)
+        }
+            
+        g.yAxis.scale.range([
+            g.height - g.padding.bottom,
+            g.padding.top
+            ]).nice()
 		
 		this.g = g;
 		return this
@@ -319,7 +290,6 @@ var Gneiss = {
 			padding_top = 5;
 		}
 		padding_top += g.title == "" || g.series.length == 1 ? 0:25
-		padding_top += (g.yAxis.length == 1) ? 0:25
 		
 		g.padding.top = padding_top
 		g.padding.bottom = padding_bottom
@@ -402,14 +372,12 @@ var Gneiss = {
 		//set the range of the x axis
 		if (g.type == 'column') {
 			rangeArray = [
-				g.padding.left + this.g.columnGroupWidth/2 + (g.yAxis.length==1?0:this.g.columnGroupWidth/2),
+				g.padding.left + this.g.columnGroupWidth/2,
 				g.width - g.padding.right - this.g.columnGroupWidth
 				] 
-			//g.xAxis.scale.range([g.padding.left + this.g.columnGroupWidth/2,g.width - g.padding.right - (10* (Math.round(this.g.yAxis[0].domain[1]*3/4*100) + "").length )]) 
 		}
 		else {
 			rangeArray = [g.padding.left,g.width - g.padding.right]
-			//g.xAxis.scale.range([g.padding.left,g.width - g.padding.right])
 		};
 		
 		if(g.xAxis.type == "date") {
@@ -426,20 +394,16 @@ var Gneiss = {
 	setLineMakers: function(first) {
 		var g = this.g
 
-		for (var i = g.yAxis.length - 1; i >= 0; i--){
-			if(first || !g.yAxis[i].line) {
-						g.yAxis[i].line = d3.svg.line();
-						g.yAxis[i].line.y(function(d,j){return d||d===0?g.yAxis[yAxisIndex].scale(d):null})
-						g.yAxis[i].line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
-			}
-			else {
-				for (var i = g.yAxis.length - 1; i >= 0; i--){
-					g.yAxis[i].line.y(function(d,j){return d||d===0?g.yAxis[yAxisIndex].scale(d):null})
-					g.yAxis[i].line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
-				};
-			}
+        if(first || !g.yAxis.line) {
+                    g.yAxis.line = d3.svg.line();
+                    g.yAxis.line.y(function(d,j){return d||d===0?g.yAxis.scale(d):null})
+                    g.yAxis.line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
+        }
+        else {
+            g.yAxis.line.y(function(d,j){return d||d===0?g.yAxis.scale(d):null})
+            g.yAxis.line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
+        }
 
-		};
 		this.g = g
 		return this
 	},
@@ -450,199 +414,173 @@ var Gneiss = {
 		*
 		*/
 		var g = this.g;
-		var curAxis,axisGroup;
 		
-		//CHANGE
-		if(g.yAxis.length == 1 ){
-			d3.select("#leftAxis").remove()
-		}
+        //create svg axis
+        if(first) {	
+            g.yAxis.axis = d3.svg.axis()
+                .scale(g.yAxis.scale)
+                .orient("right")
+                .tickSize(g.width - g.padding.left - g.padding.right)
+                .tickValues(g.yAxis.tickValues?g.yAxis.tickValues:this.helper.exactTicks(g.yAxis.scale.domain(),g.yAxis.ticks))
+                
+            //append axis container
 
-		for (var i = g.yAxis.length - 1; i >= 0; i--){
-			curAxis = g.yAxis[i]
-			
-			//create svg axis
-			if(first || !g.yAxis[i].axis) {	
-				g.yAxis[i].axis = d3.svg.axis()
-					.scale(g.yAxis[i].scale)
-					.orient(i==0?"right":"left")
-					.tickSize(g.width - g.padding.left - g.padding.right)
-					//.ticks(g.yAxis[0].ticks) // I'm not using built in ticks because it is too opinionated
-					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:this.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
-					
-				//append axis container
-
-				axisGroup = g.chart.append("g")
-					.attr("class","axis yAxis")
-					.attr("id",i==0?"rightAxis":"leftAxis")
-					.attr("transform",i==0?"translate("+g.padding.left+",0)":"translate("+(g.width-g.padding.right)+",0)")
-					.call(g.yAxis[i].axis)
-			}
-			else {
-				g.yAxis[i].axis//.ticks(g.yAxis[0].ticks) // I'm not using built in ticks because it is too opinionated
-					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:this.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
-					
-				axisGroup = g.chart.selectAll(i==0?"#rightAxis":"#leftAxis")
-					.call(g.yAxis[i].axis)
+            axisGroup = g.chart.append("g")
+                .attr("class","axis yAxis")
+                .attr("id","rightAxis")
+                .call(g.yAxis.axis)
+        }
+        else {
+            g.yAxis.axis
+                .tickValues(g.yAxis.tickValues?g.yAxis.tickValues:this.helper.exactTicks(g.yAxis.scale.domain(),g.yAxis.ticks))
+                
+            axisGroup = g.chart.selectAll("#rightAxis")
+                .call(g.yAxis.axis)
+            
+        }
 				
-			}
-				
-			//adjust label position and add prefix and suffix
-			var topAxisLabel, minY = Infinity;
-			
-			this.customYAxisFormat(axisGroup,i)
-			
-			
-			axisGroup
-				.selectAll("g")
-				.each(function(d,j) {
-					//create an object to store axisItem info
-					var axisItem = {}
-					
-					//store the position of the axisItem
-					//(figure it out by parsing the transfrom attribute)
-					axisItem.y = parseFloat(d3.select(this)
-						.attr("transform")
-							.split(")")[0]
-								.split(",")[1]
-						)
-					
-					//store the text element of the axisItem
-					axisItem.text = d3.select(this).select("text")
+        //adjust label position and add prefix and suffix
+        var topAxisLabel, minY = Infinity;
+        
+        axisGroup
+            .selectAll("g")
+            .each(function(d,j) {
+                //create an object to store axisItem info
+                var axisItem = {}
+                
+                //store the position of the axisItem
+                //(figure it out by parsing the transfrom attribute)
+                axisItem.y = parseFloat(d3.select(this)
+                    .attr("transform")
+                        .split(")")[0]
+                            .split(",")[1]
+                    )
+                
+                //store the text element of the axisItem
+                axisItem.text = d3.select(this).select("text")
 
-					//store the line element of the axisItem	
-					axisItem.line = d3.select(this).select("line")
-						.attr("stroke","#E6E6E6")
-						
-					
-					//apply the prefix as appropriate
-					switch(curAxis.prefix.use) {
-						case "all":
-							//if the prefix is supposed to be on every axisItem label, put it there
-							axisItem.text.text(curAxis.prefix.value + axisItem.text.text())
-						break;
-						
-						case "positive":
-							//if the prefix is supposed to be on positive values and it's positive, put it there
-							if(parseFloat(axisItem.text.text()) > 0) {
-								axisItem.text.text(curAxis.prefix.value + axisItem.text.text())
-							}
-						break;
-						
-						case "negative":
-							//if the prefix is supposed to be on negative values and it's negative, put it there
-							if(parseFloat(axisItem.text.text()) < 0) {
-								axisItem.text.text(curAxis.prefix.value + axisItem.text.text())
-							}
-						break;
-						
-						case "top":
-							//do nothing
-						break;
-					}
-					
-					//apply the suffix as appropriate
-					switch(curAxis.suffix.use) {
-						case "all":
-							//if the suffix is supposed to be on every axisItem label, put it there
-							axisItem.text.text(axisItem.text.text() + curAxis.suffix.value)
-						break;
+                //store the line element of the axisItem	
+                axisItem.line = d3.select(this).select("line")
+                    .attr("stroke","#E6E6E6")
+                    
+                
+                //apply the prefix as appropriate
+                switch(g.yAxis.prefix.use) {
+                    case "all":
+                        //if the prefix is supposed to be on every axisItem label, put it there
+                        axisItem.text.text(g.yAxis.prefix.value + axisItem.text.text())
+                    break;
+                    
+                    case "positive":
+                        //if the prefix is supposed to be on positive values and it's positive, put it there
+                        if(parseFloat(axisItem.text.text()) > 0) {
+                            axisItem.text.text(g.yAxis.prefix.value + axisItem.text.text())
+                        }
+                    break;
+                    
+                    case "negative":
+                        //if the prefix is supposed to be on negative values and it's negative, put it there
+                        if(parseFloat(axisItem.text.text()) < 0) {
+                            axisItem.text.text(g.yAxis.prefix.value + axisItem.text.text())
+                        }
+                    break;
+                    
+                    case "top":
+                        //do nothing
+                    break;
+                }
+                
+                //apply the suffix as appropriate
+                switch(g.yAxis.suffix.use) {
+                    case "all":
+                        //if the suffix is supposed to be on every axisItem label, put it there
+                        axisItem.text.text(axisItem.text.text() + g.yAxis.suffix.value)
+                    break;
 
-						case "positive":
-							//if the suffix is supposed to be on positive values and it's positive, put it there
-							if(parseFloat(axisItem.text.text()) > 0) {
-								axisItem.text.text(axisItem.text.text() + curAxis.suffix.value)
-							}
-						break;
+                    case "positive":
+                        //if the suffix is supposed to be on positive values and it's positive, put it there
+                        if(parseFloat(axisItem.text.text()) > 0) {
+                            axisItem.text.text(axisItem.text.text() + g.yAxis.suffix.value)
+                        }
+                    break;
 
-						case "negative":
-							//if the suffix is supposed to be on negative values and it's negative, put it there
-							if(parseFloat(axisItem.text.text()) < 0) {
-								axisItem.text.text(axisItem.text.text() + curAxis.suffix.value)
-							}
-						break;
+                    case "negative":
+                        //if the suffix is supposed to be on negative values and it's negative, put it there
+                        if(parseFloat(axisItem.text.text()) < 0) {
+                            axisItem.text.text(axisItem.text.text() + g.yAxis.suffix.value)
+                        }
+                    break;
 
-						case "top":
-							//do nothing
-						break;
-					}
-					
-					//find the top most axisItem
-					//store its text element
-					if(axisItem.y < minY) {
-						topAxisLabel = axisItem.text
-						g.topAxisItem = axisItem
-						minY = axisItem.y
-					}
-					
-					
-					if(parseFloat(axisItem.text.text()) == 0) {
-						if(d == 0) {
-							//if the axisItem represents the zero line
-							//change it's class and make sure there's no decimal
-							//axisItem.line.attr("stroke","#666666")
-							d3.select(this).classed("zero", true)
-							axisItem.text.text("0")
-						}
-						else {
-							// A non-zero value was rounded into a zero
-							// hide the whole group
-							this.style("display","none")
-						}
-						
-					}
-				})
-				
-			//add the prefix and suffix to the top most label as appropriate
-			if(curAxis.suffix.use == "top" && curAxis.prefix.use == "top") {
-				//both preifx and suffix should be added to the top most label
-				if(topAxisLabel) {
-					topAxisLabel.text(g.yAxis[i].prefix.value + topAxisLabel.text() + g.yAxis[i].suffix.value)
-				}
-				else {
-					
-				}
-				
-			}
-			else if (curAxis.suffix.use == "top") {
-				//only the suffix should be added (Because the prefix is already there)
-				topAxisLabel.text(topAxisLabel.text() + g.yAxis[i].suffix.value)
-			}
-			else if(curAxis.prefix.use == "top") {
-				//only the prefix should be added (Because the suffix is already there)
-				topAxisLabel.text(g.yAxis[i].prefix.value + topAxisLabel.text())
-			}
+                    case "top":
+                        //do nothing
+                    break;
+                }
+                
+                //find the top most axisItem
+                //store its text element
+                if(axisItem.y < minY) {
+                    topAxisLabel = axisItem.text
+                    g.topAxisItem = axisItem
+                    minY = axisItem.y
+                }
+                
+                
+                if(parseFloat(axisItem.text.text()) == 0) {
+                    if(d == 0) {
+                        //if the axisItem represents the zero line
+                        //change it's class and make sure there's no decimal
+                        //axisItem.line.attr("stroke","#666666")
+                        d3.select(this).classed("zero", true)
+                        axisItem.text.text("0")
+                    }
+                    else {
+                        // A non-zero value was rounded into a zero
+                        // hide the whole group
+                        this.style("display","none")
+                    }
+                    
+                }
+            })
+            
+        //add the prefix and suffix to the top most label as appropriate
+        if(g.yAxis.suffix.use == "top" && g.yAxis.prefix.use == "top") {
+            //both preifx and suffix should be added to the top most label
+            if(topAxisLabel) {
+                topAxisLabel.text(g.yAxis.prefix.value + topAxisLabel.text() + g.yAxis.suffix.value)
+            }
+            else {
+                
+            }
+            
+        }
+        else if (g.yAxis.suffix.use == "top") {
+            //only the suffix should be added (Because the prefix is already there)
+            topAxisLabel.text(topAxisLabel.text() + g.yAxis.suffix.value)
+        }
+        else if(g.yAxis.prefix.use == "top") {
+            //only the prefix should be added (Because the suffix is already there)
+            topAxisLabel.text(g.yAxis.prefix.value + topAxisLabel.text())
+        }
 			
-		};
 		
         d3.selectAll(".yAxis").style("display",null)
         
-        if(g.yAxis.length==1) {
-            //only has one axis
-            try{
-                if(!g.legend || g.series.length == 1) {
-                    //no legend or only one seriesgit 
-                    g.titleLine.attr("y",g.topAxisItem.y - 4)
-                }
-                else {
-                    g.titleLine.attr("y",g.topAxisItem.y - 25)
-                }
-            }catch(e){} //fail silently
-                
-        }
-        else {
-            try{
-                g.titleLine.attr("y",g.padding.top - 36)
-            }catch(e){} //fail silently
-        }
+        try{
+            if(!g.legend || g.series.length == 1) {
+                //no legend or only one seriesgit 
+                g.titleLine.attr("y",g.topAxisItem.y - 4)
+            }
+            else {
+                g.titleLine.attr("y",g.topAxisItem.y - 25)
+            }
+        }catch(e){} //fail silently
 		
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})
+
 		this.g = g
 		return this
 		
-	},
-	customYAxisFormat: function(axisGroup,i) {
-		//replace at your whim
 	},
 	setXAxis: function(first) {
 		var g = this.g
@@ -795,7 +733,6 @@ var Gneiss = {
 		*/
 		var g = this.g
 		
-		//construct line maker helper functions for each yAxis
 		var columnWidth = this.g.columnWidth;
 		var columnGroupShift = this.g.columnGroupShift;
 		
@@ -825,19 +762,19 @@ var Gneiss = {
             columnRects.enter()
                     .append("rect")
                     .attr("width",columnWidth)
-                    .attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+                    .attr("height", function(d,i) {return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())))})
                     .attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
-                    .attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+                    .attr("y",function(d,i) {return (g.yAxis.scale(d)-g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()))) >= 0 ? g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())) : g.yAxis.scale(d)})
         
             columnRects.transition()
                 .duration(500)
                 .attr("width",columnWidth)
-                .attr("height", function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())))})
+                .attr("height", function(d,i) {return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())))})
                 .attr("x",g.xAxis.type =="date" ? 
                         function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2}:
                         function(d,i) {return g.xAxis.scale(i) - columnWidth/2}
                 )
-                .attr("y",function(d,i) {yAxisIndex = d3.select(this.parentElement).data()[0].axis; return (g.yAxis[yAxisIndex].scale(d)-g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain()))) >= 0 ? g.yAxis[yAxisIndex].scale(Gneiss.helper.columnXandHeight(d,g.yAxis[yAxisIndex].scale.domain())) : g.yAxis[yAxisIndex].scale(d)})
+                .attr("y",function(d,i) {return (g.yAxis.scale(d)-g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()))) >= 0 ? g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())) : g.yAxis.scale(d)})
             
             columnRects.exit().remove()
 
@@ -857,7 +794,7 @@ var Gneiss = {
 
             lineSeries.enter()
                 .append("path")
-                    .attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
+                    .attr("d",function(d,j) { pathString = g.yAxis.line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
                     .attr("class","seriesLine")
                     .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
                     .attr("stroke-width",3)
@@ -867,7 +804,7 @@ var Gneiss = {
 
             lineSeries.transition()
                 .duration(500)
-                .attr("d",function(d,j) { yAxisIndex = d.axis; pathString = g.yAxis[d.axis].line(d.data).split("L0,0L").join("M0,0M"); return pathString;})
+                .attr("d",function(d,j) { pathString = g.yAxis.line(d.data).split("L0,0L").join("M0,0M"); return pathString;})
 
             lineSeries.exit().remove()
     
@@ -897,16 +834,14 @@ var Gneiss = {
                 .append("circle")
                 .attr("r",1)
                 .attr("transform",function(d,i){
-                    yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-                        var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
+                        var y = d || d ===0 ? g.yAxis.scale(d) : -100;
                         return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
                     })
         
             lineSeriesDots.transition()
                 .duration(500)
                 .attr("transform",function(d,i){
-                    yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-                        var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
+                        var y = d || d ===0 ? g.yAxis.scale(d) : -100;
                         return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
                     })
         
@@ -944,15 +879,13 @@ var Gneiss = {
                     .attr("stroke","#fff")
                     .attr("stroke-width","1")
                     .attr("transform",function(d,i){
-                        yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-                        return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+                        return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis.scale(d) + ")"
                         })
                 
             scatterDots.transition()
                     .duration(500)
                     .attr("transform",function(d,i){
-                        yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-                        return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis[yAxisIndex].scale(d) + ")"
+                        return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis.scale(d) + ")"
                         })
 
             scatterGroups.each(function(){this.parentNode.appendChild(this);})
@@ -981,12 +914,7 @@ var Gneiss = {
             .append("g")
             .attr("class","legendItem")
             .attr("transform",function(d,i) {
-                if(g.yAxis.length == 1) {
-                    return "translate("+g.padding.left+","+(g.padding.top-25)+")"
-                }
-                else {
-                    return "translate("+g.padding.left+","+(g.padding.top-50)+")"
-                }
+                return "translate("+g.padding.left+","+(g.padding.top-25)+")"
             });
 
         legendGroups.exit().remove()

@@ -209,7 +209,7 @@ var Gneiss = {
             
         if (g.type == 'bar') {
             g.yAxis.scale.range([
-                g.padding.left,
+                g.padding.left + 100,
                 g.width - g.padding.right
             ]).nice()
         } else {
@@ -220,27 +220,6 @@ var Gneiss = {
         }
 		
 		this.g = g;
-		return this
-	},
-	setPadding: function() {
-		/*
-			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
-		*/
-		var g = this.g
-		
-        var padding_top = g.defaults.padding.top;
-		var padding_bottom = g.defaults.padding.bottom;
-		
-		if (!g.legend) {
-			padding_top = 5;
-		}
-
-		padding_top += g.title == "" || g.series.length == 1 ? 0:25
-		
-		g.padding.top = padding_top
-		g.padding.bottom = padding_bottom
-			
-		this.g = g
 		return this
 	},
 	setXScales: function(first) {
@@ -281,18 +260,41 @@ var Gneiss = {
 			];
 		} else if (g.type == 'bar') {
             rangeArray = [
-                g.height - g.padding.top,
-                g.padding.bottom 
+                (g.padding.top + 20) - this.g.barGroupHeight,
+                g.height - (g.padding.top + g.padding.bottom + this.g.barGroupHeight) 
             ];
         } else {
 			rangeArray = [g.padding.left, g.width - g.padding.right];
 		};
+
+        console.log(rangeArray);
 		
 		g.xAxis.scale.rangePoints(rangeArray);
 		
 		this.g = g;
 		return this;
 		
+	},
+	setPadding: function() {
+		/*
+			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
+		*/
+		var g = this.g
+		
+        var padding_top = g.defaults.padding.top;
+		var padding_bottom = g.defaults.padding.bottom;
+		
+		if (!g.legend) {
+			padding_top = 5;
+		}
+
+		padding_top += g.title == "" || g.series.length == 1 ? 0:25
+		
+		g.padding.top = padding_top
+		g.padding.bottom = padding_bottom
+			
+		this.g = g
+		return this
 	},
 	setLineMakers: function() {
 		var g = this.g
@@ -474,14 +476,15 @@ var Gneiss = {
 
 		this.g = g
 		return this
-		
+	
 	},
 	setXAxis: function() {
 		var g = this.g
 
 		g.xAxis.axis.scale(g.xAxis.scale)
-			.ticks(g.xAxis.ticks)
 			.orient(g.type == 'bar' ? "left" : "bottom")
+			.ticks(g.xAxis.ticks)
+            .tickSize(g.type == 'bar' ? 0 : 5);
 
         var translate = (g.type == 'bar')
             ? 'translate(' + g.padding.left + ',0)'
@@ -503,12 +506,12 @@ var Gneiss = {
 				var attry = Number(attr.split(")")[0].split(",")[1])
 
                 // fix labels to not fall off edge 
-                if (pwidth/2 + attrx > g.width) {
-                    this.setAttribute("x",Number(this.getAttribute("x"))-(pwidth + attrx - g.width + g.padding.right))
-                    this.setAttribute("text-anchor","start")
+                if (pwidth / 2 + attrx > g.width) {
+                    this.setAttribute("x", Number(this.getAttribute("x")) - (pwidth + attrx - g.width + g.padding.right))
+                    this.setAttribute("text-anchor", "start")
                 }
-                else if (attrx - pwidth/2 < 0) {
-                    this.setAttribute("text-anchor","start")
+                else if (attrx - pwidth / 2 < 0) {
+                    this.setAttribute("text-anchor", "start")
                 }
                 g.padding.left = g.defaults.padding.left
 			})
@@ -648,7 +651,7 @@ var Gneiss = {
                 .attr("class", "seriesBar")
                 .attr("fill", function(d,i) { return d.color ? d.color : g.colors[i + g.series.length] })
                 .attr("transform", function(d,i) {
-                    return "translate(0," + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2)) + ")";
+                    return "translate(" + (g.padding.left + 101) + "," + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ")";
                 })
             
         barGroups.exit().remove()
@@ -662,7 +665,7 @@ var Gneiss = {
                     return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.barWidth(d, g.yAxis.scale.domain())));
                 })
                 .attr("height", barHeight)
-                .attr("x", function(d,i) {
+                .attr("x", function(d, i) {
                     if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.barWidth(d, g.yAxis.scale.domain())) >= 0) {
                         return g.yAxis.scale(0) - g.yAxis.scale(Gneiss.helper.barWidth(d, g.yAxis.scale.domain()));
                     } else {
@@ -672,15 +675,11 @@ var Gneiss = {
                    return g.yAxis.scale(0) - Math.abs(g.yAxis.scale(d));
 
                 })
-                .attr("y", function(d,i) {
-                    //return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) - (barHeight / 2)
-                    return g.xAxis.scale(i) - 10;
-                })
+                .attr("y", function(d, i) {
+                    console.log(i, g.xAxis.scale(i));
 
-						
-                //.attr("width", function(d,i) {return Math.abs(g.yAxis[yAxisIndex].scale(d) - g.yAxis[yAxisIndex].scale(0))})
-				//.attr("x", function(d,i) {return g.yAxis[yAxisIndex].scale(0) - (d<0?Math.abs(g.yAxis[yAxisIndex].scale(d)):0)})
-				//.attr("y",function(d,i) {return g.xAxis.scale(i) - 10})
+                    return g.xAxis.scale(i);
+                })
     
         barRects.exit().remove()
 

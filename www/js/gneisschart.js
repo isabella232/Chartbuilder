@@ -73,7 +73,7 @@ var Gneiss = {
 		*/
 		var g = config
 		this.g = config 
-		//set container as a jquery object
+
 		g.$container = $(g.container);
 		g.all = this;
 		
@@ -117,17 +117,15 @@ var Gneiss = {
 				
 		this.setYAxis();
 		this.setXAxis();
-		
-		g.titleLine = g.chart.append("text")
-			// .attr("y",0)
-			// .attr("x", g.padding.left)
-			.attr("id","titleLine")
-			.attr("transform","translate(" + g.padding.left + ",-15)")
-			.text(g.title)
-		
+				
         g.yAxis.line = d3.svg.line();
         
         this.setLineMakers()
+
+		g.titleLine = g.chart.append("text")
+			.attr("id","titleLine")
+			.attr("transform","translate(" + g.padding.left + ",-15)")
+			.text(g.title)
 		
         g.seriesContainer = g.chart.append("g")
             .attr("id","seriesContainer")
@@ -162,9 +160,10 @@ var Gneiss = {
 			Adjusts the size dependent stored variables
 		*/
 		var g = this.g
-		g.width = g.$container.width() //save the width in pixels
-		g.height = g.$container.height() //save the height in pixels
-		//put a background rect to prevent transparency
+		
+        g.width = g.$container.width()
+		g.height = g.$container.height()
+
 		d3.select("rect#ground")
 			.attr("width",g.width)
 			.attr("height",g.height)
@@ -179,22 +178,10 @@ var Gneiss = {
 			calculates and saves the y-scales from the existing data
 		*/
 		var g = this.g
-		/*
-		*
-		* Y AXIS SECTION
-		*
-		*/	
-		//calculate number of yaxes and their maxes and mins
-		var axisIndex = 0;
+
 		var extremes = [];
+
 		for (var i = g.series.length - 1; i >= 0; i--){
-			
-			//CHANGE check if there are any extremes for the current axis
-			if(extremes === undefined) {
-				extremes = []
-			}
-			
-			//calculate extremes of current series and add them to extremes array
 			e = d3.extent(g.series[i].data)
 			extremes.push(e[0])
 			extremes.push(e[1])
@@ -235,16 +222,19 @@ var Gneiss = {
 			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
 		*/
 		var g = this.g
-		var padding_top = g.defaults.padding.top,
-		padding_bottom = g.defaults.padding.bottom;
 		
-		if(!g.legend) {
+        var padding_top = g.defaults.padding.top,
+		var padding_bottom = g.defaults.padding.bottom;
+		
+		if (!g.legend) {
 			padding_top = 5;
 		}
+
 		padding_top += g.title == "" || g.series.length == 1 ? 0:25
 		
 		g.padding.top = padding_top
 		g.padding.bottom = padding_bottom
+			
 		this.g = g
 		return this
 	},
@@ -255,14 +245,6 @@ var Gneiss = {
 		var g = this.g
 
 		if(first) {
-			//create x scales
-			
-			/*
-			*
-			* X AXIS SECTION
-			*
-			*/
-
 			//calculate extremes of axis
             var maxLength = 0;
             for (var i = g.series.length - 1; i >= 0; i--){

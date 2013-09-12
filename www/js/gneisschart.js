@@ -267,13 +267,14 @@ var Gneiss = {
             g.maxLength = maxLength;
 		}
 
-		var rangeArray = []
 		//set the range of the x axis
+		var rangeArray = []
+
 		if (g.type == 'column') {
 			rangeArray = [
-				g.padding.left + this.g.columnGroupWidth/2,
+				g.padding.left + this.g.columnGroupWidth / 2,
 				g.width - g.padding.right - this.g.columnGroupWidth
-				] 
+			] 
 		}
 		else {
 			rangeArray = [g.padding.left,g.width - g.padding.right]
@@ -491,27 +492,44 @@ var Gneiss = {
 		return this
 	},
 	calculateColumnWidths: function() {
-		/*
-			Calculate the propper column width for column charts
-		*/
-		
+        /*
+         * Calculate column widths.
+         */
 		var g = this.g
-		
-		//determine the propper column width
-		//								---- Width of chart area ----------     -Num Data pts-  -Num Column Series-
-		var columnWidth = Math.floor(((g.width-g.padding.right-g.padding.left) / g.maxLength) / g.series.length) - 3;
-		//make sure width is >= 1
-		columnWidth = Math.max(columnWidth, 1);
-		columnWidth = Math.min(columnWidth, (g.width-g.padding.right-g.padding.left) * 0.075)
-		
-		this.g.columnWidth = columnWidth;
-		this.g.columnGroupWidth = (columnWidth + 1) * g.series.length;
-		this.g.columnGroupShift = columnWidth + 1;
 
-		return this
+        var chartWidth = g.width - (g.padding.right + g.padding.left);
+		var columnWidth = Math.floor((chartWidth / g.maxLength) / g.series.length) - 3;
+
+		columnWidth = Math.max(columnWidth, 1);
+		columnWidth = Math.min(columnWidth, chartWidth * 0.075);
+		
+		g.columnWidth = columnWidth;
+		g.columnGroupWidth = (columnWidth + 1) * g.series.length;
+		g.columnGroupShift = columnWidth + 1;
+
+        this.g = g;
+
+		return this;
 	},
     calculateBarHeights: function() {
-        // TODO
+        /*
+         * Calculate bar heights.
+         */
+		var g = this.g
+
+        var chartHeight = g.height - (g.padding.top + g.padding.bottom);
+		var barHeight = Math.floor((chartHeight / g.maxLength) / g.series.length) - 3;
+
+		barHeight = Math.max(barHeight, 1);
+		barHeight = Math.min(barHeight, chartHeight * 0.075);
+		
+		g.barHeight = barHeight;
+		g.barGroupHeight = (barHeight + 1) * g.series.length;
+		g.barGroupShift = barHeight + 1;
+
+        this.g = g;
+
+		return this;
     },
 	drawSeries: function() {
 		/*
@@ -529,6 +547,8 @@ var Gneiss = {
         // Draw new elements
         if (g.type == 'column') {
             this.drawColumns();
+        } else if (g.type == 'bar') {
+            this.drawBars();
         } else if (g.type == 'line') {
             this.drawLines();
         } else if (g.type == 'scatter') {
@@ -550,42 +570,50 @@ var Gneiss = {
 		
         var columnGroups = g.seriesContainer.selectAll("g.seriesColumn")
             .data(g.series)
-            .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
         
         columnGroups.enter()
             .append("g") 
-                .attr("class","seriesColumn")
-                .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
-                .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (g.series.length-1)/2))+",0)"})
+                .attr("class", "seriesColumn")
+                .attr("fill", function(d,i) { return d.color ? d.color : g.colors[i + g.series.length] })
+                .attr("transform", function(d,i) {
+                    return "translate(" + (i * columnGroupShift - (columnGroupShift * (g.series.length - 1) / 2)) + ",0)" 
+                })
             
-        columnGroups.transition()
-            .duration(500)
-            .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (g.series.length-1)/2))+",0)"})
-    
         columnGroups.exit().remove()
     
-        columnRects = columnGroups.selectAll("rect")
-            .data(function(d,i){return d.data})
+        var columnRects = columnGroups.selectAll("rect")
+            .data(function(d,i) { return d.data })
         
         columnRects.enter()
-                .append("rect")
-                .attr("width",columnWidth)
-                .attr("height", function(d,i) {return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())))})
-                .attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
-                .attr("y",function(d,i) {return (g.yAxis.scale(d)-g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()))) >= 0 ? g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())) : g.yAxis.scale(d)})
+            .append("rect")
+                .attr("width", columnWidth)
+                .attr("height", function(d,i) {
+                    return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d, g.yAxis.scale.domain()))) 
+                })
+                .attr("x", function(d,i) {
+                    return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) - (columnWidth / 2)
+                })
+                .attr("y", function(d,i) {
+                    if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d, g.yAxis.scale.domain())) >= 0) {
+                        return g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()));
+                    } else {
+                        return g.yAxis.scale(d);
+                    }
+                })
     
-        columnRects.transition()
-            .duration(500)
-            .attr("width",columnWidth)
-            .attr("height", function(d,i) {return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())))})
-            .attr("x",function(d,i) {return g.xAxis.scale(i) - columnWidth/2})
-            .attr("y",function(d,i) {return (g.yAxis.scale(d)-g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()))) >= 0 ? g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())) : g.yAxis.scale(d)})
-        
         columnRects.exit().remove()
 
-        columnGroups.each(function(){this.parentNode.appendChild(this);})
+        this.g = g;
+    },
+    drawBars: function() {
+        /*
+         * Draw series as bars.
+         */
+        var g = this.g;
+
 
         this.g = g;
+
     },
     drawLines: function() {
         /*
@@ -640,15 +668,6 @@ var Gneiss = {
                 .attr("transform",function(d,i){
                     return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis.scale(d) + ")"
                     })
-            
-        scatterDots.transition()
-                .duration(500)
-                .attr("transform",function(d,i){
-                    return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis.scale(d) + ")"
-                    })
-
-        scatterGroups.each(function(){this.parentNode.appendChild(this);})
-        scatterDots.each(function(){this.parentNode.appendChild(this);})
 
         this.g = g;
     },
@@ -730,7 +749,9 @@ var Gneiss = {
 		*/
 		var g = this.g
 		
-		this.calculateColumnWidths()
+		this.calculateColumnWidths();
+        this.calculateBarHeights();
+
         this.setLineMakers()
 
 		this.setPadding()

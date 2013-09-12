@@ -95,3 +95,8 @@ div.colorPicker-picker {
 	padding-top: 10px;
 	margin-top: 40px;
 }
+
+#mti_wfs_colophon {
+	right: auto;
+	left: 0;
+}

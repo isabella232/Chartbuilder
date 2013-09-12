@@ -541,6 +541,7 @@ var Gneiss = {
 
         // Clear old elements
         g.seriesContainer.selectAll("g.seriesColumn").remove();
+        g.seriesContainer.selectAll("g.seriesBar").remove();
         g.seriesContainer.selectAll("path").remove();
         g.seriesContainer.selectAll("g.seriesScatter").remove();
 		
@@ -611,6 +612,43 @@ var Gneiss = {
          */
         var g = this.g;
 
+        var barWidth = this.g.columnWidth;
+		var barGroupShift = this.g.columnGroupShift;
+
+        var barGroups = g.seriesContainer.selectAll("g.seriesBar")
+            .data(g.series)
+        
+        barGroups.enter()
+            .append("g") 
+                .attr("class", "seriesBar")
+                .attr("fill", function(d,i) { return d.color ? d.color : g.colors[i + g.series.length] })
+                .attr("transform", function(d,i) {
+                    return "translate(" + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2)) + ",0)" 
+                })
+            
+        barGroups.exit().remove()
+    
+        var barRects = barGroups.selectAll("rect")
+            .data(function(d,i) { return d.data })
+        
+        barRects.enter()
+            .append("rect")
+                .attr("width", barWidth)
+                .attr("height", function(d,i) {
+                    return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d, g.yAxis.scale.domain()))) 
+                })
+                .attr("x", function(d,i) {
+                    return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) - (barWidth / 2)
+                })
+                .attr("y", function(d,i) {
+                    if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d, g.yAxis.scale.domain())) >= 0) {
+                        return g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()));
+                    } else {
+                        return g.yAxis.scale(d);
+                    }
+                })
+    
+        barRects.exit().remove()
 
         this.g = g;
 

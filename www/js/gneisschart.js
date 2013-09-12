@@ -223,7 +223,7 @@ var Gneiss = {
 		*/
 		var g = this.g
 		
-        var padding_top = g.defaults.padding.top,
+        var padding_top = g.defaults.padding.top;
 		var padding_bottom = g.defaults.padding.bottom;
 		
 		if (!g.legend) {
@@ -460,7 +460,7 @@ var Gneiss = {
 		g.chart.selectAll("#xAxis")
 			.attr("transform","translate(0,"+(g.height - g.padding.bottom + 0)+")")
 			.call(g.xAxis.axis)
-		
+
 		g.chart.selectAll("#xAxis text")
 			.attr("text-anchor", "middle")
 			.each(function() {
@@ -766,6 +766,7 @@ var Gneiss = {
 			.drawSeries()
             .drawLegend()
 			.updateMetaAndTitle();	
+
 		return this
 	},
 	randomizeData: function(d) {

@@ -12,6 +12,7 @@ ChartBuilder = {
 				"eea397","f2c69b","f7e3a2","88c0bf","7bbfe3",
 				"f6d1cb","f9e2cc","fbf1d0","c4dfdf","d2eaf6"],
 	curRaw: "",
+	paletteOpen: false,
 	getNewData: function(csv) {
         var separator = COMMA;
 
@@ -263,7 +264,7 @@ ChartBuilder = {
 		var g = chart.g, s, picker;
 		this.customLegendLocaion = false;
 		var seriesContainer = $("#seriesItems")
-			
+		window.palette_open = false
 			
 		for (var i=0; i < g.series.length; i++) {
 			s = g.series[i]
@@ -272,6 +273,15 @@ ChartBuilder = {
 				<input id="'+this.idSafe(s.name)+'_color" name="'+this.idSafe(s.name)+'" type="text" />\
 				<div class="clearfix"></div>\
 			</div>');
+
+			seriesItem.find('label').on('click', function(e){
+				if ( ChartBuilder.paletteOpen === false ){
+					$(this).siblings('.colorPicker-picker').trigger('click');
+					ChartBuilder.paletteOpen = true;
+				} else {
+					ChartBuilder.paletteOpen = false;
+				}
+			})
 			
             var color = s.color ? s.color.replace("#","") : g.colors[i].replace("#","")
 			

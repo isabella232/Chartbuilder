@@ -108,12 +108,10 @@ var Gneiss = {
 
         g.yAxis.axis = d3.svg.axis()
             .scale(g.yAxis.scale)
-            .tickSize(g.width - g.padding.left - g.padding.right)
 
         g.chart.append("g")
             .attr("class","axis yAxis")
             .attr("id","rightAxis")
-            .attr("transform", "translate("+g.padding.left+",0)")
 				
 		this.setYAxis();
 		this.setXAxis();
@@ -312,13 +310,25 @@ var Gneiss = {
 		*
 		*/
 		var g = this.g;
+
+        var tickSize = (g.type == 'bar')
+            ? g.height - (g.padding.top + g.padding.bottom)
+            : g.width - (g.padding.left + g.padding.right);
 		
         g.yAxis.axis
             .orient(g.type == 'bar' ? 'bottom' : 'right')
+            .tickSize(tickSize)
             .tickValues(g.yAxis.tickValues ? g.yAxis.tickValues : this.helper.exactTicks(g.yAxis.scale.domain(), g.yAxis.ticks))
+
+        var translate = (g.type == 'bar')
+            ? 'translate(0,' + g.padding.top + ')'
+            : 'translate(' + g.padding.left + ',0)';
                 
         var axisGroup = g.chart.selectAll("#rightAxis")
+            .attr("transform", translate)
             .call(g.yAxis.axis)
+
+        //.attr("transform",i==0?"translate("+g.padding.left+",0)":"translate("+(g.width-g.padding.right)+",0)")
 				
         //adjust label position and add prefix and suffix
         var topAxisLabel, minY = Infinity;

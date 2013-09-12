@@ -933,7 +933,7 @@ var Gneiss = {
                 .attr("width",10)
                 .attr("height",10)
                 .attr("x",0)
-                .attr("y",2)
+                .attr("y",0)
                 .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
             legendGroups.filter(function(d){return d != g.series[0]})

@@ -620,7 +620,7 @@ var Gneiss = {
         columnGroups.enter()
             .append("g") 
                 .attr("class", "seriesColumn")
-                .attr("fill", function(d,i) { return d.color ? d.color : g.colors[i + g.series.length] })
+                .attr("fill", function(d,i) { return d.color })
                 .attr("transform", function(d,i) {
                     return "translate(" + (i * columnGroupShift - (columnGroupShift * (g.series.length - 1) / 2)) + ",0)" 
                 })
@@ -666,7 +666,7 @@ var Gneiss = {
         barGroups.enter()
             .append("g") 
                 .attr("class", "seriesBar")
-                .attr("fill", function(d,i) { return d.color ? d.color : g.colors[i + g.series.length] })
+                .attr("fill", function(d,i) { return d.color })
                 .attr("transform", function(d,i) {
                     return "translate(" + (g.padding.left + 101) + "," + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ")";
                 })
@@ -709,13 +709,13 @@ var Gneiss = {
 
         var lineSeries = g.seriesContainer.selectAll("path")
             .data(g.series)
-            .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]});
+            .attr("stroke",function(d,i){return d.color});
 
         lineSeries.enter()
             .append("path")
                 .attr("d",function(d,j) { pathString = g.yAxis.line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
                 .attr("class","seriesLine")
-                .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
+                .attr("stroke",function(d,i){return d.color})
                 .attr("stroke-width",3)
                 .attr("stroke-linejoin","round")
                 .attr("stroke-linecap","round")
@@ -733,12 +733,12 @@ var Gneiss = {
 
         var scatterGroups = g.seriesContainer.selectAll("g.seriesScatter")
             .data(g.series)
-            .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
+            .attr("fill", function(d,i){return d.color})
         
         scatterGroups.enter()
             .append("g")
             .attr("class","seriesScatter")
-            .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length+g.series.length]})
+            .attr("fill",function(d,i){return d.color})
         
         scatterGroups.exit().remove()
         
@@ -782,7 +782,6 @@ var Gneiss = {
                 .attr("class","legendLabel")
                 .attr("x",15)
                 .attr("y",10)
-                //.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
                 .text(function(d,i){return d.name});
         
         //if there is more than one line
@@ -792,7 +791,7 @@ var Gneiss = {
                 .attr("height",10)
                 .attr("x",0)
                 .attr("y",0)
-                .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
+                .attr("fill", function(d,i){return d.color})
 
             legendGroups.filter(function(d){return d != g.series[0]})
                 .transition()
@@ -834,6 +833,13 @@ var Gneiss = {
 			Redraw the chart
 		*/
 		var g = this.g
+
+        // Ensure colors are set for all series
+        for (var i = 0; i < g.series.length; i++) {
+            if (!g.series[i].color) {
+                g.series[i].color = g.colors[i];
+            }
+        };
 		
 		this.calculateColumnWidths();
         this.calculateBarHeights();

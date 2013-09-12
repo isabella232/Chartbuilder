@@ -1,16 +1,3 @@
-/*
-`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
-```````````***`````````````***```````***```````````***````````````******```````````************``````************````
-```````***********`````````***```````***``````````*****```````````**********```````************``````************````
-`````***`````````***```````***```````***`````````***`***``````````***`````***``````````***```````````````````***`````
-````***```````````***``````***```````***````````***```***`````````***``````***`````````***`````````````````***```````
-````***```````````***``````***```````***```````***`````***````````***********``````````***```````````````***`````````
-````***``````***`***```````***```````***``````*************```````*********````````````***``````````````***``````````
-`````***```````****`````````***`````***``````***************``````***````***```````````***````````````***````````````
-```````*************`````````*********``````***```````````***`````***`````***``````````***```````````************````
-```````````***`````**```````````***````````***`````````````***````***``````***`````````***```````````************````
-`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
-*/
 //add prepend ability
 Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
 
@@ -80,60 +67,6 @@ var defaultGneissChartConfig = {
 }
 
 var Gneiss = {
-	dateParsers: {
-		"mmddyyyy": function(d) {return [d.getMonth()+1,d.getDate(),d.getFullYear()].join("/")},
-		"ddmmyyyy": function(d) {return [d.getDate(),d.getMonth()+1,d.getFullYear()].join("/")},
-		"mmdd": function(d) {return [d.getMonth()+1,d.getDate()].join("/")},
-		"Mdd": function(d){
-			var month = d.getMonth()+1;
-			if(month == 5){
-				return d.format('{Mon}') +" "+ Number(d.getDate())
-			} 
-			else { 
-				return d.format('{Mon}.') +" "+ Number(d.getDate())
-			}
-		},
-		"ddM": function(d){
-			var month = d.getMonth()+1;
-			if(month == 5){
-				return Number(d.getDate()) +" "+ d.format('{mon}')
-			} 
-			else { 
-				return Number(d.getDate()) +" "+ d.format('{mon}.')
-			}
-		},
-		"mmyy": function(d) {return [d.getMonth()+1,String(d.getFullYear()).split("").splice(2,2).join("")].join("/")},
-		"yy": function(d) {return "’"+String(d.getFullYear()).split("").splice(2,2).join("")},
-		"yyyy": function(d) {return d.getFullYear()},
-		"MM": function(d) {
-			var month = d.getMonth()+1;
-			if(month == 1) {
-				return d.getFullYear()
-			}
-			else {
-				return d.format('{Month}')
-			}
-		},
-		"M": function(d) {	
-			var month = d.getMonth()+1;
-			if(month == 1){
-				return "’"+String(d.getFullYear()).split("").splice(2,2).join("")
-			} 
-			else if(month == 5){ 
-				return d.format('{Mon}')
-			}
-			else { 
-				return d.format('{Mon}.')
-			}
-		},
-		"hmm": function(d) {
-			if(Date.getLocale().code == 'en'){
-				return d.format('{12hr}:{mm}')
-			} else {
-				return d.format('{24hr}:{mm}')
-			}
-		},
-	},
 	build: function(config) {
 		/*
 			Initializes the chart from a config object
@@ -301,7 +234,7 @@ var Gneiss = {
 			calculate and store the x-scales
 		*/
 		var g = this.g
-		var dateExtent, shortestPeriod = Infinity;
+
 		if(first) {
 			//create x scales
 			
@@ -312,62 +245,26 @@ var Gneiss = {
 			*/
 
 			//calculate extremes of axis
-			if(g.xAxis.type == "date") {
-				dateExtent = d3.extent(g.xAxisRef[0].data);
-				g.xAxis.scale = d3.time.scale()
-					//.domain(Gneiss.multiextent(g.series,function(d){return d.data}))
-					.domain(dateExtent)
-				
-				//calculate smallest gap between two dates
-				for (var i = g.xAxisRef[0].data.length - 2; i >= 0; i--){
-					shortestPeriod = Math.min(shortestPeriod, Math.abs(g.xAxisRef[0].data[i] - g.xAxisRef[0].data[i+1]))
-				}
-				
-				g.maxLength = Math.abs(Math.floor((dateExtent[0] - dateExtent[1]) / shortestPeriod))
-			}
-			else {
-
-				//calculate longest series and store series names
-				var maxLength = 0;
-				for (var i = g.series.length - 1; i >= 0; i--){
-					maxLength = Math.max(maxLength, g.series[i].data.length)
-				};
-				g.xAxis.scale = d3.scale.ordinal()
-					.domain(g.xAxisRef[0].data)
-					
-				g.maxLength = maxLength;
-			}
-			
+            var maxLength = 0;
+            for (var i = g.series.length - 1; i >= 0; i--){
+                maxLength = Math.max(maxLength, g.series[i].data.length)
+            };
+            g.xAxis.scale = d3.scale.ordinal()
+                .domain(g.xAxisRef[0].data)
+                
+            g.maxLength = maxLength;
 		}
 		else {
 			//update the existing scales
-
-			//calculate extremes of axis
-			if(g.xAxis.type == "date") {
-				dateExtent = d3.extent(g.xAxisRef[0].data);
-				g.xAxis.scale = d3.time.scale()
-					//.domain(Gneiss.multiextent(g.series,function(d){return d.data}))
-					.domain(dateExtent)
-					
-				//calculate smallest gap between two dates
-				for (var i = g.xAxisRef[0].data.length - 2; i >= 0; i--){
-					shortestPeriod = Math.min(shortestPeriod, Math.abs(g.xAxisRef[0].data[i] - g.xAxisRef[0].data[i+1]))
-				}
-				
-				g.maxLength = Math.abs(Math.floor((dateExtent[0] - dateExtent[1]) / shortestPeriod))
-			}
-			else {
-
-				//calculate longest series
-				var maxLength = 0;
-				for (var i = g.series.length - 1; i >= 0; i--){
-					maxLength = Math.max(maxLength, g.series[i].data.length)
-				};
-				g.xAxis.scale.domain(g.xAxisRef[0].data)
-				
-				g.maxLength = maxLength;
-			}
+            var maxLength = 0;
+            for (var i = g.series.length - 1; i >= 0; i--){
+                maxLength = Math.max(maxLength, g.series[i].data.length)
+            };
+            g.xAxis.scale.domain(g.xAxisRef[0].data)
+            
+            g.maxLength = maxLength;
 		}
+
 		var rangeArray = []
 		//set the range of the x axis
 		if (g.type == 'column') {
@@ -380,12 +277,7 @@ var Gneiss = {
 			rangeArray = [g.padding.left,g.width - g.padding.right]
 		};
 		
-		if(g.xAxis.type == "date") {
-			g.xAxis.scale.range(rangeArray);
-		}
-		else {
-			g.xAxis.scale.rangePoints(rangeArray);
-		}
+		g.xAxis.scale.rangePoints(rangeArray);
 		
 		this.g = g;
 		return this
@@ -584,6 +476,7 @@ var Gneiss = {
 	},
 	setXAxis: function(first) {
 		var g = this.g
+
 		if(first) {
 			/*
 			*
@@ -593,87 +486,17 @@ var Gneiss = {
 			g.xAxis.axis = d3.svg.axis()
 				.scale(g.xAxis.scale)
 				.orient("bottom")
-				.tickFormat(g.xAxis.formatter ? this.dateParsers[g.xAxis.formatter] : function(d) {return d})
 				.ticks(g.xAxis.ticks)
 				
-			if(g.xAxis.type == "date") {
-				
-				switch(g.xAxis.formatter) {
-				   // "mmddyyyy":
-				   // "mmdd"
-					case "yy":
-						g.xAxis.axis.ticks(d3.time.years,1)
-					break;
-					
-					case "yyyy":
-						g.xAxis.axis.ticks(d3.time.years,1)
-					break;
-					
-					case "MM":
-						g.xAxis.axis.ticks(d3.time.months,1)
-					break;
-					
-					case "M":
-						g.xAxis.axis.ticks(d3.time.months,1)
-					break;
-				   // "hmm"
-
-					case "YY":
-						g.xAxis.axis.ticks(d3.time.years,1)
-					break;
-				}
-			}
-			
 			g.chart.append("g")
 				.attr("class",'axis')
 				.attr("id","xAxis")
 				.attr("transform","translate(0,"+(g.height - g.padding.bottom + 8)+")")
 				.call(g.xAxis.axis)
-				
-			
-		}
-		else {
+		} else {
 			g.xAxis.axis.scale(g.xAxis.scale)
-				.tickFormat(g.xAxis.formatter ? this.dateParsers[g.xAxis.formatter] : function(d) {return d})
 				.ticks(g.xAxis.ticks)
 				.orient("bottom")
-			
-			if(g.xAxis.type == "date") {
-				var timeSpan = g.xAxis.scale.domain()[1]-g.xAxis.scale.domain()[0],
-				months = timeSpan/2592000000,
-				years = timeSpan/31536000000;
-				
-				if(years > 20) {
-					yearGap = 5;
-				}
-				else {
-					yearGap = 1;
-				}
-				switch(g.xAxis.formatter) {
-				   // "mmddyyyy":
-				   // "mmdd"
-					case "yy":
-						g.xAxis.axis.ticks(d3.time.years,yearGap)
-					break;
-					
-					case "yyyy":
-						g.xAxis.axis.ticks(d3.time.years,yearGap)
-					break;
-					
-					case "MM":
-						g.xAxis.axis.ticks(d3.time.months,1)
-					break;
-					
-					case "M":
-						g.xAxis.axis.ticks(d3.time.months,1)
-					break;
-				   // "hmm"
-
-					case "YY":
-						g.xAxis.axis.ticks(d3.time.years,1)
-					break;
-				}
-			}
 			
 			g.chart.selectAll("#xAxis")
 				.attr("transform","translate(0,"+(g.height - g.padding.bottom + 0)+")")
@@ -770,10 +593,7 @@ var Gneiss = {
                 .duration(500)
                 .attr("width",columnWidth)
                 .attr("height", function(d,i) {return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())))})
-                .attr("x",g.xAxis.type =="date" ? 
-                        function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2}:
-                        function(d,i) {return g.xAxis.scale(i) - columnWidth/2}
-                )
+                .attr("x",function(d,i) {return g.xAxis.scale(i) - columnWidth/2})
                 .attr("y",function(d,i) {return (g.yAxis.scale(d)-g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()))) >= 0 ? g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())) : g.yAxis.scale(d)})
             
             columnRects.exit().remove()

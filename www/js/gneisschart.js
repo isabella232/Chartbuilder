@@ -454,18 +454,25 @@ var Gneiss = {
 		
         d3.selectAll(".yAxis").style("display",null)
         
-        try{
-            if(!g.legend || g.series.length == 1) {
-                //no legend or only one seriesgit 
-                g.titleLine.attr("y",g.topAxisItem.y - 4)
+        try {
+            if (g.type == 'bar') {
+                g.titleLine.attr('y', 40); 
+            } else if (!g.legend || g.series.length == 1) {
+                g.titleLine.attr("y", g.topAxisItem.y - 4)
             }
             else {
-                g.titleLine.attr("y",g.topAxisItem.y - 25)
+                g.titleLine.attr("y", g.topAxisItem.y - 25)
             }
-        }catch(e){} //fail silently
+        } catch(e) {
+            // Do nothing
+        }
+
+        var translate = (g.type == 'bar')
+            ? 'translate(0,0)'
+            : "translate(-" + (g.padding.left + 5) + ",-8)";
 
         axisGroup.selectAll("text")
-            .attr("transform", "translate(-" + (g.padding.left + 5) + ",-8)");
+            .attr("transform", translate);
 		
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})

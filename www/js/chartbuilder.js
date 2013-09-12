@@ -144,7 +144,25 @@ ChartBuilder = {
 		}
 		return o
 	},
-	floatAll: function(a) {
+	createTable: function(r){
+		$table = $("#dataTable table")
+		$table.text("")
+
+
+		$table.append("<tr><th>"+r[0].join("</th><th>")+"</th></tr>")
+		for (var i=1; i < r.length; i++) {
+			if(r[i]) {
+				//add commas to the numbers
+				for (var j = 0; j < r[i].length; j++) {
+					r[i][j] = this.addCommas(r[i][j])
+				};
+
+				$("<tr><td>"+r[i].join("</td><td>")+"</td></tr>")
+					.appendTo($table)
+			}				
+		};
+    },
+    floatAll: function(a) {
 		for (var i=0; i < a.length; i++) {
 			if(a[i] && a[i].length > 0 && (/[\d\.]+/).test(a[i])) {
 				a[i] = parseFloat(a[i])
@@ -559,11 +577,14 @@ ChartBuilder.start = function(config) {
             }
   
   			dataObj = ChartBuilder.makeDataObj(newData);
+
   			if(dataObj == null) {
 				ChartBuilder.showInvalidData();
   				return;
   			}
 			ChartBuilder.hideInvalidData();
+
+            ChartBuilder.createTable(newData);
   
   			chart.g.series.unshift(chart.g.xAxisRef)
   			dataObj = ChartBuilder.mergeData(dataObj)

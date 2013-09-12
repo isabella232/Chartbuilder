@@ -143,43 +143,6 @@ ChartBuilder = {
 		}
 		return o
 	},
-	createTable: function(r,d){
-		$table = $("#dataTable table")
-		$table.text("")
-
-
-		$table.append("<tr><th>"+r[0].join("</th><th>")+"</th></tr>")
-		for (var i=1; i < r.length; i++) {
-			if(r[i]) {
-				if(d) {
-					r[i][0] = Date.create(r[i][0]).format("{M}/{d}/{yy} {hh}:{mm}")
-				}
-				
-				//add commas to the numbers
-				for (var j = 0; j < r[i].length; j++) {
-					r[i][j] = this.addCommas(r[i][j])
-				};
-
-				$("<tr><td>"+r[i].join("</td><td>")+"</td></tr>")
-					.appendTo($table)
-			}				
-		};
-	},
-
-
-	// table_el is a jQuery element
-	outputTableAsHtml: function(table_el){
-		var html_str = table_el.parent().html();
-		// throw in some sloppy newline subbing
-		html_str = html_str.replace(/(<(?:tbody|thead))/g, "\n$1");
-		html_str = html_str.replace(/(<\/(?:tr|tbody|thead)>)/g, "$1\n");
-		html_str = html_str.split("<tbody><tr>").join("<tbody>\n<tr>")
-		html_str = $.trim(html_str)
-		$('#table-html').val(html_str);
-	},
-
-
-
 	floatAll: function(a) {
 		for (var i=0; i < a.length; i++) {
 			if(a[i] && a[i].length > 0 && (/[\d\.]+/).test(a[i])) {
@@ -243,17 +206,6 @@ ChartBuilder = {
 			.attr("download", function() { return filename + "_chartbuilder.png"
 		    });
 
-			
-		// Create SVG image
-		/*var svgString = $("#chartContainer").html()
-		//add in all the things that validate SVG
-		svgString = '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n<svg ' + svgString.split("<svg ")[1]
-		
-	$("#downloadSVGLink").attr("href","data:text/svg,"+ encodeURI(svgString.split("PTSerif").join("PT Serif")) )
-		.attr("download",function(){ return filename + "_chartbuilder.svg"
-		})
-
-		var icon = this.setFavicon()*/
 		this.storeLocalChart(filename);	
         this.loadStoredCharts();
 		
@@ -615,8 +567,6 @@ ChartBuilder.start = function(config) {
   			}
 			ChartBuilder.hideInvalidData();
   
-  			ChartBuilder.createTable(newData);
-  			
   			chart.g.series.unshift(chart.g.xAxisRef)
   			dataObj = ChartBuilder.mergeData(dataObj)
   			

@@ -125,6 +125,13 @@
                 }
             });
 
+            // Bind the palette toggling to the input label
+            element.prev().bind("click", function () {
+                if( element.is( ':not(:disabled)' ) ) {
+                                    $.fn.colorPicker.togglePalette($('#' + paletteId), $(newControl));
+                }
+            });
+
             if( options && options.onColorChange ) {
               newControl.data('onColorChange', options.onColorChange);
             } else {
@@ -208,7 +215,7 @@
             var selector = activePalette,
                 selectorParent = $(event.target).parents("#" + selector.attr('id')).length;
 
-            if (event.target === $(selector)[0] || event.target === selectorOwner[0] || selectorParent > 0) {
+            if (event.target === $(selector)[0] || event.target === selectorOwner[0]  || event.target === selectorOwner.siblings('label')[0] || event.target === selectorOwner.siblings('label')[0].outerHTML || selectorParent > 0) {
                 return;
             }
 

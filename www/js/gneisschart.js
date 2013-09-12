@@ -114,6 +114,7 @@ var Gneiss = {
         g.chart.append("g")
             .attr("class","axis yAxis")
             .attr("id","rightAxis")
+            .attr("transform", "translate("+g.padding.left+",0)")
 				
 		this.setYAxis();
 		this.setXAxis();
@@ -442,6 +443,9 @@ var Gneiss = {
                 g.titleLine.attr("y",g.topAxisItem.y - 25)
             }
         }catch(e){} //fail silently
+
+        axisGroup.selectAll("text")
+            .attr("transform", "translate(-" + (g.padding.left + 5) + ",-8)");
 		
 		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})
@@ -461,6 +465,9 @@ var Gneiss = {
 			.attr("transform","translate(0,"+(g.height - g.padding.bottom + 0)+")")
 			.call(g.xAxis.axis)
 
+        g.chart.selectAll("#xAxis path")
+            .attr("transform", "translate(10,0)");
+		
 		g.chart.selectAll("#xAxis text")
 			.attr("text-anchor", "middle")
 			.each(function() {

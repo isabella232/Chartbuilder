@@ -267,8 +267,6 @@ var Gneiss = {
 			rangeArray = [g.padding.left, g.width - g.padding.right];
 		};
 
-        console.log(rangeArray);
-		
 		g.xAxis.scale.rangePoints(rangeArray);
 		
 		this.g = g;
@@ -329,8 +327,6 @@ var Gneiss = {
         var axisGroup = g.chart.selectAll("#rightAxis")
             .attr("transform", translate)
             .call(g.yAxis.axis)
-
-        //.attr("transform",i==0?"translate("+g.padding.left+",0)":"translate("+(g.width-g.padding.right)+",0)")
 				
         //adjust label position and add prefix and suffix
         var topAxisLabel, minY = Infinity;
@@ -487,7 +483,7 @@ var Gneiss = {
             .tickSize(g.type == 'bar' ? 0 : 5);
 
         var translate = (g.type == 'bar')
-            ? 'translate(' + g.padding.left + ',0)'
+            ? 'translate(' + g.padding.left + ',' + g.padding.top + ')'
             : 'translate(0,' + (g.height - g.padding.bottom) + ')';
         
 		g.chart.selectAll("#xAxis")
@@ -496,25 +492,39 @@ var Gneiss = {
 
         g.chart.selectAll("#xAxis path")
             .attr("transform", "translate(10,0)");
-		
-		g.chart.selectAll("#xAxis text")
-			.attr("text-anchor", g.type == 'bar' ? 'end' : 'middle')
-			.each(function() {
-				var pwidth = this.parentNode.getBBox().width
-				var attr = this.parentNode.getAttribute("transform")
-				var attrx = Number(attr.split("(")[1].split(",")[0])
-				var attry = Number(attr.split(")")[0].split(",")[1])
 
-                // fix labels to not fall off edge 
-                if (pwidth / 2 + attrx > g.width) {
-                    this.setAttribute("x", Number(this.getAttribute("x")) - (pwidth + attrx - g.width + g.padding.right))
-                    this.setAttribute("text-anchor", "start")
-                }
-                else if (attrx - pwidth / 2 < 0) {
-                    this.setAttribute("text-anchor", "start")
-                }
-                g.padding.left = g.defaults.padding.left
-			})
+        if (g.type == 'bar') {
+            var width = 0;
+
+            g.chart.selectAll("#xAxis text")
+                .each(function() {
+                    width = Math.max(width, this.parentNode.getBBox().width);
+                });
+
+            g.chart.selectAll("#xAxis text")
+                .attr("text-anchor", 'end')
+                .each(function() {
+                    this.setAttribute('x', width);
+                })
+        } else {
+            g.chart.selectAll("#xAxis text")
+                .attr("text-anchor", 'middle')
+                .each(function() {
+                    var pwidth = this.parentNode.getBBox().width
+                    var attr = this.parentNode.getAttribute("transform")
+                    var attrx = Number(attr.split("(")[1].split(",")[0])
+                    var attry = Number(attr.split(")")[0].split(",")[1])
+
+                    // fix labels to not fall off edge 
+                    if (pwidth / 2 + attrx > g.width) {
+                        this.setAttribute("x", Number(this.getAttribute("x")) - (pwidth + attrx - g.width + g.padding.right))
+                        this.setAttribute("text-anchor", "start")
+                    }
+                    else if (attrx - pwidth / 2 < 0) {
+                        this.setAttribute("text-anchor", "start")
+                    }
+                })
+        }
 		
 		this.g = g
 		return this
@@ -676,8 +686,6 @@ var Gneiss = {
 
                 })
                 .attr("y", function(d, i) {
-                    console.log(i, g.xAxis.scale(i));
-
                     return g.xAxis.scale(i);
                 })
     

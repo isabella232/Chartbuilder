@@ -511,7 +511,7 @@ var Gneiss = {
 		return this
 	},
     calculateBarHeights: function() {
-        // TODO: placeholder
+        // TODO
     },
 	drawSeries: function() {
 		/*
@@ -519,171 +519,139 @@ var Gneiss = {
 		* Series Drawing Section
 		*
 		*/
-		var g = this.g
+		var g = this.g;
+
+        // Clear old elements
+        g.seriesContainer.selectAll("g.seriesColumn").remove();
+        g.seriesContainer.selectAll("path").remove();
+        g.seriesContainer.selectAll("g.seriesScatter").remove();
 		
-		var columnWidth = this.g.columnWidth;
-		var columnGroupShift = this.g.columnGroupShift;
-		
-        // COLUMNS
-        var columnGroups = g.seriesContainer.selectAll("g.seriesColumn");
-        
+        // Draw new elements
         if (g.type == 'column') {
-            columnGroups = columnGroups
-                .data(g.series)
-                .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
-            
-            columnGroups.enter()
-                .append("g") 
-                    .attr("class","seriesColumn")
-                    .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
-                    .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (g.series.length-1)/2))+",0)"})
-                
-            columnGroups.transition()
-                .duration(500)
-                .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (g.series.length-1)/2))+",0)"})
-        
-            columnGroups.exit().remove()
-        
-            columnRects = columnGroups.selectAll("rect")
-                .data(function(d,i){return d.data})
-            
-            columnRects.enter()
-                    .append("rect")
-                    .attr("width",columnWidth)
-                    .attr("height", function(d,i) {return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())))})
-                    .attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
-                    .attr("y",function(d,i) {return (g.yAxis.scale(d)-g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()))) >= 0 ? g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())) : g.yAxis.scale(d)})
-        
-            columnRects.transition()
-                .duration(500)
-                .attr("width",columnWidth)
-                .attr("height", function(d,i) {return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())))})
-                .attr("x",function(d,i) {return g.xAxis.scale(i) - columnWidth/2})
-                .attr("y",function(d,i) {return (g.yAxis.scale(d)-g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()))) >= 0 ? g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())) : g.yAxis.scale(d)})
-            
-            columnRects.exit().remove()
-
-            columnGroups.each(function(){this.parentNode.appendChild(this);})
-        } else {
-            columnGroups.remove();
-        }
-    
-        // LINES
-        var lineSeries = g.seriesContainer.selectAll("path");
-        var lineSeriesDotGroups = g.seriesContainer.selectAll("g.lineSeriesDots");
-
-        if (g.type == 'line') {
-            lineSeries = lineSeries
-                .data(g.series)
-                .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]});
-
-            lineSeries.enter()
-                .append("path")
-                    .attr("d",function(d,j) { pathString = g.yAxis.line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
-                    .attr("class","seriesLine")
-                    .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
-                    .attr("stroke-width",3)
-                    .attr("stroke-linejoin","round")
-                    .attr("stroke-linecap","round")
-                    .attr("fill","none");
-
-            lineSeries.transition()
-                .duration(500)
-                .attr("d",function(d,j) { pathString = g.yAxis.line(d.data).split("L0,0L").join("M0,0M"); return pathString;})
-
-            lineSeries.exit().remove()
-    
-    
-            //Add dots to the appropriate line series
-            lineSeriesDotGroups = lineSeriesDotGroups
-                .data(g.series)
-                .attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
-        
-            lineSeriesDotGroups
-                .enter()
-                .append("g")
-                .attr("class","lineSeriesDots")
-                .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
-            
-            lineSeriesDotGroups.exit().remove()
-        
-            lineSeriesDots = lineSeriesDotGroups.filter(function(d){return d.data.length < 15})
-                .selectAll("circle")
-                .data(function(d,i){return d.data})
-                
-            lineSeriesDotGroups.filter(function(d){return d.data.length > 15})
-                .remove()
-            
-            
-            lineSeriesDots.enter()
-                .append("circle")
-                .attr("r",1)
-                .attr("transform",function(d,i){
-                        var y = d || d ===0 ? g.yAxis.scale(d) : -100;
-                        return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
-                    })
-        
-            lineSeriesDots.transition()
-                .duration(500)
-                .attr("transform",function(d,i){
-                        var y = d || d ===0 ? g.yAxis.scale(d) : -100;
-                        return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
-                    })
-        
-            lineSeriesDots.exit().remove()
-
-            lineSeries.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
-			lineSeriesDotGroups.each(function(){if(this.parentNode){this.parentNode.appendChild(this);}})
-        } else {
-            lineSeries.remove();
-            lineSeriesDotGroups.remove();
-        }
-                        
-        // SCATTER
-        var scatterGroups = g.seriesContainer.selectAll("g.seriesScatter");
-
-        if (g.type == 'scatter') {
-            scatterGroups = scatterGroups
-                .data(g.series)
-                .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
-            
-            scatterGroups.enter()
-                .append("g")
-                .attr("class","seriesScatter")
-                .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length+g.series.length]})
-            
-            scatterGroups.exit().remove()
-            
-            scatterDots = scatterGroups
-                .selectAll("circle")
-                .data(function(d){return d.data})
-                
-            scatterDots.enter()
-                    .append("circle")
-                    .attr("r",4)
-                    .attr("stroke","#fff")
-                    .attr("stroke-width","1")
-                    .attr("transform",function(d,i){
-                        return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis.scale(d) + ")"
-                        })
-                
-            scatterDots.transition()
-                    .duration(500)
-                    .attr("transform",function(d,i){
-                        return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis.scale(d) + ")"
-                        })
-
-            scatterGroups.each(function(){this.parentNode.appendChild(this);})
-			scatterDots.each(function(){this.parentNode.appendChild(this);})
-        } else {
-            scatterGroups.remove();
+            this.drawColumns();
+        } else if (g.type == 'line') {
+            this.drawLines();
+        } else if (g.type == 'scatter') {
+            this.drawScatter();
         }
 			
 		this.g = g;
-		return this
-		
-		
+
+		return this;
 	},
+    drawColumns: function() {
+        /*
+         * Draw series as columns.
+         */
+        var g = this.g;
+
+		var columnWidth = this.g.columnWidth;
+		var columnGroupShift = this.g.columnGroupShift;
+		
+        var columnGroups = g.seriesContainer.selectAll("g.seriesColumn")
+            .data(g.series)
+            .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
+        
+        columnGroups.enter()
+            .append("g") 
+                .attr("class","seriesColumn")
+                .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length]})
+                .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (g.series.length-1)/2))+",0)"})
+            
+        columnGroups.transition()
+            .duration(500)
+            .attr("transform",function(d,i){return "translate("+(i*columnGroupShift - (columnGroupShift * (g.series.length-1)/2))+",0)"})
+    
+        columnGroups.exit().remove()
+    
+        columnRects = columnGroups.selectAll("rect")
+            .data(function(d,i){return d.data})
+        
+        columnRects.enter()
+                .append("rect")
+                .attr("width",columnWidth)
+                .attr("height", function(d,i) {return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())))})
+                .attr("x",function(d,i) {return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i])  - columnWidth/2})
+                .attr("y",function(d,i) {return (g.yAxis.scale(d)-g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()))) >= 0 ? g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())) : g.yAxis.scale(d)})
+    
+        columnRects.transition()
+            .duration(500)
+            .attr("width",columnWidth)
+            .attr("height", function(d,i) {return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())))})
+            .attr("x",function(d,i) {return g.xAxis.scale(i) - columnWidth/2})
+            .attr("y",function(d,i) {return (g.yAxis.scale(d)-g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain()))) >= 0 ? g.yAxis.scale(Gneiss.helper.columnXandHeight(d,g.yAxis.scale.domain())) : g.yAxis.scale(d)})
+        
+        columnRects.exit().remove()
+
+        columnGroups.each(function(){this.parentNode.appendChild(this);})
+
+        this.g = g;
+    },
+    drawLines: function() {
+        /*
+         * Draw series as a line chart.
+         */
+        var g = this.g;
+
+        var lineSeries = g.seriesContainer.selectAll("path")
+            .data(g.series)
+            .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]});
+
+        lineSeries.enter()
+            .append("path")
+                .attr("d",function(d,j) { pathString = g.yAxis.line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
+                .attr("class","seriesLine")
+                .attr("stroke",function(d,i){return d.color? d.color : g.colors[i]})
+                .attr("stroke-width",3)
+                .attr("stroke-linejoin","round")
+                .attr("stroke-linecap","round")
+                .attr("fill","none");
+
+        lineSeries.exit().remove()
+
+        this.g = g;
+    },
+    drawScatter: function() {
+        /*
+         * Draw series as a scatter plot.
+         */
+        var g = this.g;
+
+        var scatterGroups = g.seriesContainer.selectAll("g.seriesScatter")
+            .data(g.series)
+            .attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
+        
+        scatterGroups.enter()
+            .append("g")
+            .attr("class","seriesScatter")
+            .attr("fill",function(d,i){return d.color? d.color : g.colors[i+g.series.length+g.series.length]})
+        
+        scatterGroups.exit().remove()
+        
+        scatterDots = scatterGroups
+            .selectAll("circle")
+            .data(function(d){return d.data})
+            
+        scatterDots.enter()
+                .append("circle")
+                .attr("r",4)
+                .attr("stroke","#fff")
+                .attr("stroke-width","1")
+                .attr("transform",function(d,i){
+                    return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis.scale(d) + ")"
+                    })
+            
+        scatterDots.transition()
+                .duration(500)
+                .attr("transform",function(d,i){
+                    return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis.scale(d) + ")"
+                    })
+
+        scatterGroups.each(function(){this.parentNode.appendChild(this);})
+        scatterDots.each(function(){this.parentNode.appendChild(this);})
+
+        this.g = g;
+    },
 	drawLegend: function() {
 		var g = this.g;
 		var legendItemY;

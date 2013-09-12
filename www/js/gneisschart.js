@@ -94,12 +94,29 @@ var Gneiss = {
 			.attr("id","ground")
 			.attr("width",g.width)
 			.attr("height",g.height)
+		
+        this.calculateColumnWidths();
+		this.setYScales(true);
+		this.setXScales(true);
+
+        // Create axes
+        g.xAxis.axis = d3.svg.axis();
+
+        g.chart.append("g")
+			.attr("class",'axis')
+			.attr("id","xAxis")
+
+        g.yAxis.axis = d3.svg.axis()
+            .scale(g.yAxis.scale)
+            .orient("right")
+            .tickSize(g.width - g.padding.left - g.padding.right)
+
+        g.chart.append("g")
+            .attr("class","axis yAxis")
+            .attr("id","rightAxis")
 				
-		this.calculateColumnWidths()
-			.setYScales(true)
-			.setXScales(true)
-			.setYAxes(true)
-			.setXAxis(true);
+		this.setYAxis();
+		this.setXAxis();
 		
 		g.titleLine = g.chart.append("text")
 			// .attr("y",0)
@@ -108,7 +125,9 @@ var Gneiss = {
 			.attr("transform","translate(" + g.padding.left + ",-15)")
 			.text(g.title)
 		
-        this.setLineMakers(true)
+        g.yAxis.line = d3.svg.line();
+        
+        this.setLineMakers()
 		
         g.seriesContainer = g.chart.append("g")
             .attr("id","seriesContainer")
@@ -283,23 +302,16 @@ var Gneiss = {
 		return this
 		
 	},
-	setLineMakers: function(first) {
+	setLineMakers: function() {
 		var g = this.g
 
-        if(first || !g.yAxis.line) {
-                    g.yAxis.line = d3.svg.line();
-                    g.yAxis.line.y(function(d,j){return d||d===0?g.yAxis.scale(d):null})
-                    g.yAxis.line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
-        }
-        else {
-            g.yAxis.line.y(function(d,j){return d||d===0?g.yAxis.scale(d):null})
-            g.yAxis.line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
-        }
+        g.yAxis.line.y(function(d,j){return d||d===0?g.yAxis.scale(d):null})
+        g.yAxis.line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
 
 		this.g = g
 		return this
 	},
-	setYAxes: function(first) {
+	setYAxis: function() {
 		/*
 		*
 		* Y-Axis Drawing Section
@@ -307,29 +319,11 @@ var Gneiss = {
 		*/
 		var g = this.g;
 		
-        //create svg axis
-        if(first) {	
-            g.yAxis.axis = d3.svg.axis()
-                .scale(g.yAxis.scale)
-                .orient("right")
-                .tickSize(g.width - g.padding.left - g.padding.right)
-                .tickValues(g.yAxis.tickValues?g.yAxis.tickValues:this.helper.exactTicks(g.yAxis.scale.domain(),g.yAxis.ticks))
+        g.yAxis.axis
+            .tickValues(g.yAxis.tickValues?g.yAxis.tickValues:this.helper.exactTicks(g.yAxis.scale.domain(),g.yAxis.ticks))
                 
-            //append axis container
-
-            axisGroup = g.chart.append("g")
-                .attr("class","axis yAxis")
-                .attr("id","rightAxis")
-                .call(g.yAxis.axis)
-        }
-        else {
-            g.yAxis.axis
-                .tickValues(g.yAxis.tickValues?g.yAxis.tickValues:this.helper.exactTicks(g.yAxis.scale.domain(),g.yAxis.ticks))
-                
-            axisGroup = g.chart.selectAll("#rightAxis")
-                .call(g.yAxis.axis)
-            
-        }
+        var axisGroup = g.chart.selectAll("#rightAxis")
+            .call(g.yAxis.axis)
 				
         //adjust label position and add prefix and suffix
         var topAxisLabel, minY = Infinity;
@@ -474,34 +468,16 @@ var Gneiss = {
 		return this
 		
 	},
-	setXAxis: function(first) {
+	setXAxis: function() {
 		var g = this.g
 
-		if(first) {
-			/*
-			*
-			* X-Axis Drawing Section
-			*
-			*/
-			g.xAxis.axis = d3.svg.axis()
-				.scale(g.xAxis.scale)
-				.orient("bottom")
-				.ticks(g.xAxis.ticks)
-				
-			g.chart.append("g")
-				.attr("class",'axis')
-				.attr("id","xAxis")
-				.attr("transform","translate(0,"+(g.height - g.padding.bottom + 8)+")")
-				.call(g.xAxis.axis)
-		} else {
-			g.xAxis.axis.scale(g.xAxis.scale)
-				.ticks(g.xAxis.ticks)
-				.orient("bottom")
+		g.xAxis.axis.scale(g.xAxis.scale)
+			.ticks(g.xAxis.ticks)
+			.orient("bottom")
 			
-			g.chart.selectAll("#xAxis")
-				.attr("transform","translate(0,"+(g.height - g.padding.bottom + 0)+")")
-				.call(g.xAxis.axis)
-		}
+		g.chart.selectAll("#xAxis")
+			.attr("transform","translate(0,"+(g.height - g.padding.bottom + 0)+")")
+			.call(g.xAxis.axis)
 		
 		g.chart.selectAll("#xAxis text")
 			.attr("text-anchor", "middle")
@@ -798,12 +774,12 @@ var Gneiss = {
 		var g = this.g
 		
 		this.calculateColumnWidths()
-        this.setLineMakers(false)
+        this.setLineMakers()
 
 		this.setPadding()
 			.setYScales()
 			.setXScales()
-			.setYAxes()
+			.setYAxis()
 			.setXAxis()
 			.drawSeries()
             .drawLegend()

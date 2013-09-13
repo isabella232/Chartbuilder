@@ -349,12 +349,20 @@ ChartBuilder = {
 		},
 		axis_max_change: function(index,that) {
 			var val = parseFloat($(that).val())
-			if(isNaN(val)) {
+			
+            if (isNaN(val)) {
 				val = null
 			}
+
+            if (chart.g.yAxis.domain[0] !== null && chart.g.yAxis.domain[0] >= val) {
+                return;
+            }
+
 			chart.g.yAxis.domain[1] = val;
+
 			chart.setYScales();
-			ChartBuilder.redraw()
+			
+            ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_min_change: function(index,that) {
@@ -362,9 +370,16 @@ ChartBuilder = {
 			if(isNaN(val)) {
 				val = null
 			}
+
+            if (chart.g.yAxis.domain[1] !== null && chart.g.yAxis.domain[1] <= val) {
+                return;
+            }
+
 			chart.g.yAxis.domain[0] = val;
+
 			chart.setYScales();
-			ChartBuilder.redraw()
+			
+            ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_tick_override_change: function(index,that) {
@@ -565,8 +580,6 @@ ChartBuilder.start = function(config) {
   			//cache the the raw textarea value
   			ChartBuilder.curRaw = $(this).val()
   			
-  			chart.g.yAxis.domain = [null,null];
-  			
   			var csv = $('#csvInput').val();
 
             try {
@@ -591,7 +604,6 @@ ChartBuilder.start = function(config) {
   			
   			chart.g.xAxis.type = 'ordinal';
   			chart.g.xAxisRef = [dataObj.data.shift()]
-            chart.g.yAxis.domain[0] = 0;
 
   			chart.g.series=dataObj.data
   			chart.setPadding();

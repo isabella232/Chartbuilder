@@ -6,12 +6,12 @@ Date.setLocale('en');
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
 var defaultGneissChartConfig = {
-	container: "#chartContainer", //css id of target chart container
+	container: '#chartContainer', //css id of target chart container
 	editable: true, // reserved for enabling or dissabling on chart editing
 	legend: true, // whether or not there should be a legend
-	title: "", // the chart title 
-	colors: ["#ff4cf4","#ffb3ff","#e69ce6","#cc87cc","#b373b3","#995f99","#804c80","#665266","#158eff","#99cdff","#9cc2e6","#87abcc","#7394b3","#5f7d99","#466780","#525c66"], //this is the order of colors that the 
-    type: "line",
+	title: '', // the chart title 
+	colors: ['#ff4cf4','#ffb3ff','#e69ce6','#cc87cc','#b373b3','#995f99','#804c80','#665266','#158eff','#99cdff','#9cc2e6','#87abcc','#7394b3','#5f7d99','#466780','#525c66'], //this is the order of colors that the 
+    type: 'line',
 	padding :{
 		top: 40,
 		bottom: 40,
@@ -20,9 +20,9 @@ var defaultGneissChartConfig = {
 	},
 	xAxis: {
 		domain: [0,100],
-		prefix: "",
-		suffix: "",
-		type: "linear",
+		prefix: '',
+		suffix: '',
+		type: 'linear',
 		formatter: null,
 		mixed: true,
 		ticks: 5
@@ -31,12 +31,12 @@ var defaultGneissChartConfig = {
         domain: [null, null],
         tickValues: null,
         prefix: {
-            value: "",
-            use: "top" //can be "top" "all" "positive" or "negative"
+            value: '',
+            use: 'top' //can be 'top' 'all' 'positive' or 'negative'
         },
         suffix: {
-            value: "",
-            use: "top"
+            value: '',
+            use: 'top'
         },
         ticks: 4,
         formatter: null,
@@ -44,26 +44,26 @@ var defaultGneissChartConfig = {
     },
 	series: [
 		{
-			name: "apples",
+			name: 'apples',
 			data: [5.5,10.2,6.1,3.8],
-			source: "Some Org",
+			source: 'Some Org',
 			color: null
 		},
 		{
-			name: "oranges",
+			name: 'oranges',
 			data: [23,10,13,7],
-			source: "Some Org",
+			source: 'Some Org',
 			color: null
 		}
 	],
 	xAxisRef: [
 		{
-			name: "names",
-			data: ["juicyness","color","flavor","travelability"]
+			name: 'names',
+			data: ['juicyness','color','flavor','travelability']
 		}
 	],
-	sourceline: "",
-	creditline: ""
+	sourceline: '',
+	creditline: ''
 }
 
 var Gneiss = {
@@ -81,19 +81,19 @@ var Gneiss = {
 		g.defaults.padding = $.extend({}, config.padding); //change
 		
 		//append svg to container using svg
-		g.chart = d3.select(g.container).append("svg")
-			.attr("id","chart")
-			.attr("width","100%") //set width to 100%
-			.attr("height","100%") //set height to 100%
+		g.chart = d3.select(g.container).append('svg')
+			.attr('id','chart')
+			.attr('width','100%') //set width to 100%
+			.attr('height','100%') //set height to 100%
 			
 		g.width = g.$container.width() //save the width in pixels
 		g.height = g.$container.height() //save the height in pixels
 		
 		//add rect, use as a background to prevent transparency
-		g.chart.append("rect")
-			.attr("id","ground")
-			.attr("width",g.width)
-			.attr("height",g.height)
+		g.chart.append('rect')
+			.attr('id','ground')
+			.attr('width',g.width)
+			.attr('height',g.height)
 		
         this.calculateColumnWidths();
 		this.setYScales(true);
@@ -102,16 +102,16 @@ var Gneiss = {
         // Create axes
         g.xAxis.axis = d3.svg.axis();
 
-        g.chart.append("g")
-			.attr("class",'axis')
-			.attr("id","xAxis")
+        g.chart.append('g')
+			.attr('class','axis')
+			.attr('id','xAxis')
 
         g.yAxis.axis = d3.svg.axis()
             .scale(g.yAxis.scale)
 
-        g.chart.append("g")
-            .attr("class","axis yAxis")
-            .attr("id","rightAxis")
+        g.chart.append('g')
+            .attr('class','axis yAxis')
+            .attr('id','rightAxis')
 				
 		this.setYAxis();
 		this.setXAxis();
@@ -120,39 +120,39 @@ var Gneiss = {
         
         this.setLineMakers()
 
-		g.titleLine = g.chart.append("text")
-			.attr("id","titleLine")
-			.attr("transform","translate(" + g.padding.left + ",-15)")
+		g.titleLine = g.chart.append('text')
+			.attr('id','titleLine')
+			.attr('transform','translate(' + g.padding.left + ',-15)')
 			.text(g.title)
 		
-        g.seriesContainer = g.chart.append("g")
-            .attr("id","seriesContainer")
+        g.seriesContainer = g.chart.append('g')
+            .attr('id','seriesContainer')
             
-        g.legendItemContainer = g.chart.append("g")
-            .attr("id","legendItemContainer")
+        g.legendItemContainer = g.chart.append('g')
+            .attr('id','legendItemContainer')
 
         this.drawSeries();
         this.drawLegend();
 		
-		g.metaInfo = g.chart.append("g")
-			.attr("id","metaInfo")
-			.attr("transform","translate(0,"+(g.height-4)+")")
+		g.metaInfo = g.chart.append('g')
+			.attr('id','metaInfo')
+			.attr('transform','translate(0,'+(g.height-4)+')')
 		
-		g.sourceLine = g.metaInfo.append("text")
-			.attr("text-anchor","end")
-			.attr("x",g.width-g.padding.right)
-			.attr("class","metaText")
+		g.sourceLine = g.metaInfo.append('text')
+			.attr('text-anchor','end')
+			.attr('x',g.width-g.padding.right)
+			.attr('class','metaText')
 			.text(g.sourceline)
 		
-		g.creditLine = g.metaInfo.append("text")
-			.attr("x",g.padding.left)
-			.attr("class","metaText")
+		g.creditLine = g.metaInfo.append('text')
+			.attr('x',g.padding.left)
+			.attr('class','metaText')
 			.text(g.creditline)
 
 		this.g = g;
 		return this;
 	},
-	numberFormat: d3.format(","),
+	numberFormat: d3.format(','),
 	resize: function(){
 		/*
 			Adjusts the size dependent stored variables
@@ -162,11 +162,11 @@ var Gneiss = {
         g.width = g.$container.width()
 		g.height = g.$container.height()
 
-		d3.select("rect#ground")
-			.attr("width",g.width)
-			.attr("height",g.height)
+		d3.select('rect#ground')
+			.attr('width',g.width)
+			.attr('height',g.height)
 			
-		g.metaInfo.attr("transform","translate(0,"+(g.height-4)+")")
+		g.metaInfo.attr('transform','translate(0,'+(g.height-4)+')')
 		
 		this.g = g;
 		return this
@@ -286,7 +286,7 @@ var Gneiss = {
 			padding_top = 5;
 		}
 
-		padding_top += g.title == "" || g.series.length == 1 ? 0:25
+		padding_top += g.title == '' || g.series.length == 1 ? 0:25
 		
 		g.padding.top = padding_top
 		g.padding.bottom = padding_bottom
@@ -324,15 +324,15 @@ var Gneiss = {
             ? 'translate(0,' + g.padding.top + ')'
             : 'translate(' + g.padding.left + ',0)';
                 
-        var axisGroup = g.chart.selectAll("#rightAxis")
-            .attr("transform", translate)
+        var axisGroup = g.chart.selectAll('#rightAxis')
+            .attr('transform', translate)
             .call(g.yAxis.axis)
 				
         //adjust label position and add prefix and suffix
         var topAxisLabel, minY = Infinity;
         
         axisGroup
-            .selectAll("g")
+            .selectAll('g')
             .each(function(d,j) {
                 //create an object to store axisItem info
                 var axisItem = {}
@@ -340,67 +340,67 @@ var Gneiss = {
                 //store the position of the axisItem
                 //(figure it out by parsing the transfrom attribute)
                 axisItem.y = parseFloat(d3.select(this)
-                    .attr("transform")
-                        .split(")")[0]
-                            .split(",")[1]
+                    .attr('transform')
+                        .split(')')[0]
+                            .split(',')[1]
                     )
                 
                 //store the text element of the axisItem
-                axisItem.text = d3.select(this).select("text")
+                axisItem.text = d3.select(this).select('text')
 
                 //store the line element of the axisItem	
-                axisItem.line = d3.select(this).select("line")
-                    .attr("stroke","#E6E6E6")
+                axisItem.line = d3.select(this).select('line')
+                    .attr('stroke','#E6E6E6')
                     
                 
                 //apply the prefix as appropriate
                 switch(g.yAxis.prefix.use) {
-                    case "all":
+                    case 'all':
                         //if the prefix is supposed to be on every axisItem label, put it there
                         axisItem.text.text(g.yAxis.prefix.value + axisItem.text.text())
                     break;
                     
-                    case "positive":
+                    case 'positive':
                         //if the prefix is supposed to be on positive values and it's positive, put it there
                         if(parseFloat(axisItem.text.text()) > 0) {
                             axisItem.text.text(g.yAxis.prefix.value + axisItem.text.text())
                         }
                     break;
                     
-                    case "negative":
+                    case 'negative':
                         //if the prefix is supposed to be on negative values and it's negative, put it there
                         if(parseFloat(axisItem.text.text()) < 0) {
                             axisItem.text.text(g.yAxis.prefix.value + axisItem.text.text())
                         }
                     break;
                     
-                    case "top":
+                    case 'top':
                         //do nothing
                     break;
                 }
                 
                 //apply the suffix as appropriate
                 switch(g.yAxis.suffix.use) {
-                    case "all":
+                    case 'all':
                         //if the suffix is supposed to be on every axisItem label, put it there
                         axisItem.text.text(axisItem.text.text() + g.yAxis.suffix.value)
                     break;
 
-                    case "positive":
+                    case 'positive':
                         //if the suffix is supposed to be on positive values and it's positive, put it there
                         if(parseFloat(axisItem.text.text()) > 0) {
                             axisItem.text.text(axisItem.text.text() + g.yAxis.suffix.value)
                         }
                     break;
 
-                    case "negative":
+                    case 'negative':
                         //if the suffix is supposed to be on negative values and it's negative, put it there
                         if(parseFloat(axisItem.text.text()) < 0) {
                             axisItem.text.text(axisItem.text.text() + g.yAxis.suffix.value)
                         }
                     break;
 
-                    case "top":
+                    case 'top':
                         //do nothing
                     break;
                 }
@@ -418,21 +418,21 @@ var Gneiss = {
                     if(d == 0) {
                         //if the axisItem represents the zero line
                         //change it's class and make sure there's no decimal
-                        //axisItem.line.attr("stroke","#666666")
-                        d3.select(this).classed("zero", true)
-                        axisItem.text.text("0")
+                        //axisItem.line.attr('stroke','#666666')
+                        d3.select(this).classed('zero', true)
+                        axisItem.text.text('0')
                     }
                     else {
                         // A non-zero value was rounded into a zero
                         // hide the whole group
-                        this.style("display","none")
+                        this.style('display','none')
                     }
                     
                 }
             })
             
         //add the prefix and suffix to the top most label as appropriate
-        if(g.yAxis.suffix.use == "top" && g.yAxis.prefix.use == "top") {
+        if(g.yAxis.suffix.use == 'top' && g.yAxis.prefix.use == 'top') {
             //both preifx and suffix should be added to the top most label
             if(topAxisLabel) {
                 topAxisLabel.text(g.yAxis.prefix.value + topAxisLabel.text() + g.yAxis.suffix.value)
@@ -442,26 +442,26 @@ var Gneiss = {
             }
             
         }
-        else if (g.yAxis.suffix.use == "top") {
+        else if (g.yAxis.suffix.use == 'top') {
             //only the suffix should be added (Because the prefix is already there)
             topAxisLabel.text(topAxisLabel.text() + g.yAxis.suffix.value)
         }
-        else if(g.yAxis.prefix.use == "top") {
+        else if(g.yAxis.prefix.use == 'top') {
             //only the prefix should be added (Because the suffix is already there)
             topAxisLabel.text(g.yAxis.prefix.value + topAxisLabel.text())
         }
 			
 		
-        d3.selectAll(".yAxis").style("display",null)
+        d3.selectAll('.yAxis').style('display',null)
         
         try {
             if (g.type == 'bar') {
                 g.titleLine.attr('y', 40); 
             } else if (!g.legend || g.series.length == 1) {
-                g.titleLine.attr("y", g.topAxisItem.y - 4)
+                g.titleLine.attr('y', g.topAxisItem.y - 4)
             }
             else {
-                g.titleLine.attr("y", g.topAxisItem.y - 25)
+                g.titleLine.attr('y', g.topAxisItem.y - 25)
             }
         } catch(e) {
             // Do nothing
@@ -469,13 +469,13 @@ var Gneiss = {
 
         var translate = (g.type == 'bar')
             ? 'translate(0,0)'
-            : "translate(-" + (g.padding.left + 5) + ",-8)";
+            : 'translate(-' + (g.padding.left + 5) + ',-8)';
 
-        axisGroup.selectAll("text")
-            .attr("transform", translate);
+        axisGroup.selectAll('text')
+            .attr('transform', translate);
 		
-		d3.selectAll(".yAxis").each(function(){this.parentNode.prependChild(this);})
-		d3.selectAll("#ground").each(function(){this.parentNode.prependChild(this);})
+		d3.selectAll('.yAxis').each(function(){this.parentNode.prependChild(this);})
+		d3.selectAll('#ground').each(function(){this.parentNode.prependChild(this);})
 
 		this.g = g
 		return this
@@ -485,7 +485,7 @@ var Gneiss = {
 		var g = this.g
 
 		g.xAxis.axis.scale(g.xAxis.scale)
-			.orient(g.type == 'bar' ? "left" : "bottom")
+			.orient(g.type == 'bar' ? 'left' : 'bottom')
 			.ticks(g.xAxis.ticks)
             .tickSize(g.type == 'bar' ? 0 : 5);
 
@@ -493,42 +493,42 @@ var Gneiss = {
             ? 'translate(' + g.padding.left + ',' + g.padding.top + ')'
             : 'translate(0,' + (g.height - g.padding.bottom) + ')';
         
-		g.chart.selectAll("#xAxis")
-			.attr("transform", translate)
+		g.chart.selectAll('#xAxis')
+			.attr('transform', translate)
 			.call(g.xAxis.axis)
 
-        g.chart.selectAll("#xAxis path")
-            .attr("transform", "translate(10,0)");
+        g.chart.selectAll('#xAxis path')
+            .attr('transform', 'translate(10,0)');
 
         if (g.type == 'bar') {
             var width = 0;
 
-            g.chart.selectAll("#xAxis text")
+            g.chart.selectAll('#xAxis text')
                 .each(function() {
                     width = Math.max(width, this.parentNode.getBBox().width);
                 });
 
-            g.chart.selectAll("#xAxis text")
-                .attr("text-anchor", 'end')
+            g.chart.selectAll('#xAxis text')
+                .attr('text-anchor', 'end')
                 .each(function() {
                     this.setAttribute('x', width);
                 })
         } else {
-            g.chart.selectAll("#xAxis text")
-                .attr("text-anchor", 'middle')
+            g.chart.selectAll('#xAxis text')
+                .attr('text-anchor', 'middle')
                 .each(function() {
                     var pwidth = this.parentNode.getBBox().width
-                    var attr = this.parentNode.getAttribute("transform")
-                    var attrx = Number(attr.split("(")[1].split(",")[0])
-                    var attry = Number(attr.split(")")[0].split(",")[1])
+                    var attr = this.parentNode.getAttribute('transform')
+                    var attrx = Number(attr.split('(')[1].split(',')[0])
+                    var attry = Number(attr.split(')')[0].split(',')[1])
 
                     // fix labels to not fall off edge 
                     if (pwidth / 2 + attrx > g.width) {
-                        this.setAttribute("x", Number(this.getAttribute("x")) - (pwidth + attrx - g.width + g.padding.right))
-                        this.setAttribute("text-anchor", "start")
+                        this.setAttribute('x', Number(this.getAttribute('x')) - (pwidth + attrx - g.width + g.padding.right))
+                        this.setAttribute('text-anchor', 'start')
                     }
                     else if (attrx - pwidth / 2 < 0) {
-                        this.setAttribute("text-anchor", "start")
+                        this.setAttribute('text-anchor', 'start')
                     }
                 })
         }
@@ -585,10 +585,10 @@ var Gneiss = {
 		var g = this.g;
 
         // Clear old elements
-        g.seriesContainer.selectAll("g.seriesColumn").remove();
-        g.seriesContainer.selectAll("g.seriesBar").remove();
-        g.seriesContainer.selectAll("path").remove();
-        g.seriesContainer.selectAll("g.seriesScatter").remove();
+        g.seriesContainer.selectAll('g.seriesColumn').remove();
+        g.seriesContainer.selectAll('g.seriesBar').remove();
+        g.seriesContainer.selectAll('path').remove();
+        g.seriesContainer.selectAll('g.seriesScatter').remove();
 		
         // Draw new elements
         if (g.type == 'column') {
@@ -614,32 +614,32 @@ var Gneiss = {
 		var columnWidth = this.g.columnWidth;
 		var columnGroupShift = this.g.columnGroupShift;
 		
-        var columnGroups = g.seriesContainer.selectAll("g.seriesColumn")
+        var columnGroups = g.seriesContainer.selectAll('g.seriesColumn')
             .data(g.series)
         
         columnGroups.enter()
-            .append("g") 
-                .attr("class", "seriesColumn")
-                .attr("fill", function(d,i) { return d.color })
-                .attr("transform", function(d,i) {
-                    return "translate(" + (i * columnGroupShift - (columnGroupShift * (g.series.length - 1) / 2)) + ",0)" 
+            .append('g') 
+                .attr('class', 'seriesColumn')
+                .attr('fill', function(d,i) { return d.color })
+                .attr('transform', function(d,i) {
+                    return 'translate(' + (i * columnGroupShift - (columnGroupShift * (g.series.length - 1) / 2)) + ',0)' 
                 })
             
         columnGroups.exit().remove()
     
-        var columnRects = columnGroups.selectAll("rect")
+        var columnRects = columnGroups.selectAll('rect')
             .data(function(d,i) { return d.data })
         
         columnRects.enter()
-            .append("rect")
-                .attr("width", columnWidth)
-                .attr("height", function(d,i) {
+            .append('rect')
+                .attr('width', columnWidth)
+                .attr('height', function(d,i) {
                     return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnHeight(d, g.yAxis.scale.domain()))) 
                 })
-                .attr("x", function(d,i) {
+                .attr('x', function(d,i) {
                     return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) - (columnWidth / 2)
                 })
-                .attr("y", function(d,i) {
+                .attr('y', function(d,i) {
                     if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnHeight(d, g.yAxis.scale.domain())) >= 0) {
                         return g.yAxis.scale(Gneiss.helper.columnHeight(d,g.yAxis.scale.domain()));
                     } else {
@@ -660,29 +660,29 @@ var Gneiss = {
         var barHeight = this.g.barHeight;
 		var barGroupShift = this.g.barGroupShift;
 
-        var barGroups = g.seriesContainer.selectAll("g.seriesBar")
+        var barGroups = g.seriesContainer.selectAll('g.seriesBar')
             .data(g.series)
         
         barGroups.enter()
-            .append("g") 
-                .attr("class", "seriesBar")
-                .attr("fill", function(d,i) { return d.color })
-                .attr("transform", function(d,i) {
-                    return "translate(" + (g.padding.left + 101) + "," + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ")";
+            .append('g') 
+                .attr('class', 'seriesBar')
+                .attr('fill', function(d,i) { return d.color })
+                .attr('transform', function(d,i) {
+                    return 'translate(' + (g.padding.left + 101) + ',' + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ')';
                 })
             
         barGroups.exit().remove()
     
-        var barRects = barGroups.selectAll("rect")
+        var barRects = barGroups.selectAll('rect')
             .data(function(d,i) { return d.data })
         
         barRects.enter()
-            .append("rect")
-                .attr("width", function(d, i) {
+            .append('rect')
+                .attr('width', function(d, i) {
                     return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.barWidth(d, g.yAxis.scale.domain())));
                 })
-                .attr("height", barHeight)
-                .attr("x", function(d, i) {
+                .attr('height', barHeight)
+                .attr('x', function(d, i) {
                     if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.barWidth(d, g.yAxis.scale.domain())) >= 0) {
                         return g.yAxis.scale(0) - g.yAxis.scale(Gneiss.helper.barWidth(d, g.yAxis.scale.domain()));
                     } else {
@@ -692,7 +692,7 @@ var Gneiss = {
                    return g.yAxis.scale(0) - Math.abs(g.yAxis.scale(d));
 
                 })
-                .attr("y", function(d, i) {
+                .attr('y', function(d, i) {
                     return g.xAxis.scale(i);
                 })
     
@@ -707,19 +707,19 @@ var Gneiss = {
          */
         var g = this.g;
 
-        var lineSeries = g.seriesContainer.selectAll("path")
+        var lineSeries = g.seriesContainer.selectAll('path')
             .data(g.series)
-            .attr("stroke",function(d,i){return d.color});
+            .attr('stroke',function(d,i){return d.color});
 
         lineSeries.enter()
-            .append("path")
-                .attr("d",function(d,j) { pathString = g.yAxis.line(d.data).split("L0,0L").join("M0,0L"); return pathString;})
-                .attr("class","seriesLine")
-                .attr("stroke",function(d,i){return d.color})
-                .attr("stroke-width",3)
-                .attr("stroke-linejoin","round")
-                .attr("stroke-linecap","round")
-                .attr("fill","none");
+            .append('path')
+                .attr('d',function(d,j) { pathString = g.yAxis.line(d.data).split('L0,0L').join('M0,0L'); return pathString;})
+                .attr('class','seriesLine')
+                .attr('stroke',function(d,i){return d.color})
+                .attr('stroke-width',3)
+                .attr('stroke-linejoin','round')
+                .attr('stroke-linecap','round')
+                .attr('fill','none');
 
         lineSeries.exit().remove()
 
@@ -731,28 +731,28 @@ var Gneiss = {
          */
         var g = this.g;
 
-        var scatterGroups = g.seriesContainer.selectAll("g.seriesScatter")
+        var scatterGroups = g.seriesContainer.selectAll('g.seriesScatter')
             .data(g.series)
-            .attr("fill", function(d,i){return d.color})
+            .attr('fill', function(d,i){return d.color})
         
         scatterGroups.enter()
-            .append("g")
-            .attr("class","seriesScatter")
-            .attr("fill",function(d,i){return d.color})
+            .append('g')
+            .attr('class','seriesScatter')
+            .attr('fill',function(d,i){return d.color})
         
         scatterGroups.exit().remove()
         
         scatterDots = scatterGroups
-            .selectAll("circle")
+            .selectAll('circle')
             .data(function(d){return d.data})
             
         scatterDots.enter()
-                .append("circle")
-                .attr("r",4)
-                .attr("stroke","#fff")
-                .attr("stroke-width","1")
-                .attr("transform",function(d,i){
-                    return "translate("+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + g.yAxis.scale(d) + ")"
+                .append('circle')
+                .attr('r',4)
+                .attr('stroke','#fff')
+                .attr('stroke-width','1')
+                .attr('transform',function(d,i){
+                    return 'translate('+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + ',' + g.yAxis.scale(d) + ')'
                     })
 
         this.g = g;
@@ -762,42 +762,42 @@ var Gneiss = {
 		var legendItemY;
 		
 		//remove current legends
-		g.legendItemContainer.selectAll("g.legendItem").remove()
+		g.legendItemContainer.selectAll('g.legendItem').remove()
 		
         //add legend to chart
-        var legendGroups = g.legendItemContainer.selectAll("g")
+        var legendGroups = g.legendItemContainer.selectAll('g')
             .data(g.series);
 
         var legItems = 	legendGroups.enter()
-            .append("g")
-            .attr("class","legendItem")
-            .attr("transform",function(d,i) {
-                return "translate("+g.padding.left+","+(g.padding.top-25)+")"
+            .append('g')
+            .attr('class','legendItem')
+            .attr('transform',function(d,i) {
+                return 'translate('+g.padding.left+','+(g.padding.top-25)+')'
             });
 
         legendGroups.exit().remove()
 
-        var legLabels = legItems.append("text")
+        var legLabels = legItems.append('text')
                 .filter(function(){return g.series.length > 1})
-                .attr("class","legendLabel")
-                .attr("x",15)
-                .attr("y",10)
+                .attr('class','legendLabel')
+                .attr('x',15)
+                .attr('y',10)
                 .text(function(d,i){return d.name});
         
         //if there is more than one line
         if(g.series.length > 1) {
-            legItems.append("rect")
-                .attr("width",10)
-                .attr("height",10)
-                .attr("x",0)
-                .attr("y",0)
-                .attr("fill", function(d,i){return d.color})
+            legItems.append('rect')
+                .attr('width',10)
+                .attr('height',10)
+                .attr('x',0)
+                .attr('y',0)
+                .attr('fill', function(d,i){return d.color})
 
             legendGroups.filter(function(d){return d != g.series[0]})
                 .transition()
                 .duration(50)
                 .delay(function(d,i){return i * 50 + 50})
-                .attr("transform",function(d,i) {
+                .attr('transform',function(d,i) {
                     //label isn't for the first series
                     var prev = d3.select(legendGroups[0][i])
                     var prevWidth = parseFloat(prev.node().getBBox().width)
@@ -813,7 +813,7 @@ var Gneiss = {
                         x = g.padding.left
                         legendItemY += 15;						
                     }
-                    return "translate("+x+","+legendItemY+")"
+                    return 'translate('+x+','+legendItemY+')'
             })
 
 			this.g = g;	
@@ -824,7 +824,7 @@ var Gneiss = {
 	},
 	updateMetaAndTitle: function() {
 		var g = this.g
-		g.metaInfo.attr("transform","translate(0,"+(g.height-4)+")")
+		g.metaInfo.attr('transform','translate(0,'+(g.height-4)+')')
 		this.g = g
 		return this
 	},
@@ -932,8 +932,8 @@ var Gneiss = {
 			return ticks;
 		},
 		transformCoordOf: function(elem){
-			var trans = elem.attr("transform").split(",")
-			return {x:parseFloat(trans[0].split("(")[1]) , y:parseFloat(trans[1].split(")")[0])}
+			var trans = elem.attr('transform').split(',')
+			return {x:parseFloat(trans[0].split('(')[1]) , y:parseFloat(trans[1].split(')')[0])}
 		}
 	},
 	q: {}

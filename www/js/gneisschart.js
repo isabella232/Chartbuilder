@@ -319,7 +319,7 @@ var Gneiss = {
 			padding_top = 5;
 		}
 
-		padding_top += g.title == '' || g.series.length == 1 ? 0:25
+		padding_top += g.title == '' || g.series.length == 1 ? 0 : 25
 		
 		g.padding.top = padding_top
 		g.padding.bottom = padding_bottom
@@ -483,7 +483,6 @@ var Gneiss = {
             //only the prefix should be added (Because the suffix is already there)
             topAxisLabel.text(g.yAxis.prefix.value + topAxisLabel.text())
         }
-			
 		
         d3.selectAll('.yAxis').style('display',null)
         
@@ -524,7 +523,7 @@ var Gneiss = {
             .tickSize(g.type == 'bar' ? 0 : 5);
 
         var translate = (g.type == 'bar')
-            ? 'translate(' + g.padding.left + ',' + g.padding.top + ')'
+            ? 'translate(' + g.padding.left + ',' + (g.padding.top + (g.series.length == 1 ? 15 : 0)) + ')'
             : 'translate(0,' + (g.height - g.padding.bottom) + ')';
         
 		g.chart.selectAll('#xAxis')
@@ -822,9 +821,9 @@ var Gneiss = {
 
         var legItems = 	legendGroups.enter()
             .append('g')
-            .attr('class','legendItem')
-            .attr('transform',function(d,i) {
-                return 'translate('+g.padding.left+','+(g.padding.top-25)+')'
+            .attr('class', 'legendItem')
+            .attr('transform', function(d,i) {
+                return 'translate(' + g.padding.left + ',' + (g.padding.top - 25) + ')';
             });
 
         legendGroups.exit().remove()

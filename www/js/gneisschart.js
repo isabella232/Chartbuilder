@@ -914,34 +914,7 @@ var Gneiss = {
 
 		return this
 	},
-	randomizeData: function(d) {
-		delta = 10 * (Math.random() - 0.5)
-		for (var i = d.length - 1; i >= 0; i--){
-			d[i] = d[i] + ((Math.random()-0.5)*5) + delta
-		};
-		return d
-	},
 	helper: {
-		multiextent: function(a,key) {
-			//a function to find the max and min of multiple arrays
-			var data = [],ext;
-			if(key) {
-				//if there is a key function
-				for (var i = a.length - 1; i >= 0; i--){
-					ext = d3.extent(key(a[i]))
-					data.push(ext[0])
-					data.push(ext[1])
-				}
-			}
-			else {
-				for (var i = a.length - 1; i >= 0; i--){
-					ext = d3.extent(a[i])
-					data.push(ext[0])
-					data.push(ext[1])
-				};
-			}
-			return d3.extent(data)
-		},
 		columnHeight: function(d, domain) {
 			if(d > 0 && domain[0] > 0) {
 				return domain[0]

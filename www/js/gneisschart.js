@@ -211,8 +211,6 @@ var Gneiss = {
 
         var ex = d3.extent(extremes);
 
-        console.log(g.yAxis.domain[0], g.yAxis.domain[1]);
-
         if(g.yAxis.domain[0] == null) {
             g.yAxis.domain[0] = ex[0]
         }

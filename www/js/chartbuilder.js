@@ -4,14 +4,14 @@ var TAB = String.fromCharCode(9);
 var chart;
 
 ChartBuilder = {
-	allColors: ["db4730","e58d3c","f0c74f","04807e","4da9da",
-				"6d2217","72461d","776326","04403e","26546d",
-				"a43424","ab6a2d","b3943a","04605d","3a7ea3",
-				"db4730","e58d3c","f0c74f","04807e","4da9da",
-				"e47563","ebaa69","f3d576","4ca09e","7bbfe3",
-				"eea397","f2c69b","f7e3a2","88c0bf","7bbfe3",
-				"f6d1cb","f9e2cc","fbf1d0","c4dfdf","d2eaf6"],
-	curRaw: "",
+	allColors: ['db4730','e58d3c','f0c74f','04807e','4da9da',
+				'6d2217','72461d','776326','04403e','26546d',
+				'a43424','ab6a2d','b3943a','04605d','3a7ea3',
+				'db4730','e58d3c','f0c74f','04807e','4da9da',
+				'e47563','ebaa69','f3d576','4ca09e','7bbfe3',
+				'eea397','f2c69b','f7e3a2','88c0bf','7bbfe3',
+				'f6d1cb','f9e2cc','fbf1d0','c4dfdf','d2eaf6'],
+	curRaw: '',
 	paletteOpen: false,
 	getNewData: function(csv) {
         var separator = COMMA;
@@ -68,7 +68,7 @@ ChartBuilder = {
 				// If it's a data point
 				else {
 					var value = csv_matrix[j][i];
-					if(value == "null" || value == "") {
+					if(value == 'null' || value == '') {
 						//allow for nulls or blank cells
 						value = null
 					}
@@ -101,14 +101,14 @@ ChartBuilder = {
 			}
 			
 			d.push({
-				"name": a[i].shift().split("..").join("\n"),
-				"data":parseFunc(a[i]),
+				'name': a[i].shift().split('..').join('\n'),
+				'data':parseFunc(a[i]),
 			});
 			
 		};
 		for (var i = d.length - 1; i >= 0; i--){
 			for (var j = d[i].length - 1; j >= 0; j--){
-				if(d[i][j] == "" || d[i][j]==" ") {
+				if(d[i][j] == '' || d[i][j]==' ') {
 					d[i][j] = null
 				}
 			};
@@ -135,7 +135,7 @@ ChartBuilder = {
 					if(i == 0) {
 						o.push([])
 					}
-					if(a[i][j] != "") {
+					if(a[i][j] != '') {
 						o[j][i] = a[i][j]
 					}
 				};
@@ -145,11 +145,11 @@ ChartBuilder = {
 		return o
 	},
 	createTable: function(r){
-		$table = $("#dataTable table")
-		$table.text("")
+		$table = $('#dataTable table')
+		$table.text('')
 
 
-		$table.append("<tr><th>"+r[0].join("</th><th>")+"</th></tr>")
+		$table.append('<tr><th>'+r[0].join('</th><th>')+'</th></tr>')
 		for (var i=1; i < r.length; i++) {
 			if(r[i]) {
 				//add commas to the numbers
@@ -157,7 +157,7 @@ ChartBuilder = {
 					r[i][j] = this.addCommas(r[i][j])
 				};
 
-				$("<tr><td>"+r[i].join("</td><td>")+"</td></tr>")
+				$('<tr><td>'+r[i].join('</td><td>')+'</td></tr>')
 					.appendTo($table)
 			}				
 		};
@@ -180,7 +180,7 @@ ChartBuilder = {
 		var chartStyle, selector, cssText;
 		
 		for (var i = document.styleSheets.length - 1; i >= 0; i--){
-			if(document.styleSheets[i].href && document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
+			if(document.styleSheets[i].href && document.styleSheets[i].href.indexOf('gneisschart.css') != -1) {
 				if (document.styleSheets[i].rules != undefined) {
 					chartStyle = document.styleSheets[i].rules 
 				}
@@ -196,19 +196,19 @@ ChartBuilder = {
 					//cssRule is a style rule
 					selector = chartStyle[i].selectorText;
 					cssText = chartStyle[i].style.cssText;
-					d3.selectAll(selector).attr("style",cssText)
+					d3.selectAll(selector).attr('style',cssText)
 				}
 			};
 		}
 	},
 	createChartImage: function() {
 		// Create PNG image
-		var canvas = document.getElementById("canvas")
-		canvas.width = $("#chartContainer").width() * 2
-		canvas.height = $("#chartContainer").height() *2
+		var canvas = document.getElementById('canvas')
+		canvas.width = $('#chartContainer').width() * 2
+		canvas.height = $('#chartContainer').height() *2
 
-		var canvasContext = canvas.getContext("2d")
-		var svg = $.trim(document.getElementById("chartContainer").innerHTML)
+		var canvasContext = canvas.getContext('2d')
+		var svg = $.trim(document.getElementById('chartContainer').innerHTML)
 		canvasContext.drawSvg(svg,0,0)
 		
 		
@@ -218,11 +218,11 @@ ChartBuilder = {
 			filename.unshift(chart.g.title)
 		}
 		
-		filename = filename.join("-").replace(/[^\w\d]+/gi, '-');
+		filename = filename.join('-').replace(/[^\w\d]+/gi, '-');
 		
 		
-		$("#downloadImageLink").attr("href",canvas.toDataURL("png"))
-			.attr("download", function() { return filename + "_chartbuilder.png"
+		$('#downloadImageLink').attr('href',canvas.toDataURL('png'))
+			.attr('download', function() { return filename + '_chartbuilder.png'
 		    });
 
 		this.storeLocalChart(filename);	
@@ -230,10 +230,10 @@ ChartBuilder = {
 		
 	},
 	redraw: function() {
-		$(".seriesItemGroup").detach()
+		$('.seriesItemGroup').detach()
 		var g = chart.g, s, picker;
 		this.customLegendLocaion = false;
-		var seriesContainer = $("#seriesItems")
+		var seriesContainer = $('#seriesItems')
 			
 		for (var i=0; i < g.series.length; i++) {
 			s = g.series[i]
@@ -242,12 +242,12 @@ ChartBuilder = {
 				<input id="'+this.idSafe(s.name)+'_color" name="'+this.idSafe(s.name)+'" type="text" />\
 			</div>');
 			
-            var color = s.color ? s.color.replace("#","") : g.colors[i].replace("#","")
+            var color = s.color ? s.color.replace('#','') : g.colors[i].replace('#','')
 			
 			seriesContainer.append(seriesItem);
-			var picker = seriesItem.find("#"+this.idSafe(s.name)+"_color").colorPicker({pickerDefault: color, colors:this.allColors});
+			var picker = seriesItem.find('#'+this.idSafe(s.name)+'_color').colorPicker({pickerDefault: color, colors:this.allColors});
 
-			seriesItem.data("index",i)
+			seriesItem.data('index',i)
 			picker.change(function() {
 				chart.g.series[$(this).parent().data().index].color = $(this).val()
 				ChartBuilder.redraw()
@@ -272,36 +272,36 @@ ChartBuilder = {
 		ChartBuilder.inlineAllStyles();
 	},
 	setChartArea: function() {
-		$("#chartContainer").css("height", 480)
+		$('#chartContainer').css('height', 480)
 	},
 	getAllInputData: function() {
 		var d = {}, $el;
-		var elems = $("input:not([id^=colorPicker]), textarea, select:not(#previous_charts)").each(function() {
+		var elems = $('input:not([id^=colorPicker]), textarea, select:not(#previous_charts)').each(function() {
 			$el = $(this)
-			d[$el.attr("id")] = $el.val()
+			d[$el.attr('id')] = $el.val()
 		})
 		return d
 	},
 	storeLocalChart: function(name) {
 		try {
-			localStorage["savedCharts"][0]
+			localStorage['savedCharts'][0]
 		}
 		catch(e) {
-			localStorage["savedCharts"] = JSON.stringify([])
+			localStorage['savedCharts'] = JSON.stringify([])
 		}
 		
-		var allcharts = JSON.parse(localStorage["savedCharts"])
+		var allcharts = JSON.parse(localStorage['savedCharts'])
 		newChart = this.getAllInputData()
 		newChart.name = name
         newChart.created = (new Date()).valueOf();
         
 		allcharts.push(newChart)
-		localStorage["savedCharts"] = JSON.stringify(allcharts);
+		localStorage['savedCharts'] = JSON.stringify(allcharts);
 	},
 	getLocalCharts: function() {
 		var charts = []
 		try {
-			charts = JSON.parse(localStorage["savedCharts"])
+			charts = JSON.parse(localStorage['savedCharts'])
 		}
 		catch(e){ /* Fail Silently */}
 		
@@ -309,14 +309,14 @@ ChartBuilder = {
 	},
 	loadLocalChart: function(d) {
 		for (var key in d) {
-			if(key != "name" && key != "created") {
-				$("#"+key).val(d[key])
+			if(key != 'name' && key != 'created') {
+				$('#'+key).val(d[key])
 			}
 		}
-		$("input:not([id^=colorPicker]), textarea, select:not(#previous_charts)").keyup().change();
+		$('input:not([id^=colorPicker]), textarea, select:not(#previous_charts)').keyup().change();
 	},
 	idSafe: function(s) {
-		s = s.replace(/[^\w\d]+/gi,"-")
+		s = s.replace(/[^\w\d]+/gi,'-')
 		return s
 	},
 	addCommas: function(nStr)
@@ -369,7 +369,7 @@ ChartBuilder = {
 		},
 		axis_tick_override_change: function(index,that) {
 			var val = $(that).val()
-			val = val.split(",")
+			val = val.split(',')
 			if(val.length > 1) {
 				for (var i = val.length - 1; i >= 0; i--){
 					val[i] = parseFloat(val[i])
@@ -387,13 +387,13 @@ ChartBuilder = {
 	showInvalidData: function(e) {
         e = e || 'Data could not be parsed.';
 
-        $("#invalidDataSpan").text(e);
-		$("#inputDataHeading").addClass("inputDataHInvData");
-		$("#invalidDataSpan").removeClass("hide");
+        $('#invalidDataSpan').text(e);
+		$('#inputDataHeading').addClass('inputDataHInvData');
+		$('#invalidDataSpan').removeClass('hide');
 	},
 	hideInvalidData: function() {
-		$("#inputDataHeading").removeClass("inputDataHInvData");
-		$("#invalidDataSpan").addClass("hide");
+		$('#inputDataHeading').removeClass('inputDataHInvData');
+		$('#invalidDataSpan').addClass('hide');
 	}
 }
 
@@ -404,7 +404,7 @@ ChartBuilder = {
 */
 Gneiss.customYAxisFormat = function(axisGroup,i) {
 	var g = this.g
-	axisGroup.selectAll("g")
+	axisGroup.selectAll('g')
 		.each(function(d,j) {
 			//create an object to store axisItem info
 			var axisItem = {}
@@ -412,18 +412,18 @@ Gneiss.customYAxisFormat = function(axisGroup,i) {
 			//store the position of the axisItem
 			//(figure it out by parsing the transfrom attribute)
 			axisItem.y = parseFloat(d3.select(this)
-				.attr("transform")
-					.split(")")[0]
-						.split(",")[1]
+				.attr('transform')
+					.split(')')[0]
+						.split(',')[1]
 				)
 			
 			//store the text element of the axisItem
 			//align the text right position it on top of the line
-			axisItem.text = d3.select(this).select("text")
-				.attr("text-anchor",i==0?"end":"start")
-				.attr("fill",i==0?"#666666":g.yAxis.color)
-				.attr("x",function(){var elemx = Number(d3.select(this).attr("x")); return i==0?elemx:elemx+4})
-				.attr("y",-9)
+			axisItem.text = d3.select(this).select('text')
+				.attr('text-anchor',i==0?'end':'start')
+				.attr('fill',i==0?'#666666':g.yAxis.color)
+				.attr('x',function(){var elemx = Number(d3.select(this).attr('x')); return i==0?elemx:elemx+4})
+				.attr('y',-9)
 			})
 	this.g = g;
 }
@@ -432,13 +432,13 @@ Gneiss.customYAxisFormat = function(axisGroup,i) {
 ChartBuilder.getDefaultConfig = function() {
   var chartConfig = {};
   
-  chartConfig.colors = ["#db4730","#e58d3c","#f0c74f","#04807e","#4da9da",
-  						"#6d2217","#72461d","#776326","#04403e","#26546d",
-						"#a43424","#ab6a2d","#b3943a","#04605d","#3a7ea3",
-						"#db4730","#e58d3c","#f0c74f","#04807e","#4da9da",
-						"#e47563","#ebaa69","#f3d576","#4ca09e","#7bbfe3",
-						"#eea397","#f2c69b","#f7e3a2","#88c0bf","#7bbfe3",
-						"#f6d1cb","#f9e2cc","#fbf1d0","#c4dfdf","#d2eaf6"];
+  chartConfig.colors = ['#db4730','#e58d3c','#f0c74f','#04807e','#4da9da',
+  						'#6d2217','#72461d','#776326','#04403e','#26546d',
+						'#a43424','#ab6a2d','#b3943a','#04605d','#3a7ea3',
+						'#db4730','#e58d3c','#f0c74f','#04807e','#4da9da',
+						'#e47563','#ebaa69','#f3d576','#4ca09e','#7bbfe3',
+						'#eea397','#f2c69b','#f7e3a2','#88c0bf','#7bbfe3',
+						'#f6d1cb','#f9e2cc','#fbf1d0','#c4dfdf','#d2eaf6'];
   
   return chartConfig;
 }
@@ -461,20 +461,20 @@ ChartBuilder.formatDate = function(d) {
 
 ChartBuilder.loadStoredCharts = function() {
   	var savedCharts = ChartBuilder.getLocalCharts().reverse();
-  	var chartSelect = d3.select("#previous_charts");
+  	var chartSelect = d3.select('#previous_charts');
 
-    chartSelect.selectAll("option").remove();
+    chartSelect.selectAll('option').remove();
   	
-  	chartSelect.selectAll("option")
+  	chartSelect.selectAll('option')
   		.data(savedCharts)
   		.enter()
-  		.append("option")
+  		.append('option')
   		.text(function(d) {
             var created = ChartBuilder.formatDate(new Date(d.created));
-            return d.name ? d.name + ' (' + created  + ')' : "Untitled Chart (" + created + ')'
+            return d.name ? d.name + ' (' + created  + ')' : 'Untitled Chart (' + created + ')'
         })
 
-    $("#previous_charts").trigger("chosen:updated");
+    $('#previous_charts').trigger('chosen:updated');
 }
 
 // Starts applicatoin given config object
@@ -491,12 +491,12 @@ ChartBuilder.start = function(config) {
   	chart = Gneiss.build(chartConfig)
   	
   	//scale it up so it looks good on retina displays
-  	$("#chart").attr("transform","scale(2)")
+  	$('#chart').attr('transform','scale(2)')
   	
   	//populate the input with the data that is in the chart
-  	$("#csvInput").val(function() {
+  	$('#csvInput').val(function() {
   		var data = []
-  		var val = ""
+  		var val = ''
   
   		data[0] = chart.g.xAxisRef[0].data
   		data[0].unshift(chart.g.xAxisRef[0].name)
@@ -509,47 +509,47 @@ ChartBuilder.start = function(config) {
   		data = ChartBuilder.pivotData(data)
   
   		for (var i = 0; i < data.length; i++) {
-  			data[i] = data[i].join("\t")
+  			data[i] = data[i].join('\t')
   		}; 
-  		return data.join("\n")
+  		return data.join('\n')
   	})
  
-    var chartSelect = $("#previous_charts").chosen()
-        .on("change",function() {
+    var chartSelect = $('#previous_charts').chosen()
+        .on('change',function() {
             ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
   		});
  
     ChartBuilder.loadStoredCharts(); 
   			
-  	$("#createImageButton").click(function() {
-		if($("#downloadLinksDiv").hasClass("hide")) {
-            if ($("#chart_title").val() == "") {
-                alert("You must supply a chart title.");
+  	$('#createImageButton').click(function() {
+		if($('#downloadLinksDiv').hasClass('hide')) {
+            if ($('#chart_title').val() == '') {
+                alert('You must supply a chart title.');
                 return false;
             }
 
-            if ($("#credit").val() == "") {
-                alert("You must supply a credit.");
+            if ($('#credit').val() == '') {
+                alert('You must supply a credit.');
                 return false;
             }
 
-            if ($("#chart_source").val() == "") {
-                alert("You must supply a source.");
+            if ($('#chart_source').val() == '') {
+                alert('You must supply a source.');
                 return false;
             }
 
-            $("#createImageButton p").text("Reset");
+            $('#createImageButton p').text('Reset');
 
   		    ChartBuilder.inlineAllStyles();
 			ChartBuilder.createChartImage();
 		} else {
-            $("#createImageButton p").text("Create Image of Chart");
+            $('#createImageButton p').text('Create Image of Chart');
         }
 
-		$("#downloadLinksDiv").toggleClass("hide");
+		$('#downloadLinksDiv').toggleClass('hide');
   	})
   	
-  	$("#csvInput").bind("paste", function(e) {
+  	$('#csvInput').bind('paste', function(e) {
   		//do nothing special
   	})
   	
@@ -559,7 +559,7 @@ ChartBuilder.start = function(config) {
   	//
   	*/
   	
-  	$("#csvInput").keyup(function() {
+  	$('#csvInput').keyup(function() {
   		//check if the data is different
   		if( $(this).val() != ChartBuilder.curRaw) {
   			//cache the the raw textarea value
@@ -567,7 +567,7 @@ ChartBuilder.start = function(config) {
   			
   			chart.g.yAxis.domain = [null,null];
   			
-  			var csv = $("#csvInput").val();
+  			var csv = $('#csvInput').val();
 
             try {
   			    var newData = ChartBuilder.getNewData(csv);
@@ -589,7 +589,7 @@ ChartBuilder.start = function(config) {
   			chart.g.series.unshift(chart.g.xAxisRef)
   			dataObj = ChartBuilder.mergeData(dataObj)
   			
-  			chart.g.xAxis.type = "ordinal";
+  			chart.g.xAxis.type = 'ordinal';
   			chart.g.xAxisRef = [dataObj.data.shift()]
             chart.g.yAxis.domain[0] = 0;
 
@@ -608,43 +608,43 @@ ChartBuilder.start = function(config) {
 
   	}).keyup() 
   	
-  	$("#right_axis_prefix").keyup(function() {
+  	$('#right_axis_prefix').keyup(function() {
   		ChartBuilder.actions.axis_prefix_change(0,this)
   	})
   	
-  	$("#right_axis_suffix").keyup(function() {
+  	$('#right_axis_suffix').keyup(function() {
   		ChartBuilder.actions.axis_suffix_change(0,this)
   	})
   	
-  	$("#right_axis_tick_num").change(function() {
+  	$('#right_axis_tick_num').change(function() {
   		ChartBuilder.actions.axis_tick_num_change(0,this)
   	})
 
-    $("#right_axis_max").keyup(function() {
+    $('#right_axis_max').keyup(function() {
   		ChartBuilder.actions.axis_max_change(0,this)
   	})
   	
-  	$("#right_axis_min").keyup(function() {
+  	$('#right_axis_min').keyup(function() {
   		ChartBuilder.actions.axis_min_change(0,this)
   	})
   	
-  	$("#right_axis_tick_override").keyup(function() {
+  	$('#right_axis_tick_override').keyup(function() {
   		ChartBuilder.actions.axis_tick_override_change(0,this)
   	})
   	
-  	$("#creditLine").keyup(function() {
+  	$('#creditLine').keyup(function() {
   		var val = $(this).val()
   		chart.g.creditline = val
   		chart.g.creditLine.text(chart.g.creditline)
   	}).keyup();
   	
-  	$("#sourceLine").keyup(function() {
+  	$('#sourceLine').keyup(function() {
   		var val = $(this).val()
   		chart.g.sourceline = val
   		chart.g.sourceLine.text(chart.g.sourceline)
   	}).keyup();
   	
-  	$("#chart_title").keyup(function() {
+  	$('#chart_title').keyup(function() {
   		var val = $(this).val()
   		chart.g.title = val
   		chart.resize()

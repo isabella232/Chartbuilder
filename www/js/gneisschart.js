@@ -211,12 +211,21 @@ var Gneiss = {
 
         var ex = d3.extent(extremes);
 
-        if(g.yAxis.domain[0] == null) {
+        if (g.yAxis.domain[0] == null) {
             g.yAxis.domain[0] = ex[0]
         }
         
-        if(g.yAxis.domain[1]  == null) {
+        if (g.yAxis.domain[1] == null) {
             g.yAxis.domain[1] = ex[1]
+        }
+
+        // Bar charts must cross 0!
+        if (g.type == 'bar') {
+            if (g.yAxis.domain[0] > 0) {
+                g.yAxis.domain[0] = 0;
+            } else if (g.yAxis.domain[1] < 0) {
+                g.yAxis.domain[1] = 0;
+            }
         }
 
         //set extremes in y axis objects and create scales

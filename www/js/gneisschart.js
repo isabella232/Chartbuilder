@@ -219,13 +219,19 @@ var Gneiss = {
             g.yAxis.domain[1] = ex[1]
         }
 
-        // Bar charts must cross 0!
+        // Column & bar charts must cross 0!
         if (g.type == 'column' || g.type == 'bar') {
             if (g.yAxis.domain[0] > 0) {
                 g.yAxis.domain[0] = 0;
             } else if (g.yAxis.domain[1] < 0) {
                 g.yAxis.domain[1] = 0;
             }
+        }
+
+        // Ensure scale includes all ticks
+        if (g.yAxis.tickValues !== null) {
+            g.yAxis.domain[0] = Math.min(g.yAxis.domain[0], g.yAxis.tickValues[0]);
+            g.yAxis.domain[1] = Math.max(g.yAxis.domain[1], g.yAxis.tickValues[g.yAxis.tickValues.length - 1]);
         }
 
         //set extremes in y axis objects and create scales

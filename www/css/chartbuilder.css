@@ -84,18 +84,16 @@ div.colorPicker-picker {
 	margin-bottom: 10px;
 }
 
-#downloadLinksDiv {
-	display: inline-block;
-	height: 45px;
-	margin-bottom: 0;
-}
-
-#createImageButton {
-	display: inline-block;
+#download-modal {
+	padding-top: 15%;
 }
 
 .row > .col-md-12 {
 	border-top: 1px solid #e5e5e5;
 	padding-top: 10px;
 	margin-top: 40px;
+}
+
+.modal-backdrop.fade.in {
+	opacity: 0.8;
 }

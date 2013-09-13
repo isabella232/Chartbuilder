@@ -673,6 +673,12 @@ ChartBuilder.start = function(config) {
   		
   		chart.g.titleLine.text(chart.g.title)
   	}).keyup();
+
+  	// Clicking download closes the download modal
+  	$('#downloadImageLink').on('click', function(){
+  		$('#download-modal').modal('hide');
+  	});
+  	
   	
   })
 };

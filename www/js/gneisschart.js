@@ -171,6 +171,30 @@ var Gneiss = {
 		this.g = g;
 		return this
 	},
+    calculateBarOffset: function() {
+        /*
+         * Calculate the left offset of the bar chart based on label width.
+         */
+        var g = this.g;
+
+        // Render the latest xAxis labels
+		g.xAxis.axis.scale(g.xAxis.scale)
+			.orient('left')
+			.ticks(g.xAxis.ticks)
+            .tickSize(0);
+
+        // Find the widest label
+        var width = 0;
+
+        g.chart.selectAll('#xAxis text')
+            .each(function() {
+                width = Math.max(width, this.parentNode.getBBox().width);
+            });
+
+        this.g = g;
+
+        return width;
+    },
 	setYScales: function(first) {
 		/*
 			calculates and saves the y-scales from the existing data
@@ -209,7 +233,7 @@ var Gneiss = {
             
         if (g.type == 'bar') {
             g.yAxis.scale.range([
-                g.padding.left + 100,
+                g.padding.left + this.calculateBarOffset() + 5,
                 g.width - g.padding.right
             ]).nice()
         } else {
@@ -659,6 +683,7 @@ var Gneiss = {
 
         var barHeight = this.g.barHeight;
 		var barGroupShift = this.g.barGroupShift;
+        var barOffset = this.calculateBarOffset();
 
         var barGroups = g.seriesContainer.selectAll('g.seriesBar')
             .data(g.series)
@@ -668,7 +693,7 @@ var Gneiss = {
                 .attr('class', 'seriesBar')
                 .attr('fill', function(d,i) { return d.color })
                 .attr('transform', function(d,i) {
-                    return 'translate(' + (g.padding.left + 101) + ',' + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ')';
+                    return 'translate(' + (g.padding.left + barOffset + 6) + ',' + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ')';
                 })
             
         barGroups.exit().remove()

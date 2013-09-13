@@ -44,13 +44,13 @@ var defaultGneissChartConfig = {
     },
 	series: [
 		{
-			name: 'apples',
+			name: 'Apples',
 			data: [5.5,10.2,6.1,3.8],
 			source: 'Some Org',
 			color: null
 		},
 		{
-			name: 'oranges',
+			name: 'Oranges',
 			data: [23,10,13,7],
 			source: 'Some Org',
 			color: null
@@ -58,8 +58,8 @@ var defaultGneissChartConfig = {
 	],
 	xAxisRef: [
 		{
-			name: 'names',
-			data: ['juicyness','color','flavor','travelability']
+			name: 'Names',
+			data: ['Juicyness','Color','Flavor','Travelability']
 		}
 	],
 	sourceline: '',
@@ -493,9 +493,10 @@ var Gneiss = {
 
         var translate = (g.type == 'bar')
             ? 'translate(0,0)'
-            : 'translate(-' + (g.padding.left + 5) + ',-8)';
+            : 'translate(0,-8)';
 
         axisGroup.selectAll('text')
+            .attr('text-anchor', 'end')
             .attr('transform', translate);
 		
 		d3.selectAll('.yAxis').each(function(){this.parentNode.prependChild(this);})

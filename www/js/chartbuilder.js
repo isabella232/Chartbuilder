@@ -347,7 +347,7 @@ ChartBuilder = {
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
-		axis_max_change: function(index,that) {
+		axis_max_change: function(index, that) {
 			var val = parseFloat($(that).val())
 			
             if (isNaN(val)) {
@@ -355,27 +355,27 @@ ChartBuilder = {
 			}
 
             if (chart.g.yAxis.domain[0] !== null && chart.g.yAxis.domain[0] >= val) {
-                return;
+                chart.g.yAxis.domain[1] = null;
+            } else {
+			    chart.g.yAxis.domain[1] = val;
             }
-
-			chart.g.yAxis.domain[1] = val;
 
 			chart.setYScales();
 			
             ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
-		axis_min_change: function(index,that) {
+		axis_min_change: function(index, that) {
 			var val = parseFloat($(that).val())
 			if(isNaN(val)) {
 				val = null
 			}
 
             if (chart.g.yAxis.domain[1] !== null && chart.g.yAxis.domain[1] <= val) {
-                return;
+                chart.g.yAxis.domain[0] = null;
+            } else {
+                chart.g.yAxis.domain[0] = val;
             }
-
-			chart.g.yAxis.domain[0] = val;
 
 			chart.setYScales();
 			
@@ -598,6 +598,7 @@ ChartBuilder.start = function(config) {
 			ChartBuilder.hideInvalidData();
 
             ChartBuilder.createTable(newData);
+
   
   			chart.g.series.unshift(chart.g.xAxisRef)
   			dataObj = ChartBuilder.mergeData(dataObj)
@@ -609,7 +610,12 @@ ChartBuilder.start = function(config) {
   			chart.setPadding();
   			
   			ChartBuilder.setChartArea()
-  			
+
+            // Regenerate axes from data or min/max
+            chart.g.yAxis.domain = [null, null];
+            $("#right_axis_max").keyup();
+            $("#right_axis_min").keyup();
+
   			chart.setYScales()
   				.setXScales()
   				.setLineMakers();

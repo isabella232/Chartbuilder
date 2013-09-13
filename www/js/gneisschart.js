@@ -493,9 +493,10 @@ var Gneiss = {
 
         var translate = (g.type == 'bar')
             ? 'translate(0,0)'
-            : 'translate(-' + (g.padding.left + 5) + ',-8)';
+            : 'translate(0,-8)';
 
         axisGroup.selectAll('text')
+            .attr('text-anchor', 'end')
             .attr('transform', translate);
 		
 		d3.selectAll('.yAxis').each(function(){this.parentNode.prependChild(this);})

@@ -221,8 +221,10 @@ ChartBuilder = {
 		filename = filename.join('-').replace(/[^\w\d]+/gi, '-');
 		
 		
-		$('#downloadImageLink').attr('href',canvas.toDataURL('png'))
-			.attr('download', function() { return filename + '_chartbuilder.png'
+		$('#downloadImageLink')
+			.attr('href',canvas.toDataURL('png'))
+			.attr('download', function() { 
+				return filename + '_chartbuilder.png'
 		    });
 
 		this.storeLocalChart(filename);	
@@ -506,7 +508,7 @@ ChartBuilder.start = function(config) {
     ChartBuilder.loadStoredCharts(); 
   			
   	$('#createImageButton').click(function() {
-		if($('#downloadLinksDiv').hasClass('hide')) {
+		if(!$('#download-modal').hasClass('in')) {
             if ($('#chart_title').val() == '') {
                 alert('You must supply a chart title.');
                 return false;
@@ -529,8 +531,6 @@ ChartBuilder.start = function(config) {
 		} else {
             $('#createImageButton p').text('Create Image of Chart');
         }
-
-		$('#downloadLinksDiv').toggleClass('hide');
   	})
   	
   	$('#csvInput').bind('paste', function(e) {

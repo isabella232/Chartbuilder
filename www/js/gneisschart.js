@@ -44,13 +44,13 @@ var defaultGneissChartConfig = {
     },
 	series: [
 		{
-			name: 'apples',
+			name: 'Apples',
 			data: [5.5,10.2,6.1,3.8],
 			source: 'Some Org',
 			color: null
 		},
 		{
-			name: 'oranges',
+			name: 'Oranges',
 			data: [23,10,13,7],
 			source: 'Some Org',
 			color: null
@@ -58,8 +58,8 @@ var defaultGneissChartConfig = {
 	],
 	xAxisRef: [
 		{
-			name: 'names',
-			data: ['juicyness','color','flavor','travelability']
+			name: 'Names',
+			data: ['Juicyness','Color','Flavor','Travelability']
 		}
 	],
 	sourceline: '',

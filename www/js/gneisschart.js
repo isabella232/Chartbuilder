@@ -220,7 +220,7 @@ var Gneiss = {
         }
 
         // Bar charts must cross 0!
-        if (g.type == 'bar') {
+        if (g.type == 'column' || g.type == 'bar') {
             if (g.yAxis.domain[0] > 0) {
                 g.yAxis.domain[0] = 0;
             } else if (g.yAxis.domain[1] < 0) {

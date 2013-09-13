@@ -33,7 +33,7 @@
 
     <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
       <a class="navbar-brand" href="#">Chart Builder</a>
-      <p class="navbar-text">Quickly produce mobile-friendly charts for small datasets.</p>
+      <p class="navbar-text">Create mobile-friendly charts for small datasets.</p>
     </nav>
     <div class="main-wrapper">
       <div id="chart-column">
@@ -42,25 +42,19 @@
           <canvas id="canvas" width="640px" height="960px"></canvas> 
           <canvas id="favicanvas" width="16px" height="16px"></canvas> 
         </div>
-        <div class="previousCharts">
-          <div class="form-group"><label for="previous_charts">Load a previously created chart</label>
-            <select name="previous_charts" id="previous_charts" class="form-control"></select>
-          </div>
-        </div>
+        <p>Not getting the results you need? Email <a href="mailto:nprapps@npr.org">nprapps@npr.org</a> for help or to request a custom chart!</p>
+        
       </div>
   		<div id="main">
   		  <div id="rightColumn" class="container">
   			<div class="cbInner">
 
-                  
-            <p>Not getting the results you need? Email <a href="mailto:nprapps@npr.org">nprapps@npr.org</a> for help or to request a custom chart!</p>
-  			  
     		    <div id="import" class="row">
 
                <div class="col-xs-12 col-md-12">
                	<div class="inputGroup">
                       <h2 id="inputDataHeading"><span class="step-header">1</span> Import Data</h2>
-                      <p>Copy and paste cells from your spreadsheet into this text field. The first column will become labels for the horizontal axis. Remaining columns will be plotted on the vertical axis.i (Except on bar charts.)</p>
+                      <p>Copy and paste cells from your spreadsheet into this text field. The first column will become labels for the horizontal axis. Remaining columns will be plotted on the vertical axis. (Except on bar charts.)</p>
                       <span id="invalidDataSpan" class="hide">Data could not be parsed.</span>
                       <textarea id="csvInput" class="input-box form-control" name="csvInput" rows="8"></textarea>
 
@@ -68,6 +62,11 @@
                       <div id="dataTable" class="input-box">
                          <table border=0 class="table table-bordered table-striped table-responsive">
                          </table>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="previous_charts">Or load a previously created chart</label>
+                        <select name="previous_charts" id="previous_charts" class="form-control"></select>
                       </div>
                	</div>
               </div>

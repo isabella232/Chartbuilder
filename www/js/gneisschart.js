@@ -683,7 +683,6 @@ var Gneiss = {
 
         var barHeight = this.g.barHeight;
 		var barGroupShift = this.g.barGroupShift;
-        var barOffset = this.calculateBarOffset();
 
         var barGroups = g.seriesContainer.selectAll('g.seriesBar')
             .data(g.series)
@@ -693,29 +692,52 @@ var Gneiss = {
                 .attr('class', 'seriesBar')
                 .attr('fill', function(d,i) { return d.color })
                 .attr('transform', function(d,i) {
-                    return 'translate(' + (g.padding.left + barOffset + 6) + ',' + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ')';
+                    return 'translate(0,' + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ')'
                 })
             
         barGroups.exit().remove()
     
         var barRects = barGroups.selectAll('rect')
             .data(function(d,i) { return d.data })
+
+        var domain = g.yAxis.scale.domain();
+
+        console.log(domain);
+        console.log(g.yAxis.scale(0));
+
+        // Helper
+        function barBase(d) {
+            // Value greater than 0 and min greater than 0?
+			if(d > 0 && domain[0] > 0) {
+                // Start at min
+				return domain[0]
+			}
+            // Value less than 0 and min less than 0?
+            // Start at min
+			else if (d < 0 && domain[1] < 0) {
+				return domain[1]
+			}
+			
+            // Start at 0
+			return 0
+        }
         
         barRects.enter()
             .append('rect')
                 .attr('width', function(d, i) {
-                    return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.barWidth(d, g.yAxis.scale.domain())));
+                    return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(barBase(d)));
                 })
                 .attr('height', barHeight)
                 .attr('x', function(d, i) {
-                    if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.barWidth(d, g.yAxis.scale.domain())) >= 0) {
-                        return g.yAxis.scale(0) - g.yAxis.scale(Gneiss.helper.barWidth(d, g.yAxis.scale.domain()));
-                    } else {
-                        return g.yAxis.scale(d);
+                    var base = g.yAxis.scale(barBase(d));
+
+                    console.log(base, g.yAxis.scale(0), g.yAxis.scale(d));
+
+                    if (d >= 0) {
+                        return base;
                     }
 
-                   return g.yAxis.scale(0) - Math.abs(g.yAxis.scale(d));
-
+                    return g.yAxis.scale(d);
                 })
                 .attr('y', function(d, i) {
                     return g.xAxis.scale(i);
@@ -920,16 +942,6 @@ var Gneiss = {
 			
 			return 0
 		},
-        barWidth: function(d, domain) {
-			if(d > 0 && domain[0] > 0) {
-				return domain[0]
-			}
-			else if (d < 0 && domain[1] < 0) {
-				return domain[1]
-			}
-			
-			return 0
-        },
 		exactTicks: function(domain,numticks) {
 			numticks -= 1;
 			var ticks = [];

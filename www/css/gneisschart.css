@@ -37,7 +37,7 @@ svg .yAxis .zero .tick {
 	stroke-dasharray: 0;
 }
 
-svg .axis text {
+svg .axis text,svg .bar text {
 	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
 	font-size: 14px;
 }

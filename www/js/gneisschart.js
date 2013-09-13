@@ -699,22 +699,6 @@ var Gneiss = {
         var barHeight = this.g.barHeight;
 		var barGroupShift = this.g.barGroupShift;
 
-        var barGroups = g.seriesContainer.selectAll('g.seriesBar')
-            .data(g.series)
-        
-        barGroups.enter()
-            .append('g') 
-                .attr('class', 'seriesBar')
-                .attr('fill', function(d,i) { return d.color })
-                .attr('transform', function(d,i) {
-                    return 'translate(0,' + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ')'
-                })
-            
-        barGroups.exit().remove()
-    
-        var barRects = barGroups.selectAll('rect')
-            .data(function(d,i) { return d.data })
-
         var domain = g.yAxis.scale.domain();
 
         // Helper
@@ -733,27 +717,53 @@ var Gneiss = {
             // Start at 0
 			return 0
         }
+
+        var barSeries = g.seriesContainer.selectAll('g.seriesBar')
+            .data(g.series)
         
-        barRects.enter()
-            .append('rect')
-                .attr('width', function(d, i) {
-                    return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(barBase(d)));
+        barSeries.enter()
+            .append('g') 
+                .attr('class', 'seriesBar')
+                .attr('fill', function(d,i) { return d.color })
+                .attr('transform', function(d,i) {
+                    return 'translate(0,' + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ')'
                 })
-                .attr('height', barHeight)
-                .attr('x', function(d, i) {
-                    var base = g.yAxis.scale(barBase(d));
-
-                    if (d >= 0) {
-                        return base;
-                    }
-
-                    return g.yAxis.scale(d);
-                })
-                .attr('y', function(d, i) {
-                    return g.xAxis.scale(i);
-                })
+            
+        barSeries.exit().remove()
     
-        barRects.exit().remove()
+        var barGroups = barSeries.selectAll('g')
+            .data(function(d, i) { return d.data; })
+            .enter()
+            .append('g')
+            .attr('class', 'bar')
+            .attr('transform', function(d, i) {
+                var x = null;
+                var y = g.xAxis.scale(i);
+
+                if (d >= 0) {
+                    x = g.yAxis.scale(barBase(d));
+                } else {
+                    x = g.yAxis.scale(d);
+                }
+
+                return 'translate(' + x + ',' + y + ')';
+            });
+
+        var barRects = barGroups.append('rect')
+            .attr('class', 'bar')
+            .attr('width', function(d, i) {
+                return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(barBase(d)));
+            })
+            .attr('height', barHeight)
+        
+        var barLabels = barGroups.append('text')
+			.attr('text-anchor','start')
+            .attr('fill', function(d,i) { return '#333' })
+            .attr('x', function(d, i) {
+                return this.parentNode.getBBox().width + 5;
+            })
+            .attr('y', barHeight / 2)
+            .text(function(d, i) { return d; } );
 
         this.g = g;
 

@@ -703,9 +703,6 @@ var Gneiss = {
 
         var domain = g.yAxis.scale.domain();
 
-        console.log(domain);
-        console.log(g.yAxis.scale(0));
-
         // Helper
         function barBase(d) {
             // Value greater than 0 and min greater than 0?
@@ -731,8 +728,6 @@ var Gneiss = {
                 .attr('height', barHeight)
                 .attr('x', function(d, i) {
                     var base = g.yAxis.scale(barBase(d));
-
-                    console.log(base, g.yAxis.scale(0), g.yAxis.scale(d));
 
                     if (d >= 0) {
                         return base;

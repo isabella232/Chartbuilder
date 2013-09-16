@@ -150,7 +150,7 @@ var Gneiss = {
                 width = Math.max(width, this.getBBox().width);
             });
 
-        g.chartOffset = width;
+        g.chartOffset = width + 5;
 
         this.g = g;
     },
@@ -306,8 +306,8 @@ var Gneiss = {
             ];
         } else {
 			rangeArray = [
-                g.padding.left + g.chartOffset + 10,
-                g.width - (g.padding.right + 10)
+                g.padding.left + g.chartOffset,
+                g.width - (g.padding.right)
             ];
 		};
 
@@ -327,7 +327,7 @@ var Gneiss = {
 
         var tickSize = (g.type == 'bar')
             ? g.height - (g.padding.top + g.padding.bottom)
-            : -(g.width - (g.padding.left + g.padding.right));
+            : -(g.width - (g.padding.left + g.padding.right + g.chartOffset));
 
         g.yAxis.axis.scale(g.yAxis.scale)
             .orient(g.type == 'bar' ? 'bottom' : 'left')
@@ -341,6 +341,13 @@ var Gneiss = {
         var axisGroup = g.chart.selectAll('#yAxis')
             .attr('transform', translate)
             .call(g.yAxis.axis)
+
+        var translate = (g.type == 'bar')
+            ? 'translate(0,0)'
+            : 'translate(' + g.chartOffset + ',0)';
+                
+        g.chart.selectAll('#yAxis .tick')
+            .attr('transform', translate)
 				
         //adjust label position and add prefix and suffix
         var topAxisLabel = '';
@@ -431,24 +438,29 @@ var Gneiss = {
             g.chart.selectAll('#xAxis text')
                 .attr('text-anchor', 'middle')
                 .each(function() {
-                    var pwidth = this.parentNode.getBBox().width
-                    var attr = this.parentNode.getAttribute('transform')
-                    var attrx = Number(attr.split('(')[1].split(',')[0])
-                    var attry = Number(attr.split(')')[0].split(',')[1])
+                    var labelWidth = this.parentNode.getBBox().width;
+                    var halfLabelWidth = labelWidth / 2;
+                    var transform = this.parentNode.getAttribute('transform');
+                    var x = Number(transform.split('(')[1].split(',')[0]);
 
-                    // fix labels to not fall off edge 
-                    if (pwidth / 2 + attrx > g.width) {
-                        this.setAttribute('x', Number(this.getAttribute('x')) - (pwidth + attrx - g.width + g.padding.right))
-                        this.setAttribute('text-anchor', 'start')
+                    console.log(labelWidth, x);
+
+                    // Off right edge of chart
+                    if (halfLabelWidth + x > g.width - g.padding.right) {
+                        this.setAttribute('text-anchor', 'end');
+                        this.setAttribute('x', (g.width - g.padding.right) - x);
                     }
-                    else if (attrx - pwidth / 2 < 0) {
-                        this.setAttribute('text-anchor', 'start')
+                    // Off left edge of chart
+                    else if (x - halfLabelWidth < g.padding.left + g.chartOffset) {
+                        this.setAttribute('text-anchor', 'start');
+                        this.setAttribute('x', (g.padding.left + g.chartOffset) - x);
                     }
                 })
         }
 		
-		this.g = g
-		return this
+		this.g = g;
+
+		return this;
 	},
 	calculateColumnWidths: function() {
         /*

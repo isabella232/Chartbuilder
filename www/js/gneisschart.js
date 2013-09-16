@@ -114,7 +114,7 @@ var Gneiss = {
 
 		g.titleLine = g.chart.append('text')
 			.attr('id','titleLine')
-			.attr('transform','translate(' + g.padding.left + ',-15)')
+			.attr('transform','translate(' + g.padding.left + ',25)')
 			.text(g.title)
 		
         g.seriesContainer = g.chart.append('g')
@@ -125,10 +125,6 @@ var Gneiss = {
 
         this.drawSeries();
         this.drawLegend();
-		
-		g.metaInfo = g.chart.append('g')
-			.attr('id','metaInfo')
-			.attr('transform','translate(0,'+(g.height-4)+')')
 		
 		this.g = g;
 		return this;
@@ -147,8 +143,6 @@ var Gneiss = {
 			.attr('width',g.width)
 			.attr('height',g.height)
 			
-		g.metaInfo.attr('transform','translate(0,'+(g.height-4)+')')
-		
 		this.g = g;
 		return this
 	},
@@ -365,19 +359,6 @@ var Gneiss = {
         //add the prefix and suffix to the top most label as appropriate
         topAxisLabel.text(g.yAxis.prefix + topAxisLabel.text() + g.yAxis.suffix)
 		
-        try {
-            if (g.type == 'bar') {
-                g.titleLine.attr('y', 40); 
-            } else if (!g.legend || g.series.length == 1) {
-                g.titleLine.attr('y', y - 4)
-            }
-            else {
-                g.titleLine.attr('y', y - 25)
-            }
-        } catch(e) {
-            // Do nothing
-        }
-
         var translate = (g.type == 'bar')
             ? 'translate(0,0)'
             : 'translate(0,-8)';
@@ -766,12 +747,6 @@ var Gneiss = {
 		this.g = g
 		return this
 	},
-	updateMetaAndTitle: function() {
-		var g = this.g
-		g.metaInfo.attr('transform','translate(0,'+(g.height-4)+')')
-		this.g = g
-		return this
-	},
 	redraw: function() {
 		/*
 			Redraw the chart
@@ -797,7 +772,6 @@ var Gneiss = {
 			.setXAxis()
 			.drawSeries()
             .drawLegend()
-			.updateMetaAndTitle();	
 
 		return this
 	},

@@ -335,12 +335,12 @@ ChartBuilder = {
 	},
 	actions: {
 		axis_prefix_change: function(index,that) {
-			chart.g.yAxis.prefix.value = $(that).val()
+			chart.g.yAxis.prefix = $(that).val()
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},
 		axis_suffix_change: function(index,that) {
-			chart.g.yAxis.suffix.value = $(that).val()
+			chart.g.yAxis.suffix = $(that).val()
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
 		},

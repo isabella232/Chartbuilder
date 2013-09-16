@@ -3,6 +3,8 @@ Element.prototype.prependChild = function(child) { this.insertBefore(child, this
 
 Date.setLocale('en');
 
+BAR_RIGHT_MARGIN_PER_CHAR = 8
+
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
 var defaultGneissChartConfig = {
@@ -23,23 +25,14 @@ var defaultGneissChartConfig = {
 		prefix: '',
 		suffix: '',
 		type: 'linear',
-		formatter: null,
-		mixed: true,
 		ticks: 5
 	},
 	yAxis: {
         domain: [null, null],
         tickValues: null,
-        prefix: {
-            value: '',
-            use: 'top' //can be 'top' 'all' 'positive' or 'negative'
-        },
-        suffix: {
-            value: '',
-            use: 'top'
-        },
+        prefix: '',
+        suffix: '', 
         ticks: 4,
-        formatter: null,
         color: null
     },
 	series: [
@@ -249,7 +242,7 @@ var Gneiss = {
         if (g.type == 'bar') {
             g.yAxis.scale.range([
                 g.padding.left + this.calculateBarOffset() + 5,
-                g.width - g.padding.right
+                g.width - (g.padding.right + g.yAxis.domain[1].toString().length * BAR_RIGHT_MARGIN_PER_CHAR)
             ]).nice()
         } else {
             g.yAxis.scale.range([
@@ -295,7 +288,7 @@ var Gneiss = {
 		if (g.type == 'column') {
 			rangeArray = [
 				g.padding.left + this.g.columnGroupWidth / 2,
-				g.width - g.padding.right - this.g.columnGroupWidth
+				g.width - (g.padding.right + this.g.columnGroupWidth)
 			];
 		} else if (g.type == 'bar') {
             rangeArray = [
@@ -303,7 +296,10 @@ var Gneiss = {
                 g.height - (g.padding.top + g.padding.bottom + this.g.barGroupHeight) 
             ];
         } else {
-			rangeArray = [g.padding.left, g.width - g.padding.right];
+			rangeArray = [
+                g.padding.left,
+                g.width - (g.padding.right + 10)
+            ];
 		};
 
 		g.xAxis.scale.rangePoints(rangeArray);
@@ -391,59 +387,6 @@ var Gneiss = {
                 axisItem.line = d3.select(this).select('line')
                     .attr('stroke','#E6E6E6')
                     
-                
-                //apply the prefix as appropriate
-                switch(g.yAxis.prefix.use) {
-                    case 'all':
-                        //if the prefix is supposed to be on every axisItem label, put it there
-                        axisItem.text.text(g.yAxis.prefix.value + axisItem.text.text())
-                    break;
-                    
-                    case 'positive':
-                        //if the prefix is supposed to be on positive values and it's positive, put it there
-                        if(parseFloat(axisItem.text.text()) > 0) {
-                            axisItem.text.text(g.yAxis.prefix.value + axisItem.text.text())
-                        }
-                    break;
-                    
-                    case 'negative':
-                        //if the prefix is supposed to be on negative values and it's negative, put it there
-                        if(parseFloat(axisItem.text.text()) < 0) {
-                            axisItem.text.text(g.yAxis.prefix.value + axisItem.text.text())
-                        }
-                    break;
-                    
-                    case 'top':
-                        //do nothing
-                    break;
-                }
-                
-                //apply the suffix as appropriate
-                switch(g.yAxis.suffix.use) {
-                    case 'all':
-                        //if the suffix is supposed to be on every axisItem label, put it there
-                        axisItem.text.text(axisItem.text.text() + g.yAxis.suffix.value)
-                    break;
-
-                    case 'positive':
-                        //if the suffix is supposed to be on positive values and it's positive, put it there
-                        if(parseFloat(axisItem.text.text()) > 0) {
-                            axisItem.text.text(axisItem.text.text() + g.yAxis.suffix.value)
-                        }
-                    break;
-
-                    case 'negative':
-                        //if the suffix is supposed to be on negative values and it's negative, put it there
-                        if(parseFloat(axisItem.text.text()) < 0) {
-                            axisItem.text.text(axisItem.text.text() + g.yAxis.suffix.value)
-                        }
-                    break;
-
-                    case 'top':
-                        //do nothing
-                    break;
-                }
-                
                 //find the top most axisItem
                 //store its text element
                 if(axisItem.y < minY) {
@@ -451,7 +394,6 @@ var Gneiss = {
                     g.topAxisItem = axisItem
                     minY = axisItem.y
                 }
-                
                 
                 if(parseFloat(axisItem.text.text()) == 0) {
                     if(d == 0) {
@@ -471,24 +413,7 @@ var Gneiss = {
             })
             
         //add the prefix and suffix to the top most label as appropriate
-        if(g.yAxis.suffix.use == 'top' && g.yAxis.prefix.use == 'top') {
-            //both preifx and suffix should be added to the top most label
-            if(topAxisLabel) {
-                topAxisLabel.text(g.yAxis.prefix.value + topAxisLabel.text() + g.yAxis.suffix.value)
-            }
-            else {
-                
-            }
-            
-        }
-        else if (g.yAxis.suffix.use == 'top') {
-            //only the suffix should be added (Because the prefix is already there)
-            topAxisLabel.text(topAxisLabel.text() + g.yAxis.suffix.value)
-        }
-        else if(g.yAxis.prefix.use == 'top') {
-            //only the prefix should be added (Because the suffix is already there)
-            topAxisLabel.text(g.yAxis.prefix.value + topAxisLabel.text())
-        }
+        topAxisLabel.text(g.yAxis.prefix + topAxisLabel.text() + g.yAxis.suffix)
 		
         d3.selectAll('.yAxis').style('display',null)
         
@@ -750,20 +675,24 @@ var Gneiss = {
             });
 
         var barRects = barGroups.append('rect')
-            .attr('class', 'bar')
             .attr('width', function(d, i) {
                 return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(barBase(d)));
             })
             .attr('height', barHeight)
         
         var barLabels = barGroups.append('text')
-			.attr('text-anchor','start')
-            .attr('fill', function(d,i) { return '#333' })
+            .text(function(d, i) { return d; } )
+			.attr('text-anchor', 'start')
+            .attr('fill', '#333')
             .attr('x', function(d, i) {
                 return this.parentNode.getBBox().width + 5;
             })
-            .attr('y', barHeight / 2)
-            .text(function(d, i) { return d; } );
+            .attr('y', function(d, i) {
+                var parentHeight = barHeight;
+                var thisHeight = this.getBBox().height;
+
+                return thisHeight + (parentHeight - thisHeight) / 4;
+            });
 
         this.g = g;
 

@@ -291,7 +291,7 @@ var Gneiss = {
 			];
 		} else if (g.type == 'bar') {
             rangeArray = [
-                (g.padding.top + 20) - this.g.barGroupHeight,
+                (g.padding.top) - this.g.barGroupHeight,
                 g.height - (g.padding.top + g.padding.bottom + this.g.barGroupHeight) 
             ];
         } else {

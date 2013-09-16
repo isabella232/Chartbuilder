@@ -3,6 +3,29 @@ var TAB = String.fromCharCode(9);
 
 var chart;
 
+var SAMPLE_CHART = {
+    typePicker: 'bar',
+    chart_title: 'Unemployment (seasonally adjusted)',
+    right_axis_max: 10,
+    right_axis_min: 0,
+    right_axis_tick_num: 6,
+    name: 'Unemployment (seasonally adjusted)',
+    created: 1378850793427,
+    csvInput: "\
+Name,Unemployment\n\
+'03,5.8\n\
+'04,5.7\n\
+'05,5.3\n\
+'06,4.7\n\
+'07,4.6\n\
+'08,5.0\n\
+'09,7.8\n\
+'10,9.8\n\
+'11,9.1\n\
+'12,8.3\n\
+'13,7.9"
+}
+
 ChartBuilder = {
 	allColors: ['db4730','e58d3c','f0c74f','04807e','4da9da',
 				'6d2217','72461d','776326','04403e','26546d',
@@ -11,7 +34,7 @@ ChartBuilder = {
 				'e47563','ebaa69','f3d576','4ca09e','7bbfe3',
 				'eea397','f2c69b','f7e3a2','88c0bf','7bbfe3',
 				'f6d1cb','f9e2cc','fbf1d0','c4dfdf','d2eaf6'],
-	curRaw: '',
+	rawData: '',
 	paletteOpen: false,
 	getNewData: function(csv) {
         var separator = COMMA;
@@ -39,14 +62,6 @@ ChartBuilder = {
 		if(reader.rows.length < 2) {
             throw 'At least two rows are required.';
 		}
-
-        // Too many columns?
-        if (reader.rows[0].length > 10) {
-            alert('Your data has more than 10 columns. This probably won\'t work well with this tool.');
-        // Too many rows?
-        } else if (reader.rows.length > 10) {
-            alert('Your data has more than 10 rows. This probably won\'t work well with this tool.');
-        }
 
         return reader.rows;
 	},
@@ -92,32 +107,6 @@ ChartBuilder = {
 
 		return {data: data};
 	},
-	parseData: function(a) {
-		var d = []
-		var parseFunc;
-		for (var i=0; i < a.length; i++) {
-			if (i == 0) {
-				parseFunc = this.doNothing
-			}
-			else {
-				parseFunc = this.floatAll
-			}
-			
-			d.push({
-				'name': a[i].shift().split('..').join('\n'),
-				'data':parseFunc(a[i]),
-			});
-			
-		};
-		for (var i = d.length - 1; i >= 0; i--){
-			for (var j = d[i].length - 1; j >= 0; j--){
-				if(d[i][j] == '' || d[i][j]==' ') {
-					d[i][j] = null
-				}
-			};
-		};
-		return d
-	},
 	mergeData: function(a) {
 		var d
 		for (var i=0; i < a.data.length; i++) {
@@ -140,7 +129,7 @@ ChartBuilder = {
 			if(r[i]) {
 				//add commas to the numbers
 				for (var j = 0; j < r[i].length; j++) {
-					r[i][j] = this.addCommas(r[i][j])
+					r[i][j] = ChartBuilder.addCommas(r[i][j])
 				};
 
 				$('<tr><td>'+r[i].join('</td><td>')+'</td></tr>')
@@ -148,20 +137,6 @@ ChartBuilder = {
 			}				
 		};
     },
-    floatAll: function(a) {
-		for (var i=0; i < a.length; i++) {
-			if(a[i] && a[i].length > 0 && (/[\d\.]+/).test(a[i])) {
-				a[i] = parseFloat(a[i])
-			}
-			else {
-				a[i] = null
-			}
-		};
-		return a
-	},
-	doNothing: function(a) {
-		return a
-	},
 	inlineAllStyles: function() {
 		var chartStyle, selector, cssText;
 		
@@ -221,27 +196,29 @@ ChartBuilder = {
             .attr("href", "data:text/svg," + encodeURI(svgString.split("PTSerif").join("PT Serif")) )
 		    .attr("download", function() { return filename + "_chartbuilder.svg" })
 
-		this.storeLocalChart(filename);	
-        this.loadStoredCharts();
+		ChartBuilder.saveCurrentChart(filename);	
+
+        var charts = ChartBuilder.getSavedCharts().reverse();
+        ChartBuilder.setSavedChartList(charts);
 		
 	},
 	redraw: function() {
 		$('.seriesItemGroup').detach()
 		var g = chart.g, s, picker;
-		this.customLegendLocaion = false;
+		ChartBuilder.customLegendLocaion = false;
 		var seriesContainer = $('#seriesItems')
 			
 		for (var i=0; i < g.series.length; i++) {
 			s = g.series[i]
 			seriesItem = $('<div class="seriesItemGroup">\
-				<label for="'+this.idSafe(s.name)+'_color">'+s.name+'</label>\
-				<input id="'+this.idSafe(s.name)+'_color" name="'+this.idSafe(s.name)+'" type="text" />\
+				<label for="'+ChartBuilder.idSafe(s.name)+'_color">'+s.name+'</label>\
+				<input id="'+ChartBuilder.idSafe(s.name)+'_color" name="'+ChartBuilder.idSafe(s.name)+'" type="text" />\
 			</div>');
 			
             var color = s.color ? s.color.replace('#','') : g.colors[i].replace('#','')
 			
 			seriesContainer.append(seriesItem);
-			var picker = seriesItem.find('#'+this.idSafe(s.name)+'_color').colorPicker({pickerDefault: color, colors:this.allColors});
+			var picker = seriesItem.find('#'+ChartBuilder.idSafe(s.name)+'_color').colorPicker({pickerDefault: color, colors:ChartBuilder.allColors});
 
 			seriesItem.data('index',i)
 			picker.change(function() {
@@ -276,39 +253,6 @@ ChartBuilder = {
 		})
 		return d
 	},
-	storeLocalChart: function(name) {
-		try {
-			localStorage['savedCharts'][0]
-		}
-		catch(e) {
-			localStorage['savedCharts'] = JSON.stringify([])
-		}
-		
-		var allcharts = JSON.parse(localStorage['savedCharts'])
-		newChart = this.getAllInputData()
-		newChart.name = name
-        newChart.created = (new Date()).valueOf();
-        
-		allcharts.push(newChart)
-		localStorage['savedCharts'] = JSON.stringify(allcharts);
-	},
-	getLocalCharts: function() {
-		var charts = []
-		try {
-			charts = JSON.parse(localStorage['savedCharts'])
-		}
-		catch(e){ /* Fail Silently */}
-		
-		return charts
-	},
-	loadLocalChart: function(d) {
-		for (var key in d) {
-			if(key != 'name' && key != 'created') {
-				$('#'+key).val(d[key])
-			}
-		}
-		$('input:not([id^=colorPicker]), textarea, select:not(#previous_charts)').keyup().change();
-	},
 	idSafe: function(s) {
 		s = s.replace(/[^\w\d]+/gi,'-')
 		return s
@@ -325,74 +269,72 @@ ChartBuilder = {
 		}
 		return x1 + x2;
 	},
-	actions: {
-		axis_prefix_change: function(index,that) {
-			chart.g.yAxis.prefix = $(that).val()
-			ChartBuilder.redraw()
-			ChartBuilder.inlineAllStyles();
-		},
-		axis_suffix_change: function(index,that) {
-			chart.g.yAxis.suffix = $(that).val()
-			ChartBuilder.redraw()
-			ChartBuilder.inlineAllStyles();
-		},
-		axis_tick_num_change: function(index,that) {
-			chart.g.yAxis.ticks = parseInt($(that).val())
-			ChartBuilder.redraw()
-			ChartBuilder.inlineAllStyles();
-		},
-		axis_max_change: function(index, that) {
-			var val = parseFloat($(that).val())
-			
-            if (isNaN(val)) {
-				val = null
-			}
+    axis_prefix_change: function(index,that) {
+        chart.g.yAxis.prefix = $(that).val()
+        ChartBuilder.redraw()
+        ChartBuilder.inlineAllStyles();
+    },
+    axis_suffix_change: function(index,that) {
+        chart.g.yAxis.suffix = $(that).val()
+        ChartBuilder.redraw()
+        ChartBuilder.inlineAllStyles();
+    },
+    axis_tick_num_change: function(index,that) {
+        chart.g.yAxis.ticks = parseInt($(that).val())
+        ChartBuilder.redraw()
+        ChartBuilder.inlineAllStyles();
+    },
+    axis_max_change: function(index, that) {
+        var val = parseFloat($(that).val())
+        
+        if (isNaN(val)) {
+            val = null
+        }
 
-            if (chart.g.yAxis.domain[0] !== null && chart.g.yAxis.domain[0] >= val) {
-                chart.g.yAxis.domain[1] = null;
-            } else {
-			    chart.g.yAxis.domain[1] = val;
-            }
+        if (chart.g.yAxis.domain[0] !== null && chart.g.yAxis.domain[0] >= val) {
+            chart.g.yAxis.domain[1] = null;
+        } else {
+            chart.g.yAxis.domain[1] = val;
+        }
 
-			chart.setYScales();
-			
-            ChartBuilder.redraw()
-			ChartBuilder.inlineAllStyles();
-		},
-		axis_min_change: function(index, that) {
-			var val = parseFloat($(that).val())
-			if(isNaN(val)) {
-				val = null
-			}
+        chart.setYScales();
+        
+        ChartBuilder.redraw()
+        ChartBuilder.inlineAllStyles();
+    },
+    axis_min_change: function(index, that) {
+        var val = parseFloat($(that).val())
+        if(isNaN(val)) {
+            val = null
+        }
 
-            if (chart.g.yAxis.domain[1] !== null && chart.g.yAxis.domain[1] <= val) {
-                chart.g.yAxis.domain[0] = null;
-            } else {
-                chart.g.yAxis.domain[0] = val;
-            }
+        if (chart.g.yAxis.domain[1] !== null && chart.g.yAxis.domain[1] <= val) {
+            chart.g.yAxis.domain[0] = null;
+        } else {
+            chart.g.yAxis.domain[0] = val;
+        }
 
-			chart.setYScales();
-			
-            ChartBuilder.redraw()
-			ChartBuilder.inlineAllStyles();
-		},
-		axis_tick_override_change: function(index,that) {
-			var val = $(that).val()
-			val = val.split(',')
-			if(val.length > 1) {
-				for (var i = val.length - 1; i >= 0; i--){
-					val[i] = parseFloat(val[i])
-				};
-			}
-			else {
-				val = null
-			}
-			chart.g.yAxis.tickValues = val
-			chart.setYScales();
-			ChartBuilder.redraw()
-			ChartBuilder.inlineAllStyles();
-		}
-	},
+        chart.setYScales();
+        
+        ChartBuilder.redraw()
+        ChartBuilder.inlineAllStyles();
+    },
+    axis_tick_override_change: function(index,that) {
+        var val = $(that).val()
+        val = val.split(',')
+        if(val.length > 1) {
+            for (var i = val.length - 1; i >= 0; i--){
+                val[i] = parseFloat(val[i])
+            };
+        }
+        else {
+            val = null
+        }
+        chart.g.yAxis.tickValues = val
+        chart.setYScales();
+        ChartBuilder.redraw()
+        ChartBuilder.inlineAllStyles();
+    },
 	showInvalidData: function(e) {
         e = e || 'Data could not be parsed.';
 
@@ -403,179 +345,221 @@ ChartBuilder = {
 	hideInvalidData: function() {
 		$('#inputDataHeading').removeClass('inputDataHInvData');
 		$('#invalidDataSpan').addClass('hide');
-	}
-}
+	},
+    getDefaultConfig: function() {
+        var chartConfig = {};
 
-// Create default config for chartbuilder
-ChartBuilder.getDefaultConfig = function() {
-  var chartConfig = {};
-  
-  chartConfig.colors = ['#db4730','#e58d3c','#f0c74f','#04807e','#4da9da',
-  						'#6d2217','#72461d','#776326','#04403e','#26546d',
-						'#a43424','#ab6a2d','#b3943a','#04605d','#3a7ea3',
-						'#db4730','#e58d3c','#f0c74f','#04807e','#4da9da',
-						'#e47563','#ebaa69','#f3d576','#4ca09e','#7bbfe3',
-						'#eea397','#f2c69b','#f7e3a2','#88c0bf','#7bbfe3',
-						'#f6d1cb','#f9e2cc','#fbf1d0','#c4dfdf','#d2eaf6'];
-  
-  return chartConfig;
-}
+        chartConfig.colors = ['#db4730','#e58d3c','#f0c74f','#04807e','#4da9da',
+                            '#6d2217','#72461d','#776326','#04403e','#26546d',
+                            '#a43424','#ab6a2d','#b3943a','#04605d','#3a7ea3',
+                            '#db4730','#e58d3c','#f0c74f','#04807e','#4da9da',
+                            '#e47563','#ebaa69','#f3d576','#4ca09e','#7bbfe3',
+                            '#eea397','#f2c69b','#f7e3a2','#88c0bf','#7bbfe3',
+                            '#f6d1cb','#f9e2cc','#fbf1d0','#c4dfdf','#d2eaf6'];
 
-ChartBuilder.formatDate = function(d) {
-    var date = (d.getMonth() + 1) +
-        '-' + (d.getDate() + 1) +
-        '-' + (d.getFullYear());
+        return chartConfig;
+    },
+    formatDate: function(d) {
+        var date = (d.getMonth() + 1) +
+            '-' + (d.getDate() + 1) +
+            '-' + (d.getFullYear());
 
-    var hours = d.getHours();
-    var minutes = d.getMinutes();
-    var ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    var time = hours + ':' + minutes + ' ' + ampm;
+        var hours = d.getHours();
+        var minutes = d.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var time = hours + ':' + minutes + ' ' + ampm;
 
-    return date + ' ' + time;
-}
+        return date + ' ' + time;
+    },
+	saveCurrentChart: function(name) {
+        /*
+         * Save the current chart state to local storage as JSON.
+         */
+		try {
+			localStorage['savedCharts'][0]
+		}
+		catch(e) {
+			localStorage['savedCharts'] = JSON.stringify([])
+		}
+		
+		var allcharts = JSON.parse(localStorage['savedCharts'])
 
-ChartBuilder.loadStoredCharts = function() {
-  	var savedCharts = ChartBuilder.getLocalCharts().reverse();
-  	var chartSelect = d3.select('#previous_charts');
+		var newChart = ChartBuilder.getAllInputData()
+		newChart.name = name
+        newChart.created = (new Date()).valueOf();
+        
+		allcharts.push(newChart)
+		localStorage['savedCharts'] = JSON.stringify(allcharts);
+	},
+	loadChart: function(d) {
+        /*
+         * Load a chart from JSON representation.
+         */
+		for (var key in d) {
+			if(key != 'name' && key != 'created') {
+				$('#'+key).val(d[key])
+			}
+		}
+		$('input:not([id^=colorPicker]), textarea, select:not(#previous_charts)').keyup().change();
+	},
+	getSavedCharts: function() {
+        /*
+         * Get a list of saved charts from local storage.
+         *
+         * Will create a sample chart if none exist.
+         */
+		var charts = []
 
-    chartSelect.selectAll('option').remove();
-  	
-  	chartSelect.selectAll('option')
-  		.data(savedCharts)
-  		.enter()
-  		.append('option')
-  		.text(function(d) {
-            var created = ChartBuilder.formatDate(new Date(d.created));
-            return d.name ? d.name + ' (' + created  + ')' : 'Untitled Chart (' + created + ')'
+		try {
+			charts = JSON.parse(localStorage['savedCharts'])
+		}
+		catch(e) {
+            // If no charts exist, store demo chart
+            charts = JSON.stringify([SAMPLE_CHART]);
+            localStorage['savedCharts'] = charts;
+        }
+		
+		return charts
+	},
+    setSavedChartList: function(charts) {
+        /*
+         * Set the list of saved charts.
+         */
+        var chartSelect = d3.select('#previous_charts');
+
+        chartSelect.selectAll('option').remove();
+        
+        chartSelect.selectAll('option')
+            .data(charts)
+            .enter()
+            .append('option')
+            .text(function(d) {
+                var created = ChartBuilder.formatDate(new Date(d.created));
+                return d.name ? d.name + ' (' + created  + ')' : 'Untitled Chart (' + created + ')'
+            })
+
+        $('#previous_charts').trigger('chosen:updated');
+    },
+    start: function(config) {
+        /*
+         * Go! 
+         */
+        var chartbuilderDefaultConfig = ChartBuilder.getDefaultConfig();
+        var chartConfig = $.extend(defaultGneissChartConfig, chartbuilderDefaultConfig, config);
+
+        $('#chartContainer').css('height', 480)
+        chart = Gneiss.build(chartConfig)
+
+        var chartSelect = $('#previous_charts').chosen()
+            .on('change', function() {
+                ChartBuilder.loadChart(d3.select(this.selectedOptions[0]).data()[0])
+            });
+                
+        $('#createImageButton').click(function() {
+            if(!$('#download-modal').hasClass('in')) {
+                if ($('#chart_title').val() == '') {
+                    alert('You must supply a chart title.');
+                    return false;
+                }
+
+                $('#createImageButton p').text('Reset');
+
+                ChartBuilder.inlineAllStyles();
+                ChartBuilder.createChartImage();
+            } else {
+                $('#createImageButton p').text('Create Image of Chart');
+            }
         })
 
-    $('#previous_charts').trigger('chosen:updated');
-}
+        $('#right_axis_prefix').keyup(function() {
+            ChartBuilder.axis_prefix_change(0, this)
+        })
 
-// Starts applicatoin given config object
-ChartBuilder.start = function(config) {
+        $('#right_axis_suffix').keyup(function() {
+            ChartBuilder.axis_suffix_change(0, this)
+        })
 
-  // Create config
-  var chartbuilderDefaultConfig = ChartBuilder.getDefaultConfig();
-  var chartConfig = $.extend(defaultGneissChartConfig, chartbuilderDefaultConfig, config);
-  
-  $(document).ready(function() {
+        $('#right_axis_tick_num').change(function() {
+            ChartBuilder.axis_tick_num_change(0, this)
+        })
 
-	$('#chartContainer').css('height', 480)
-    chart = Gneiss.build(chartConfig)
-  	
-  	//scale it up so it looks good on retina displays
-  	$('#chart').attr('transform', 'scale(2)')
-  	
-    var chartSelect = $('#previous_charts').chosen()
-        .on('change',function() {
-            ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
-  		});
- 
-    ChartBuilder.loadStoredCharts(); 
-  			
-  	$('#createImageButton').click(function() {
-		if(!$('#download-modal').hasClass('in')) {
-            if ($('#chart_title').val() == '') {
-                alert('You must supply a chart title.');
+        $('#right_axis_max').keyup(function() {
+            ChartBuilder.axis_max_change(0, this)
+        })
+
+        $('#right_axis_min').keyup(function() {
+            ChartBuilder.axis_min_change(0,this)
+        })
+
+        $('#right_axis_tick_override').keyup(function() {
+            ChartBuilder.axis_tick_override_change(0, this)
+        })
+
+        $('#csvInput').keyup(function() {
+            if ($(this).val() == ChartBuilder.rawData) {
                 return false;
             }
 
-            $('#createImageButton p').text('Reset');
-
-  		    ChartBuilder.inlineAllStyles();
-			ChartBuilder.createChartImage();
-		} else {
-            $('#createImageButton p').text('Create Image of Chart');
-        }
-  	})
-  	
-    // Set default example
-    $('#csvInput').val('a,b,c\nFirst,1,2\nSecond,3,4\nThird,5,6');
-  	
-  	
-  	$('#right_axis_prefix').keyup(function() {
-  		ChartBuilder.actions.axis_prefix_change(0,this)
-  	})
-  	
-  	$('#right_axis_suffix').keyup(function() {
-  		ChartBuilder.actions.axis_suffix_change(0,this)
-  	})
-  	
-  	$('#right_axis_tick_num').change(function() {
-  		ChartBuilder.actions.axis_tick_num_change(0,this)
-  	})
-
-    $('#right_axis_max').keyup(function() {
-  		ChartBuilder.actions.axis_max_change(0,this)
-  	})
-  	
-  	$('#right_axis_min').keyup(function() {
-  		ChartBuilder.actions.axis_min_change(0,this)
-  	})
-  	
-  	$('#right_axis_tick_override').keyup(function() {
-  		ChartBuilder.actions.axis_tick_override_change(0,this)
-  	})
-
-    $('#csvInput').keyup(function() {
-  		//check if the data is different
-  		if( $(this).val() != ChartBuilder.curRaw) {
-  			//cache the the raw textarea value
-  			ChartBuilder.curRaw = $(this).val()
-  			
-  			var csv = $('#csvInput').val();
+            ChartBuilder.rawData = $(this).val()
+            
+            var csv = $('#csvInput').val();
 
             try {
-  			    var newData = ChartBuilder.getNewData(csv);
+                var newData = ChartBuilder.getNewData(csv);
             } catch(e) {
-				ChartBuilder.showInvalidData(e);
-  				return;
+                ChartBuilder.showInvalidData(e);
+                return;
             }
-  
-  			dataObj = ChartBuilder.makeDataObj(newData);
 
-  			if (dataObj == null) {
-				ChartBuilder.showInvalidData();
-  				return;
-  			}
+            dataObj = ChartBuilder.makeDataObj(newData);
 
-			ChartBuilder.hideInvalidData();
+            if (dataObj == null) {
+                ChartBuilder.showInvalidData();
+                return;
+            }
+
+            ChartBuilder.hideInvalidData();
             ChartBuilder.createTable(newData);
-  
-  			dataObj = ChartBuilder.mergeData(dataObj);
-  			
-  			chart.g.xAxisRef = dataObj.data.shift().data;
-  			chart.g.series = dataObj.data;
+
+            dataObj = ChartBuilder.mergeData(dataObj);
+            
+            chart.g.xAxisRef = dataObj.data.shift().data;
+            chart.g.series = dataObj.data;
 
             // Regenerate axes from data or min/max
             chart.g.yAxis.domain = [null, null];
             $("#right_axis_max").keyup();
             $("#right_axis_min").keyup();
 
-  			ChartBuilder.redraw();
-  			ChartBuilder.inlineAllStyles();
-  		}
-  	}).keyup() 
+            ChartBuilder.redraw();
+            ChartBuilder.inlineAllStyles();
+        }); 
 
-  	$('#chart_title').keyup(function() {
-  		var val = $(this).val()
+        $('#chart_title').keyup(function() {
+            var val = $(this).val()
 
-  		chart.g.title = val;
-  		
-  		chart.redraw();
-  		
-  		chart.g.titleLine.text(chart.g.title)
-  	}).keyup();
+            chart.g.title = val;
+            
+            chart.redraw();
+            
+            chart.g.titleLine.text(chart.g.title)
+        });
 
-  	// Clicking download closes the download modal
-  	$('#downloadImageLink').on('click', function(){
-  		$('#download-modal').modal('hide');
-  	});
-  	
-  	
-  })
+        // Clicking download closes the download modal
+        $('#downloadImageLink').on('click', function(){
+            $('#download-modal').modal('hide');
+        });
+
+        // Get the list of saved charts and load the last one
+        var charts = ChartBuilder.getSavedCharts().reverse();
+        ChartBuilder.setSavedChartList(charts); 
+        ChartBuilder.loadChart(charts[0]);
+    }
 };
+
+$(document).ready(function() {
+    ChartBuilder.start();
+});

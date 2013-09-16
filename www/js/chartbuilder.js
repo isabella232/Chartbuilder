@@ -35,8 +35,12 @@ ChartBuilder = {
 				'eea397','f2c69b','f7e3a2','88c0bf','7bbfe3',
 				'f6d1cb','f9e2cc','fbf1d0','c4dfdf','d2eaf6'],
 	rawData: '',
-	paletteOpen: false,
-	getNewData: function(csv) {
+	parseData: function(csv) {
+        /*
+         * Parse  data from CSV/TSV.
+         *
+         * Returns a list of rows.
+         */
         var separator = COMMA;
 
         var comma_count = csv.split(COMMA).length - 1;
@@ -65,33 +69,32 @@ ChartBuilder = {
 
         return reader.rows;
 	},
-	// Given the matrix containing the well formated csv, create the object that
-	// is going to be used later
-	makeDataObj: function(csv_matrix) {
-		// Make the data array
+	makeDataSeries: function(rows) {
+        /*
+         * Convert rows from CSV/TSV to data series for gneiss.
+         */
 		var data = [];
-		for(var i=0; i<csv_matrix[0].length; i++) {
-			// Object for a single column
+
+		for(var i = 0; i < rows[0].length; i++) {
 			var obj = {
-                name: csv_matrix[0][i],
+                name: rows[0][i],
                 data: []
             };
 
-			// Make the obj
-			for(var j=1; j<csv_matrix.length; j++) {
+			for(var j = 1; j < rows.length; j++) {
 				// If it is the first column, containing the names
 				if(i == 0) {
-					obj.data.push(csv_matrix[j][i]);
+					obj.data.push(rows[j][i]);
 				}
 				// If it's a data point
 				else {
-					var value = csv_matrix[j][i];
-					if(value == 'null' || value == '') {
-						//allow for nulls or blank cells
+					var value = rows[j][i];
+					if (value == 'null' || value == '') {
+						// allow for nulls or blank cells
 						value = null
 					}
 					else if (isNaN(value)){
-						//data isn't valid
+						// data isn't valid
 						return null;
 					}
 					else {
@@ -105,34 +108,24 @@ ChartBuilder = {
 			data.push(obj);
 		}
 
-		return {data: data};
+		return data;
 	},
-	mergeData: function(a) {
-		var d
-		for (var i=0; i < a.data.length; i++) {
-			d = a.data[i]
-			if(i < chart.g.series.length) {
-				a.data[i] = $.extend({},chart.g.series[i],d)
-			}
-			
-		};
-		
-		return a
-	},
-	createTable: function(r){
+	createTable: function(rows) {
+        /*
+         * Render an HTML table from data rows, for validation.
+         */
 		$table = $('#dataTable table')
 		$table.text('')
 
-
-		$table.append('<tr><th>'+r[0].join('</th><th>')+'</th></tr>')
-		for (var i=1; i < r.length; i++) {
-			if(r[i]) {
-				//add commas to the numbers
-				for (var j = 0; j < r[i].length; j++) {
-					r[i][j] = ChartBuilder.addCommas(r[i][j])
+		$table.append('<tr><th>' + rows[0].join('</th><th>') + '</th></tr>')
+        
+		for (var i = 1; i < rows.length; i++) {
+			if (rows[i]) {
+				for (var j = 0; j < rows[i].length; j++) {
+					rows[i][j] = ChartBuilder.addCommas(rows[i][j])
 				};
 
-				$('<tr><td>'+r[i].join('</td><td>')+'</td></tr>')
+				$('<tr><td>' + rows[i].join('</td><td>') + '</td></tr>')
 					.appendTo($table)
 			}				
 		};
@@ -163,6 +156,9 @@ ChartBuilder = {
 		}
 	},
 	createChartImage: function() {
+        /*
+         * Create PNG and SVG versions of the chart.
+         */
 		// Create PNG image
 		var canvas = document.getElementById('canvas')
 		canvas.width = $('#chartContainer').width() * 2
@@ -203,6 +199,9 @@ ChartBuilder = {
 		
 	},
 	redraw: function() {
+        /*
+         * Redraw the chart and update series options as appropriate.
+         */
 		$('.seriesItemGroup').detach()
 		var g = chart.g, s, picker;
 		ChartBuilder.customLegendLocaion = false;
@@ -360,6 +359,9 @@ ChartBuilder = {
         return chartConfig;
     },
     formatDate: function(d) {
+        /*
+         * Format a date for display in the chart list.
+         */
         var date = (d.getMonth() + 1) +
             '-' + (d.getDate() + 1) +
             '-' + (d.getFullYear());
@@ -508,26 +510,25 @@ ChartBuilder = {
             var csv = $('#csvInput').val();
 
             try {
-                var newData = ChartBuilder.getNewData(csv);
+                var rows = ChartBuilder.parseData(csv);
             } catch(e) {
                 ChartBuilder.showInvalidData(e);
-                return;
+                return false;
             }
 
-            dataObj = ChartBuilder.makeDataObj(newData);
+            dataSeries = ChartBuilder.makeDataSeries(rows);
 
-            if (dataObj == null) {
+            if (dataSeries == null) {
                 ChartBuilder.showInvalidData();
                 return;
             }
 
             ChartBuilder.hideInvalidData();
-            ChartBuilder.createTable(newData);
+            ChartBuilder.createTable(rows);
 
-            dataObj = ChartBuilder.mergeData(dataObj);
-            
-            chart.g.xAxisRef = dataObj.data.shift().data;
-            chart.g.series = dataObj.data;
+            // First row is x axis, the rest is data
+            chart.g.xAxisRef = dataSeries.shift().data;
+            chart.g.series = dataSeries;
 
             // Regenerate axes from data or min/max
             chart.g.yAxis.domain = [null, null];

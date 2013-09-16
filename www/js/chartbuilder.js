@@ -263,11 +263,14 @@ ChartBuilder = {
 
             chart.g.type = val;
 
-            chart.setPadding();
-            ChartBuilder.setChartArea()
-            chart.setXScales()
-                .resize()
-            ChartBuilder.redraw()
+            // Regenerate axes from data or min/max
+            chart.g.yAxis.domain = [null, null];
+            $("#right_axis_max").keyup();
+            $("#right_axis_min").keyup();
+
+
+            ChartBuilder.setChartArea();
+            ChartBuilder.redraw();
         });		
 		
 		chart.g = g;
@@ -477,7 +480,7 @@ ChartBuilder.start = function(config) {
   	chart = Gneiss.build(chartConfig)
   	
   	//scale it up so it looks good on retina displays
-  	$('#chart').attr('transform','scale(2)')
+  	$('#chart').attr('transform', 'scale(2)')
   	
   	//populate the input with the data that is in the chart
   	$('#csvInput').val(function() {
@@ -550,22 +553,20 @@ ChartBuilder.start = function(config) {
   
   			dataObj = ChartBuilder.makeDataObj(newData);
 
-  			if(dataObj == null) {
+  			if (dataObj == null) {
 				ChartBuilder.showInvalidData();
   				return;
   			}
+
 			ChartBuilder.hideInvalidData();
-
             ChartBuilder.createTable(newData);
-
   
-  			chart.g.series.unshift(chart.g.xAxisRef)
-  			dataObj = ChartBuilder.mergeData(dataObj)
+  			chart.g.series.unshift(chart.g.xAxisRef);
+  			dataObj = ChartBuilder.mergeData(dataObj);
   			
-  			chart.g.xAxis.type = 'ordinal';
-  			chart.g.xAxisRef = [dataObj.data.shift()]
+  			chart.g.xAxisRef = [dataObj.data.shift()];
 
-  			chart.g.series=dataObj.data
+  			chart.g.series = dataObj.data;
   			chart.setPadding();
   			
   			ChartBuilder.setChartArea()
@@ -575,14 +576,9 @@ ChartBuilder.start = function(config) {
             $("#right_axis_max").keyup();
             $("#right_axis_min").keyup();
 
-  			chart.setYScales()
-  				.setXScales()
-  				.setLineMakers();
-  				
   			ChartBuilder.redraw();
   			ChartBuilder.inlineAllStyles();
   		}
-
   	}).keyup() 
   	
   	$('#right_axis_prefix').keyup(function() {

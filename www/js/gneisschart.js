@@ -24,7 +24,6 @@ var defaultGneissChartConfig = {
 		domain: [0,100],
 		prefix: '',
 		suffix: '',
-		type: 'linear',
 		ticks: 5
 	},
 	yAxis: {
@@ -32,8 +31,7 @@ var defaultGneissChartConfig = {
         tickValues: null,
         prefix: '',
         suffix: '', 
-        ticks: 4,
-        color: null
+        ticks: 4
     },
 	series: [
 		{

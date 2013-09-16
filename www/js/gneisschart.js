@@ -191,7 +191,7 @@ var Gneiss = {
 			padding_top = 5;
 		}
 
-		padding_top += g.title == '' || g.series.length == 1 ? 0 : 25
+		padding_top += (g.title == '' || g.series.length == 1) ? 0 : 25
 		
 		g.padding.top = padding_top
 		g.padding.bottom = padding_bottom
@@ -267,7 +267,7 @@ var Gneiss = {
         } else {
             g.yAxis.scale.range([
                 g.height - g.padding.bottom,
-                g.padding.top
+                g.padding.top + 10
             ]).nice()
         }
 		
@@ -373,10 +373,6 @@ var Gneiss = {
         //add the prefix and suffix to the top most label as appropriate
         topAxisLabel.text(g.yAxis.prefix + topAxisLabel.text() + g.yAxis.suffix)
 		
-        var translate = (g.type == 'bar')
-            ? 'translate(0,0)'
-            : 'translate(0,-8)';
-
         if (g.type != 'bar') {
             var width = 0;
 
@@ -392,10 +388,6 @@ var Gneiss = {
                 })
         }
 
-        axisGroup.selectAll('text')
-            .attr('text-anchor', 'end')
-            .attr('transform', translate);
-		
 		d3.selectAll('#yAxis').each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll('#ground').each(function(){this.parentNode.prependChild(this);})
 

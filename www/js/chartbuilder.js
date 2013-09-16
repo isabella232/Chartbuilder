@@ -269,22 +269,22 @@ ChartBuilder = {
 		}
 		return x1 + x2;
 	},
-    axis_prefix_change: function(index,that) {
+    axis_prefix_change: function(that) {
         chart.g.yAxis.prefix = $(that).val()
         ChartBuilder.redraw()
         ChartBuilder.inlineAllStyles();
     },
-    axis_suffix_change: function(index,that) {
+    axis_suffix_change: function(that) {
         chart.g.yAxis.suffix = $(that).val()
         ChartBuilder.redraw()
         ChartBuilder.inlineAllStyles();
     },
-    axis_tick_num_change: function(index,that) {
+    axis_tick_num_change: function(that) {
         chart.g.yAxis.ticks = parseInt($(that).val())
         ChartBuilder.redraw()
         ChartBuilder.inlineAllStyles();
     },
-    axis_max_change: function(index, that) {
+    axis_max_change: function(that) {
         var val = parseFloat($(that).val())
         
         if (isNaN(val)) {
@@ -302,7 +302,7 @@ ChartBuilder = {
         ChartBuilder.redraw()
         ChartBuilder.inlineAllStyles();
     },
-    axis_min_change: function(index, that) {
+    axis_min_change: function(that) {
         var val = parseFloat($(that).val())
         if(isNaN(val)) {
             val = null
@@ -319,7 +319,7 @@ ChartBuilder = {
         ChartBuilder.redraw()
         ChartBuilder.inlineAllStyles();
     },
-    axis_tick_override_change: function(index,that) {
+    axis_tick_override_change: function(that) {
         var val = $(that).val()
         val = val.split(',')
         if(val.length > 1) {
@@ -475,27 +475,27 @@ ChartBuilder = {
         })
 
         $('#right_axis_prefix').keyup(function() {
-            ChartBuilder.axis_prefix_change(0, this)
+            ChartBuilder.axis_prefix_change(this)
         })
 
         $('#right_axis_suffix').keyup(function() {
-            ChartBuilder.axis_suffix_change(0, this)
+            ChartBuilder.axis_suffix_change(this)
         })
 
         $('#right_axis_tick_num').change(function() {
-            ChartBuilder.axis_tick_num_change(0, this)
+            ChartBuilder.axis_tick_num_change(this)
         })
 
         $('#right_axis_max').keyup(function() {
-            ChartBuilder.axis_max_change(0, this)
+            ChartBuilder.axis_max_change(this)
         })
 
         $('#right_axis_min').keyup(function() {
-            ChartBuilder.axis_min_change(0,this)
+            ChartBuilder.axis_min_change(this)
         })
 
         $('#right_axis_tick_override').keyup(function() {
-            ChartBuilder.axis_tick_override_change(0, this)
+            ChartBuilder.axis_tick_override_change(this)
         })
 
         $('#csvInput').keyup(function() {

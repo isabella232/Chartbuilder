@@ -441,8 +441,6 @@ var Gneiss = {
                     var transform = this.parentNode.getAttribute('transform');
                     var x = Number(transform.split('(')[1].split(',')[0]);
 
-                    console.log(labelWidth, x);
-
                     // Off right edge of chart
                     if (halfLabelWidth + x > g.width - g.padding.right) {
                         this.setAttribute('text-anchor', 'end');
@@ -645,7 +643,12 @@ var Gneiss = {
 			.attr('text-anchor', 'start')
             .attr('fill', '#333')
             .attr('x', function(d, i) {
-                return this.parentNode.getBBox().width + 5;
+                if (d >= 0) {
+                    return this.parentNode.getBBox().width + 5;
+                } else {
+                    // NB: This isn't really a solution, it's just a placeholder for a solution
+                    return 5;
+                }
             })
             .attr('y', function(d, i) {
                 var parentHeight = barHeight;

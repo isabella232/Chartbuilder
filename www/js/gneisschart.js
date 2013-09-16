@@ -240,9 +240,11 @@ var Gneiss = {
         }
             
         if (g.type == 'bar') {
+            var longest = g.yAxis.prefix + g.yAxis.domain[1].toString() + g.yAxis.suffix;
+
             g.yAxis.scale.range([
                 g.padding.left + this.calculateBarOffset() + 5,
-                g.width - (g.padding.right + g.yAxis.domain[1].toString().length * BAR_RIGHT_MARGIN_PER_CHAR)
+                g.width - (g.padding.right + longest.length * BAR_RIGHT_MARGIN_PER_CHAR)
             ]).nice()
         } else {
             g.yAxis.scale.range([
@@ -364,67 +366,44 @@ var Gneiss = {
             .call(g.yAxis.axis)
 				
         //adjust label position and add prefix and suffix
-        var topAxisLabel, minY = Infinity;
+        var topAxisLabel = '';
+        var minY = Infinity;
         
         axisGroup
             .selectAll('g')
             .each(function(d,j) {
-                //create an object to store axisItem info
-                var axisItem = {}
-                
-                //store the position of the axisItem
-                //(figure it out by parsing the transfrom attribute)
-                axisItem.y = parseFloat(d3.select(this)
+                var y = parseFloat(d3.select(this)
                     .attr('transform')
                         .split(')')[0]
-                            .split(',')[1]
+                        .split(',')[1]
                     )
                 
-                //store the text element of the axisItem
-                axisItem.text = d3.select(this).select('text')
+                var text = d3.select(this).select('text')
 
-                //store the line element of the axisItem	
-                axisItem.line = d3.select(this).select('line')
-                    .attr('stroke','#E6E6E6')
-                    
-                //find the top most axisItem
-                //store its text element
-                if(axisItem.y < minY) {
-                    topAxisLabel = axisItem.text
-                    g.topAxisItem = axisItem
-                    minY = axisItem.y
+                if(y < minY) {
+                    topAxisLabel = text
+                    minY = y
                 }
                 
-                if(parseFloat(axisItem.text.text()) == 0) {
-                    if(d == 0) {
-                        //if the axisItem represents the zero line
-                        //change it's class and make sure there's no decimal
-                        //axisItem.line.attr('stroke','#666666')
-                        d3.select(this).classed('zero', true)
-                        axisItem.text.text('0')
-                    }
-                    else {
-                        // A non-zero value was rounded into a zero
-                        // hide the whole group
-                        this.style('display','none')
-                    }
-                    
+                if(d == 0) {
+                    //if the axisItem represents the zero line
+                    //change it's class and make sure there's no decimal
+                    d3.select(this).classed('zero', true)
+                    text.text('0')
                 }
             })
-            
+
         //add the prefix and suffix to the top most label as appropriate
         topAxisLabel.text(g.yAxis.prefix + topAxisLabel.text() + g.yAxis.suffix)
 		
-        d3.selectAll('.yAxis').style('display',null)
-        
         try {
             if (g.type == 'bar') {
                 g.titleLine.attr('y', 40); 
             } else if (!g.legend || g.series.length == 1) {
-                g.titleLine.attr('y', g.topAxisItem.y - 4)
+                g.titleLine.attr('y', y - 4)
             }
             else {
-                g.titleLine.attr('y', g.topAxisItem.y - 25)
+                g.titleLine.attr('y', y - 25)
             }
         } catch(e) {
             // Do nothing
@@ -679,9 +658,9 @@ var Gneiss = {
                 return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(barBase(d)));
             })
             .attr('height', barHeight)
-        
+
         var barLabels = barGroups.append('text')
-            .text(function(d, i) { return d; } )
+            .text(function(d, i) { return g.yAxis.prefix + d + g.yAxis.suffix; } )
 			.attr('text-anchor', 'start')
             .attr('fill', '#333')
             .attr('x', function(d, i) {

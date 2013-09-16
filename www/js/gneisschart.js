@@ -39,13 +39,11 @@ var defaultGneissChartConfig = {
 		{
 			name: 'Apples',
 			data: [5.5,10.2,6.1,3.8],
-			source: 'Some Org',
 			color: null
 		},
 		{
 			name: 'Oranges',
 			data: [23,10,13,7],
-			source: 'Some Org',
 			color: null
 		}
 	],
@@ -54,9 +52,7 @@ var defaultGneissChartConfig = {
 			name: 'Names',
 			data: ['Juicyness','Color','Flavor','Travelability']
 		}
-	],
-	sourceline: '',
-	creditline: ''
+	]
 }
 
 var Gneiss = {
@@ -106,8 +102,8 @@ var Gneiss = {
             .scale(g.yAxis.scale)
 
         g.chart.append('g')
-            .attr('class','axis yAxis')
-            .attr('id','rightAxis')
+            .attr('class', 'axis yAxis')
+            .attr('id', 'leftAxis')
 				
 		this.setYAxis();
 		this.setXAxis();
@@ -134,17 +130,6 @@ var Gneiss = {
 			.attr('id','metaInfo')
 			.attr('transform','translate(0,'+(g.height-4)+')')
 		
-		g.sourceLine = g.metaInfo.append('text')
-			.attr('text-anchor','end')
-			.attr('x',g.width-g.padding.right)
-			.attr('class','metaText')
-			.text(g.sourceline)
-		
-		g.creditLine = g.metaInfo.append('text')
-			.attr('x',g.padding.left)
-			.attr('class','metaText')
-			.text(g.creditline)
-
 		this.g = g;
 		return this;
 	},
@@ -345,7 +330,7 @@ var Gneiss = {
             ? 'translate(0,' + g.padding.top + ')'
             : 'translate(' + g.padding.left + ',0)';
                 
-        var axisGroup = g.chart.selectAll('#rightAxis')
+        var axisGroup = g.chart.selectAll('#leftAxis')
             .attr('transform', translate)
             .call(g.yAxis.axis)
 				

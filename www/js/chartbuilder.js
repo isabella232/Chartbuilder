@@ -514,16 +514,6 @@ ChartBuilder.start = function(config) {
                 return false;
             }
 
-            if ($('#credit').val() == '') {
-                alert('You must supply a credit.');
-                return false;
-            }
-
-            if ($('#chart_source').val() == '') {
-                alert('You must supply a source.');
-                return false;
-            }
-
             $('#createImageButton p').text('Reset');
 
   		    ChartBuilder.inlineAllStyles();
@@ -618,18 +608,6 @@ ChartBuilder.start = function(config) {
   	$('#right_axis_tick_override').keyup(function() {
   		ChartBuilder.actions.axis_tick_override_change(0,this)
   	})
-  	
-  	$('#creditLine').keyup(function() {
-  		var val = $(this).val()
-  		chart.g.creditline = val
-  		chart.g.creditLine.text(chart.g.creditline)
-  	}).keyup();
-  	
-  	$('#sourceLine').keyup(function() {
-  		var val = $(this).val()
-  		chart.g.sourceline = val
-  		chart.g.sourceLine.text(chart.g.sourceline)
-  	}).keyup();
   	
   	$('#chart_title').keyup(function() {
   		var val = $(this).val()

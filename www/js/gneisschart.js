@@ -21,7 +21,7 @@ var defaultGneissChartConfig = {
 		right: 10
 	},
 	xAxis: {
-		domain: [0,100],
+		domain: [null, null],
 		prefix: '',
 		suffix: '',
 		ticks: 5
@@ -34,7 +34,7 @@ var defaultGneissChartConfig = {
         ticks: 4
     },
 	series: [
-		{
+		/*{
 			name: 'Apples',
 			data: [5.5,10.2,6.1,3.8],
 			color: null
@@ -43,14 +43,9 @@ var defaultGneissChartConfig = {
 			name: 'Oranges',
 			data: [23,10,13,7],
 			color: null
-		}
+		}*/
 	],
-	xAxisRef: [
-		{
-			name: 'Names',
-			data: ['Juicyness','Color','Flavor','Travelability']
-		}
-	]
+	xAxisRef: []
 }
 
 var Gneiss = {
@@ -107,12 +102,9 @@ var Gneiss = {
         g.xAxis.axis = d3.svg.axis();
         g.yAxis.line = d3.svg.line();
 
-        this.redraw();
-		
 		this.g = g;
 		return this;
 	},
-	numberFormat: d3.format(','),
 	resize: function(){
 		/*
 			Adjusts the size dependent stored variables
@@ -205,7 +197,7 @@ var Gneiss = {
         });
 
         g.yAxis.line.x(function(d, j) {
-            return d || d === 0 ? g.xAxis.scale(g.xAxisRef[0].data[j]) : null;
+            return d || d === 0 ? g.xAxis.scale(g.xAxisRef[j]) : null;
         });
 
 		this.g = g;
@@ -285,7 +277,7 @@ var Gneiss = {
         };
 
         g.xAxis.scale
-            .domain(g.xAxisRef[0].data)
+            .domain(g.xAxisRef)
             
         g.maxLength = maxLength;
 
@@ -559,7 +551,7 @@ var Gneiss = {
                     return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnHeight(d, g.yAxis.scale.domain()))) 
                 })
                 .attr('x', function(d,i) {
-                    return g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) - (columnWidth / 2)
+                    return g.xAxis.scale(Gneiss.g.xAxisRef[i]) - (columnWidth / 2)
                 })
                 .attr('y', function(d,i) {
                     if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnHeight(d, g.yAxis.scale.domain())) >= 0) {
@@ -711,7 +703,7 @@ var Gneiss = {
                 .attr('stroke','#fff')
                 .attr('stroke-width','1')
                 .attr('transform',function(d,i){
-                    return 'translate('+g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + ',' + g.yAxis.scale(d) + ')'
+                    return 'translate('+g.xAxis.scale(Gneiss.g.xAxisRef[i]) + ',' + g.yAxis.scale(d) + ')'
                     })
 
         this.g = g;

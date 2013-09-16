@@ -57,7 +57,10 @@ ChartBuilder = {
 		var data = [];
 		for(var i=0; i<csv_matrix[0].length; i++) {
 			// Object for a single column
-			var obj = {name: csv_matrix[0][i], data: []};
+			var obj = {
+                name: csv_matrix[0][i],
+                data: []
+            };
 
 			// Make the obj
 			for(var j=1; j<csv_matrix.length; j++) {
@@ -126,23 +129,6 @@ ChartBuilder = {
 		};
 		
 		return a
-	},
-	pivotData: function(a){
-		var o = []
-		for (var i=0; i < a.length; i++) {
-			if(a[i]) {
-				for (var j=0; j < a[i].length; j++) {
-					if(i == 0) {
-						o.push([])
-					}
-					if(a[i][j] != '') {
-						o[j][i] = a[i][j]
-					}
-				};
-			}
-			
-		}
-		return o
 	},
 	createTable: function(r){
 		$table = $('#dataTable table')
@@ -276,16 +262,11 @@ ChartBuilder = {
             $("#right_axis_max").keyup();
             $("#right_axis_min").keyup();
 
-
-            ChartBuilder.setChartArea();
             ChartBuilder.redraw();
         });		
 		
 		chart.g = g;
 		ChartBuilder.inlineAllStyles();
-	},
-	setChartArea: function() {
-		$('#chartContainer').css('height', 480)
 	},
 	getAllInputData: function() {
 		var d = {}, $el;
@@ -483,34 +464,12 @@ ChartBuilder.start = function(config) {
   
   $(document).ready(function() {
 
-  	//construct a Gneisschart using default data
-  	//this should change to be more like this http://bost.ocks.org/mike/chart/
-  	chart = Gneiss.build(chartConfig)
+	$('#chartContainer').css('height', 480)
+    chart = Gneiss.build(chartConfig)
   	
   	//scale it up so it looks good on retina displays
   	$('#chart').attr('transform', 'scale(2)')
   	
-  	//populate the input with the data that is in the chart
-  	$('#csvInput').val(function() {
-  		var data = []
-  		var val = ''
-  
-  		data[0] = chart.g.xAxisRef[0].data
-  		data[0].unshift(chart.g.xAxisRef[0].name)
-  
-  		for (var i = 0; i < chart.g.series.length; i++) {
-  			data[i+1] = chart.g.series[i].data
-  			data[i+1].unshift(chart.g.series[i].name)
-  		};
-  
-  		data = ChartBuilder.pivotData(data)
-  
-  		for (var i = 0; i < data.length; i++) {
-  			data[i] = data[i].join('\t')
-  		}; 
-  		return data.join('\n')
-  	})
- 
     var chartSelect = $('#previous_charts').chosen()
         .on('change',function() {
             ChartBuilder.loadLocalChart(d3.select(this.selectedOptions[0]).data()[0])
@@ -534,60 +493,9 @@ ChartBuilder.start = function(config) {
         }
   	})
   	
-  	$('#csvInput').bind('paste', function(e) {
-  		//do nothing special
-  	})
+    // Set default example
+    $('#csvInput').val('a,b,c\nFirst,1,2\nSecond,3,4\nThird,5,6');
   	
-  	/*
-  	//
-  	// add interactions to chartbuilder interface
-  	//
-  	*/
-  	
-  	$('#csvInput').keyup(function() {
-  		//check if the data is different
-  		if( $(this).val() != ChartBuilder.curRaw) {
-  			//cache the the raw textarea value
-  			ChartBuilder.curRaw = $(this).val()
-  			
-  			var csv = $('#csvInput').val();
-
-            try {
-  			    var newData = ChartBuilder.getNewData(csv);
-            } catch(e) {
-				ChartBuilder.showInvalidData(e);
-  				return;
-            }
-  
-  			dataObj = ChartBuilder.makeDataObj(newData);
-
-  			if (dataObj == null) {
-				ChartBuilder.showInvalidData();
-  				return;
-  			}
-
-			ChartBuilder.hideInvalidData();
-            ChartBuilder.createTable(newData);
-  
-  			chart.g.series.unshift(chart.g.xAxisRef);
-  			dataObj = ChartBuilder.mergeData(dataObj);
-  			
-  			chart.g.xAxisRef = [dataObj.data.shift()];
-
-  			chart.g.series = dataObj.data;
-  			chart.setPadding();
-  			
-  			ChartBuilder.setChartArea()
-
-            // Regenerate axes from data or min/max
-            chart.g.yAxis.domain = [null, null];
-            $("#right_axis_max").keyup();
-            $("#right_axis_min").keyup();
-
-  			ChartBuilder.redraw();
-  			ChartBuilder.inlineAllStyles();
-  		}
-  	}).keyup() 
   	
   	$('#right_axis_prefix').keyup(function() {
   		ChartBuilder.actions.axis_prefix_change(0,this)
@@ -612,15 +520,53 @@ ChartBuilder.start = function(config) {
   	$('#right_axis_tick_override').keyup(function() {
   		ChartBuilder.actions.axis_tick_override_change(0,this)
   	})
-  	
+
+    $('#csvInput').keyup(function() {
+  		//check if the data is different
+  		if( $(this).val() != ChartBuilder.curRaw) {
+  			//cache the the raw textarea value
+  			ChartBuilder.curRaw = $(this).val()
+  			
+  			var csv = $('#csvInput').val();
+
+            try {
+  			    var newData = ChartBuilder.getNewData(csv);
+            } catch(e) {
+				ChartBuilder.showInvalidData(e);
+  				return;
+            }
+  
+  			dataObj = ChartBuilder.makeDataObj(newData);
+
+  			if (dataObj == null) {
+				ChartBuilder.showInvalidData();
+  				return;
+  			}
+
+			ChartBuilder.hideInvalidData();
+            ChartBuilder.createTable(newData);
+  
+  			dataObj = ChartBuilder.mergeData(dataObj);
+  			
+  			chart.g.xAxisRef = dataObj.data.shift().data;
+  			chart.g.series = dataObj.data;
+
+            // Regenerate axes from data or min/max
+            chart.g.yAxis.domain = [null, null];
+            $("#right_axis_max").keyup();
+            $("#right_axis_min").keyup();
+
+  			ChartBuilder.redraw();
+  			ChartBuilder.inlineAllStyles();
+  		}
+  	}).keyup() 
+
   	$('#chart_title').keyup(function() {
   		var val = $(this).val()
-  		chart.g.title = val
-  		chart.resize()
-  			.setPadding();
-  		ChartBuilder.setChartArea()
-  		chart.setYScales()
-  			.redraw();
+
+  		chart.g.title = val;
+  		
+  		chart.redraw();
   		
   		chart.g.titleLine.text(chart.g.title)
   	}).keyup();

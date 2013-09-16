@@ -84,47 +84,32 @@ var Gneiss = {
 			.attr('width',g.width)
 			.attr('height',g.height)
 
-        g.yAxis.scale = d3.scale.linear();
-        g.xAxis.scale = d3.scale.ordinal();
-		
-        this.calculateColumnWidths();
-		this.setYScales();
-		this.setXScales();
-
-        // Create axes
-        g.xAxis.axis = d3.svg.axis();
-
         g.chart.append('g')
 			.attr('class','axis')
 			.attr('id','xAxis')
 
-        g.yAxis.axis = d3.svg.axis()
-            .scale(g.yAxis.scale)
-
         g.chart.append('g')
-            .attr('class', 'axis yAxis')
-            .attr('id', 'leftAxis')
-				
-		this.setYAxis();
-		this.setXAxis();
-				
-        g.yAxis.line = d3.svg.line();
-        
-        this.setLineMakers()
+            .attr('class', 'axis')
+            .attr('id', 'yAxis')
 
 		g.titleLine = g.chart.append('text')
 			.attr('id','titleLine')
 			.attr('transform','translate(' + g.padding.left + ',25)')
-			.text(g.title)
+			.text(g.title);
 		
         g.seriesContainer = g.chart.append('g')
-            .attr('id','seriesContainer')
+            .attr('id','seriesContainer');
             
         g.legendItemContainer = g.chart.append('g')
-            .attr('id','legendItemContainer')
+            .attr('id','legendItemContainer');
 
-        this.drawSeries();
-        this.drawLegend();
+        g.yAxis.scale = d3.scale.linear();
+        g.xAxis.scale = d3.scale.ordinal();
+        g.yAxis.axis = d3.svg.axis();
+        g.xAxis.axis = d3.svg.axis();
+        g.yAxis.line = d3.svg.line();
+
+        this.redraw();
 		
 		this.g = g;
 		return this;
@@ -146,13 +131,36 @@ var Gneiss = {
 		this.g = g;
 		return this
 	},
+    calculateChartOffset: function() {
+        /*
+         * Calculate the left offset for a chart based on y-axis label width.
+         */
+        var g = this.g;
+
+		g.yAxis.axis.scale(g.yAxis.scale)
+			.orient('left')
+            .tickValues(g.yAxis.tickValues ? g.yAxis.tickValues : this.helper.exactTicks(g.yAxis.scale.domain(), g.yAxis.ticks))
+            .tickSize(0);
+
+        // Find the widest label
+        var width = 0;
+
+        g.chart.selectAll('#yAxis text')
+            .each(function() {
+                width = Math.max(width, this.getBBox().width);
+            });
+
+        g.chartOffset = width;
+
+        this.g = g;
+    },
     calculateBarOffset: function() {
         /*
          * Calculate the left offset of the bar chart based on label width.
          */
         var g = this.g;
 
-        // Render the latest xAxis labels
+        // Render the lates(0)t xAxis labels
 		g.xAxis.axis.scale(g.xAxis.scale)
 			.orient('left')
 			.ticks(g.xAxis.ticks)
@@ -166,10 +174,46 @@ var Gneiss = {
                 width = Math.max(width, this.parentNode.getBBox().width);
             });
 
-        this.g = g;
+        g.barOffset = width;
 
-        return width;
+        this.g = g;
     },
+	setPadding: function() {
+		/*
+			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
+		*/
+		var g = this.g
+		
+        var padding_top = g.defaults.padding.top;
+		var padding_bottom = g.defaults.padding.bottom;
+		
+		if (!g.legend) {
+			padding_top = 5;
+		}
+
+		padding_top += g.title == '' || g.series.length == 1 ? 0 : 25
+		
+		g.padding.top = padding_top
+		g.padding.bottom = padding_bottom
+			
+		this.g = g
+		return this
+	},
+	setLineMakers: function() {
+		var g = this.g;
+
+        g.yAxis.line.y(function(d, j) {
+            return d || d === 0 ? g.yAxis.scale(d) : null;
+        });
+
+        g.yAxis.line.x(function(d, j) {
+            return d || d === 0 ? g.xAxis.scale(g.xAxisRef[0].data[j]) : null;
+        });
+
+		this.g = g;
+        
+		return this;
+	},
 	setYScales: function() {
 		/*
 			calculates and saves the y-scales from the existing data
@@ -217,7 +261,7 @@ var Gneiss = {
             var longest = g.yAxis.prefix + g.yAxis.domain[1].toString() + g.yAxis.suffix;
 
             g.yAxis.scale.range([
-                g.padding.left + this.calculateBarOffset() + 5,
+                g.padding.left + g.barOffset+ 5,
                 g.width - (g.padding.right + longest.length * BAR_RIGHT_MARGIN_PER_CHAR)
             ]).nice()
         } else {
@@ -252,7 +296,7 @@ var Gneiss = {
 
 		if (g.type == 'column') {
 			rangeArray = [
-				g.padding.left + this.g.columnGroupWidth / 2,
+				g.padding.left + g.chartOffset + this.g.columnGroupWidth,
 				g.width - (g.padding.right + this.g.columnGroupWidth)
 			];
 		} else if (g.type == 'bar') {
@@ -262,46 +306,16 @@ var Gneiss = {
             ];
         } else {
 			rangeArray = [
-                g.padding.left,
+                g.padding.left + g.chartOffset + 10,
                 g.width - (g.padding.right + 10)
             ];
 		};
 
 		g.xAxis.scale.rangePoints(rangeArray);
-		
+
 		this.g = g;
 		return this;
 		
-	},
-	setPadding: function() {
-		/*
-			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
-		*/
-		var g = this.g
-		
-        var padding_top = g.defaults.padding.top;
-		var padding_bottom = g.defaults.padding.bottom;
-		
-		if (!g.legend) {
-			padding_top = 5;
-		}
-
-		padding_top += g.title == '' || g.series.length == 1 ? 0 : 25
-		
-		g.padding.top = padding_top
-		g.padding.bottom = padding_bottom
-			
-		this.g = g
-		return this
-	},
-	setLineMakers: function() {
-		var g = this.g
-
-        g.yAxis.line.y(function(d,j){return d||d===0?g.yAxis.scale(d):null})
-        g.yAxis.line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
-
-		this.g = g
-		return this
 	},
 	setYAxis: function() {
 		/*
@@ -313,10 +327,10 @@ var Gneiss = {
 
         var tickSize = (g.type == 'bar')
             ? g.height - (g.padding.top + g.padding.bottom)
-            : g.width - (g.padding.left + g.padding.right);
-		
-        g.yAxis.axis
-            .orient(g.type == 'bar' ? 'bottom' : 'right')
+            : -(g.width - (g.padding.left + g.padding.right));
+
+        g.yAxis.axis.scale(g.yAxis.scale)
+            .orient(g.type == 'bar' ? 'bottom' : 'left')
             .tickSize(tickSize)
             .tickValues(g.yAxis.tickValues ? g.yAxis.tickValues : this.helper.exactTicks(g.yAxis.scale.domain(), g.yAxis.ticks))
 
@@ -324,7 +338,7 @@ var Gneiss = {
             ? 'translate(0,' + g.padding.top + ')'
             : 'translate(' + g.padding.left + ',0)';
                 
-        var axisGroup = g.chart.selectAll('#leftAxis')
+        var axisGroup = g.chart.selectAll('#yAxis')
             .attr('transform', translate)
             .call(g.yAxis.axis)
 				
@@ -363,11 +377,26 @@ var Gneiss = {
             ? 'translate(0,0)'
             : 'translate(0,-8)';
 
+        if (g.type != 'bar') {
+            var width = 0;
+
+            g.chart.selectAll('#yAxis text')
+                .each(function() {
+                    width = Math.max(width, this.getBBox().width);
+                });
+
+            g.chart.selectAll('#yAxis text')
+                .attr('text-anchor', 'end')
+                .each(function() {
+                    this.setAttribute('x', width);
+                })
+        }
+
         axisGroup.selectAll('text')
             .attr('text-anchor', 'end')
             .attr('transform', translate);
 		
-		d3.selectAll('.yAxis').each(function(){this.parentNode.prependChild(this);})
+		d3.selectAll('#yAxis').each(function(){this.parentNode.prependChild(this);})
 		d3.selectAll('#ground').each(function(){this.parentNode.prependChild(this);})
 
 		this.g = g
@@ -375,7 +404,7 @@ var Gneiss = {
 	
 	},
 	setXAxis: function() {
-		var g = this.g
+		var g = this.g;
 
 		g.xAxis.axis.scale(g.xAxis.scale)
 			.orient(g.type == 'bar' ? 'left' : 'bottom')
@@ -385,7 +414,7 @@ var Gneiss = {
         var translate = (g.type == 'bar')
             ? 'translate(' + g.padding.left + ',' + (g.padding.top + (g.series.length == 1 ? 15 : 0)) + ')'
             : 'translate(0,' + (g.height - g.padding.bottom) + ')';
-        
+
 		g.chart.selectAll('#xAxis')
 			.attr('transform', translate)
 			.call(g.xAxis.axis)
@@ -762,16 +791,21 @@ var Gneiss = {
 		
 		this.calculateColumnWidths();
         this.calculateBarHeights();
+        
+        this.calculateChartOffset();
+        this.calculateBarOffset();
 
-        this.setLineMakers()
+        this.setPadding();
+		this.setYScales();
+        this.setXScales();
 
-		this.setPadding()
-			.setYScales()
-			.setXScales()
-			.setYAxis()
-			.setXAxis()
-			.drawSeries()
-            .drawLegend()
+        this.setLineMakers();
+
+		this.setYAxis();
+		this.setXAxis();
+
+		this.drawSeries();
+        this.drawLegend();
 
 		return this
 	},

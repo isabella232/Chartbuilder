@@ -5,13 +5,13 @@ svg #ground {
 	stroke: none;
 }
 
-svg .axis line {
+/*svg .axis line {
 	fill: none;
 	shape-rendering: crispEdges;
-}
+}*/
 
 svg .axis g.zero line {
-		stroke: #666666;
+	stroke: #666666;
 }
 
 svg #xAxis line {
@@ -27,12 +27,12 @@ svg .axis path {
 	fill: none;
 }
 
-svg .yAxis .tick {
+svg #yAxis .tick {
 	stroke: #e5e5e5;
 	stroke-dasharray: 2;
 }
 
-svg .yAxis .zero .tick {
+svg #yAxis .zero .tick {
 	stroke: #666;
 	stroke-dasharray: 0;
 }

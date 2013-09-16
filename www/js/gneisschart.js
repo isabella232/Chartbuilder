@@ -87,10 +87,13 @@ var Gneiss = {
 			.attr('id','ground')
 			.attr('width',g.width)
 			.attr('height',g.height)
+
+        g.yAxis.scale = d3.scale.linear();
+        g.xAxis.scale = d3.scale.ordinal();
 		
         this.calculateColumnWidths();
-		this.setYScales(true);
-		this.setXScales(true);
+		this.setYScales();
+		this.setXScales();
 
         // Create axes
         g.xAxis.axis = d3.svg.axis();
@@ -188,7 +191,7 @@ var Gneiss = {
 
         return width;
     },
-	setYScales: function(first) {
+	setYScales: function() {
 		/*
 			calculates and saves the y-scales from the existing data
 		*/
@@ -227,17 +230,9 @@ var Gneiss = {
             g.yAxis.domain[1] = Math.max(g.yAxis.domain[1], g.yAxis.tickValues[g.yAxis.tickValues.length - 1]);
         }
 
-        //set extremes in y axis objects and create scales
-        if(first || !g.yAxis.scale) {
-            g.yAxis.scale = d3.scale.linear()
-                .domain(g.yAxis.domain)
-        }
-        else {
-            //set extremes in y axis objects and update scales
-            g.yAxis.domain = d3.extent(g.yAxis.domain)
-            g.yAxis.scale
-                .domain(g.yAxis.domain)
-        }
+        g.yAxis.domain = d3.extent(g.yAxis.domain)
+        g.yAxis.scale
+            .domain(g.yAxis.domain)
             
         if (g.type == 'bar') {
             var longest = g.yAxis.prefix + g.yAxis.domain[1].toString() + g.yAxis.suffix;
@@ -256,33 +251,22 @@ var Gneiss = {
 		this.g = g;
 		return this
 	},
-	setXScales: function(first) {
+	setXScales: function() {
 		/*
 			calculate and store the x-scales
 		*/
 		var g = this.g
 
-		if(first) {
-			//calculate extremes of axis
-            var maxLength = 0;
-            for (var i = g.series.length - 1; i >= 0; i--){
-                maxLength = Math.max(maxLength, g.series[i].data.length)
-            };
-            g.xAxis.scale = d3.scale.ordinal()
-                .domain(g.xAxisRef[0].data)
-                
-            g.maxLength = maxLength;
-		}
-		else {
-			//update the existing scales
-            var maxLength = 0;
-            for (var i = g.series.length - 1; i >= 0; i--){
-                maxLength = Math.max(maxLength, g.series[i].data.length)
-            };
-            g.xAxis.scale.domain(g.xAxisRef[0].data)
+        //calculate extremes of axis
+        var maxLength = 0;
+        for (var i = g.series.length - 1; i >= 0; i--){
+            maxLength = Math.max(maxLength, g.series[i].data.length)
+        };
+
+        g.xAxis.scale
+            .domain(g.xAxisRef[0].data)
             
-            g.maxLength = maxLength;
-		}
+        g.maxLength = maxLength;
 
 		//set the range of the x axis
 		var rangeArray = []

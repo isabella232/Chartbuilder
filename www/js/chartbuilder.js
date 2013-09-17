@@ -558,6 +558,9 @@ ChartBuilder = {
         var charts = ChartBuilder.getSavedCharts().reverse();
         ChartBuilder.setSavedChartList(charts); 
         ChartBuilder.loadChart(charts[0]);
+
+        // Hack so chosen doesn't stay open after we load our saved chart
+        $('.navbar-brand').focus().blur();
     }
 };
 

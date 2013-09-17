@@ -93,7 +93,7 @@ def _gzip(in_path='www', out_path='.gzip'):
     """
     Gzips everything in www and puts it all in gzip
     """
-    local('python gzip_assets.py %s %s' % (in_path, out_path))
+    local('python gzip_www.py %s %s' % (in_path, out_path))
 
 def deploy(remote='origin'):
     """

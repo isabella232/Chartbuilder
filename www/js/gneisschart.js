@@ -641,7 +641,7 @@ var Gneiss = {
 		var columnWidth = this.g.columnWidth;
 		var columnGroupShift = this.g.columnGroupShift;
         
-        var domain = g.xAxis.scale.domain();
+        var domain = g.yAxis.scale.domain();
 		
         var columnGroups = g.seriesContainer.selectAll('g.seriesColumn')
             .data(g.series)
@@ -672,7 +672,7 @@ var Gneiss = {
                     if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.rectBase(d, domain)) >= 0) {
                         return g.yAxis.scale(Gneiss.rectBase(d, domain));
                     } else {
-                        return g.yAxis.scale(d);
+                        return g.yAxis.scale(d) - 1;
                     }
                 })
     
@@ -699,7 +699,7 @@ var Gneiss = {
                 .attr('class', 'seriesBar')
                 .attr('fill', function(d,i) { return d.color })
                 .attr('transform', function(d,i) {
-                    return 'translate(1,' + (g.padding.top + (i * barGroupShift) - barHeight / 2) + ')';
+                    return 'translate(0,' + (g.padding.top + (i * barGroupShift) - barHeight / 2) + ')';
                 })
             
         barSeries.exit().remove()
@@ -716,7 +716,7 @@ var Gneiss = {
                 if (d >= 0) {
                     x = g.yAxis.scale(Gneiss.rectBase(d, domain));
                 } else {
-                    x = g.yAxis.scale(d);
+                    x = g.yAxis.scale(d) - 1;
                 }
 
                 return 'translate(' + x + ',' + y + ')';

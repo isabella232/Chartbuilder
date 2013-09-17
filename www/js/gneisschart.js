@@ -348,8 +348,6 @@ var Gneiss = {
         g.yAxis.domain[0] = Math.min(g.yAxis.domain[0], ex[0]);
         g.yAxis.domain[1] = Math.max(g.yAxis.domain[1], ex[1]);
 
-        console.log(g.yAxis.domain);
-
         g.yAxis.scale.domain(g.yAxis.domain)
             
         if (g.type == 'bar') {

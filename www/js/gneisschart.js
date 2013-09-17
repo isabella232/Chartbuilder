@@ -3,7 +3,7 @@ Element.prototype.prependChild = function(child) { this.insertBefore(child, this
 
 Date.setLocale('en');
 
-BAR_RIGHT_MARGIN_PER_CHAR = 8
+BAR_MARGIN_PER_CHAR = 8
 
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
@@ -248,11 +248,16 @@ var Gneiss = {
             .domain(g.yAxis.domain)
             
         if (g.type == 'bar') {
-            var longest = g.yAxis.prefix + g.yAxis.domain[1].toString() + g.yAxis.suffix;
+            var leftOffset = 5;
+            var rightOffset = (g.yAxis.prefix + g.yAxis.domain[1].toString() + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
+
+            if (g.yAxis.domain[0] < 0) {
+                leftOffset += (g.yAxis.prefix + g.yAxis.domain[0].toString() + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
+            }
 
             g.yAxis.scale.range([
-                g.padding.left + g.barOffset+ 5,
-                g.width - (g.padding.right + longest.length * BAR_RIGHT_MARGIN_PER_CHAR)
+                g.padding.left + g.barOffset + leftOffset,
+                g.width - (g.padding.right + rightOffset)
             ]).nice()
         } else {
             g.yAxis.scale.range([
@@ -632,14 +637,13 @@ var Gneiss = {
 
         var barLabels = barGroups.append('text')
             .text(function(d, i) { return g.yAxis.prefix + d + g.yAxis.suffix; } )
-			.attr('text-anchor', 'start')
+			.attr('text-anchor', function(d, i) { return d <= 0 ? 'end' : 'start' })
             .attr('fill', '#333')
             .attr('x', function(d, i) {
                 if (d >= 0) {
                     return this.parentNode.getBBox().width + 5;
                 } else {
-                    // NB: This isn't really a solution, it's just a placeholder for a solution
-                    return 5;
+                    return -5;
                 }
             })
             .attr('y', function(d, i) {

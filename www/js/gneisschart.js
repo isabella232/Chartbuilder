@@ -291,23 +291,21 @@ var Gneiss = {
 		var rangeArray = []
 
 		if (g.type == 'column') {
-			rangeArray = [
+			g.xAxis.scale.rangePoints([
 				g.padding.left + g.chartOffset + g.columnGroupWidth,
 				g.width - (g.padding.right + g.columnGroupWidth)
-			];
+			]);
 		} else if (g.type == 'bar') {
-            rangeArray = [
+            g.xAxis.scale.rangePoints([
                 g.padding.top + (g.series.length > 1 ? 10 : 0) - g.barGroupHeight,
                 g.height - (g.padding.top + g.padding.bottom + g.barGroupHeight) 
-            ];
+            ], 0.5);
         } else {
-			rangeArray = [
+			g.xAxis.scale.rangePoints([
                 g.padding.left + g.chartOffset,
                 g.width - (g.padding.right)
-            ];
+            ]);
 		};
-
-		g.xAxis.scale.rangePoints(rangeArray);
 
 		this.g = g;
 		return this;
@@ -463,7 +461,7 @@ var Gneiss = {
 		var g = this.g
 
         var chartWidth = g.width - (g.padding.right + g.padding.left);
-		var columnWidth = Math.floor((chartWidth / maxLength) / g.series.length) - 3;
+		var columnWidth = Math.floor((chartWidth / maxLength) / g.series.length);
 
 		columnWidth = Math.max(columnWidth, 1);
 		columnWidth = Math.min(columnWidth, chartWidth * 0.075);
@@ -483,7 +481,7 @@ var Gneiss = {
 		var g = this.g
 
         var chartHeight = g.height - (g.padding.top + g.padding.bottom);
-		var barHeight = Math.floor((chartHeight / maxLength) / g.series.length) - 3;
+		var barHeight = Math.floor((chartHeight / maxLength) / g.series.length);
 
 		barHeight = Math.max(barHeight, 1);
 		barHeight = Math.min(barHeight, chartHeight * 0.075);
@@ -607,7 +605,7 @@ var Gneiss = {
                 .attr('class', 'seriesBar')
                 .attr('fill', function(d,i) { return d.color })
                 .attr('transform', function(d,i) {
-                    return 'translate(0,' + (g.padding.top + (i * barGroupShift - (barGroupShift * (g.series.length - 1) / 2))) + ')'
+                    return 'translate(0,' + (g.padding.top + (i * barGroupShift) - barHeight / 2) + ')';
                 })
             
         barSeries.exit().remove()

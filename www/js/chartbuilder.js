@@ -194,46 +194,142 @@ ChartBuilder = {
         ChartBuilder.setSavedChartList(charts);
 		
 	},
+    updateConfigFromUI: function() {
+        /*
+         * Update the chart config from the latest UI state.
+         */
+        // Data
+        var data = $("#csvInput").val();
+
+        if (data !== ChartBuilder.rawData) {
+            ChartBuilder.rawData = data;
+
+            try {
+                var rows = ChartBuilder.parseData(data);
+            } catch(e) {
+                ChartBuilder.showInvalidData(e);
+
+                return false;
+            }
+
+            dataSeries = ChartBuilder.makeDataSeries(rows);
+
+            if (dataSeries == null) {
+                ChartBuilder.showInvalidData();
+                
+                return false;
+            }
+
+            ChartBuilder.hideInvalidData();
+            ChartBuilder.createTable(rows);
+
+            // First row is x axis, the rest is data
+            chart.g.xAxisRef = dataSeries.shift().data;
+            chart.g.series = dataSeries;
+        }
+
+        // Type
+        chart.g.type = $("#typePicker").val();
+
+        // Title
+        chart.g.title = $("#chart_title").val();;
+        chart.g.titleLine.text(chart.g.title)
+        
+        // Prefix/suffix
+        chart.g.yAxis.prefix = $('#right_axis_prefix').val();
+        chart.g.yAxis.suffix = $('#right_axis_suffix').val();
+
+        // Precision
+        var precision = parseInt($("#right_axis_precision").val());
+
+        if (isNaN(precision)) {
+            precision = null;
+        }
+
+        chart.g.yAxis.precision = precision;
+
+        // Ticks
+        chart.g.yAxis.numTicks = parseInt($("#right_axis_tick_num").val())
+
+        // Min/max
+        var val = parseFloat($("#right_axis_min").val())
+
+        if (isNaN(val)) {
+            val = null;
+        }
+
+        chart.g.yAxis.min = val;
+
+        var val = parseFloat($("#right_axis_max").val())
+        
+        if (isNaN(val)) {
+            val = null;
+        }
+
+        chart.g.yAxis.max = val;
+
+        // Tick override
+        var val = $("#right_axis_tick_override").val().split(',');
+
+        if(val.length > 1) {
+            for (var i = val.length - 1; i >= 0; i--){
+                val[i] = parseFloat(val[i]);
+            };
+        }
+        else {
+            val = null;
+        }
+        
+        chart.g.yAxis.tickValues = val;
+
+        return true;
+    },
+    colorPickerChanged: function() {
+        /*
+         * Update the chart when a color picker is changed.
+         */
+        chart.g.series[$(this).parent().data().index].color = $(this).val();
+
+        ChartBuilder.render();
+    },
 	render: function() {
         /*
          * Redraw the chart and update series options as appropriate.
          */
-		$('.seriesItemGroup').detach()
-		var g = chart.g, s, picker;
-		ChartBuilder.customLegendLocaion = false;
+		var g = chart.g;
+        var valid = ChartBuilder.updateConfigFromUI();
+
+        if (!valid) {
+            return false;
+        }
+        
+        $('.seriesItemGroup').detach();
+
 		var seriesContainer = $('#seriesItems')
 			
-		for (var i=0; i < g.series.length; i++) {
-			s = g.series[i]
+        // Generate series controls
+		for (var i = 0; i < g.series.length; i++) {
+			var s = g.series[i]
 			seriesItem = $('<div class="seriesItemGroup">\
-				<label for="'+ChartBuilder.idSafe(s.name)+'_color">'+s.name+'</label>\
-				<input id="'+ChartBuilder.idSafe(s.name)+'_color" name="'+ChartBuilder.idSafe(s.name)+'" type="text" />\
+				<label for="' + ChartBuilder.idSafe(s.name) + '_color">' + s.name + '</label>\
+				<input id="' + ChartBuilder.idSafe(s.name) + '_color" name="' + ChartBuilder.idSafe(s.name) + '" type="text" />\
 			</div>');
 			
-            var color = s.color ? s.color.replace('#','') : g.colors[i].replace('#','')
-			
 			seriesContainer.append(seriesItem);
-			var picker = seriesItem.find('#'+ChartBuilder.idSafe(s.name)+'_color').colorPicker({pickerDefault: color, colors:ChartBuilder.allColors});
 
-			seriesItem.data('index',i)
-			picker.change(function() {
-				chart.g.series[$(this).parent().data().index].color = $(this).val()
-				ChartBuilder.render()
-			})
-			
-			chart.render()
-		}
+            var color = s.color ? s.color.replace('#','') : g.colors[i].replace('#','');
+			var picker = seriesItem.find('#' + ChartBuilder.idSafe(s.name) + '_color').colorPicker({ pickerDefault: color, colors:ChartBuilder.allColors });
 
-        $('#typePicker').off('change').on('change', function() {
-            var val = $(this).val();
+			seriesItem.data('index', i);
 
-            chart.g.type = val;
-
-            ChartBuilder.render();
-        });		
-		
-		chart.g = g;
+			picker.change(ChartBuilder.colorPickerChanged);
+ 		}
+        
+        // Render!
+		chart.render()
 		ChartBuilder.inlineAllStyles();
+
+		chart.g = g;
 	},
 	getAllInputData: function() {
 		var d = {}, $el;
@@ -244,76 +340,10 @@ ChartBuilder = {
 		return d
 	},
 	idSafe: function(s) {
-		s = s.replace(/[^\w\d]+/gi,'-')
-		return s
+		s = s.replace(/[^\w\d]+/gi, '-');
+
+		return s;
 	},
-    axis_prefix_change: function(that) {
-        chart.g.yAxis.prefix = $(that).val()
-        ChartBuilder.render()
-        ChartBuilder.inlineAllStyles();
-    },
-    axis_suffix_change: function(that) {
-        chart.g.yAxis.suffix = $(that).val()
-        ChartBuilder.render()
-        ChartBuilder.inlineAllStyles();
-    },
-    axis_precision_change: function(that) {
-        var precision = parseInt($(that).val());
-
-        if (isNaN(precision)) {
-            precision = null;
-        }
-
-        chart.g.yAxis.precision = precision;
-        ChartBuilder.render()
-        ChartBuilder.inlineAllStyles();
-    },
-    axis_tick_num_change: function(that) {
-        chart.g.yAxis.numTicks = parseInt($(that).val())
-        ChartBuilder.render()
-        ChartBuilder.inlineAllStyles();
-    },
-    axis_max_change: function(that) {
-        var val = parseFloat($(that).val())
-        
-        if (isNaN(val)) {
-            val = null;
-        }
-
-        chart.g.yAxis.max = val;
-
-        ChartBuilder.render()
-        ChartBuilder.inlineAllStyles();
-    },
-    axis_min_change: function(that) {
-        var val = parseFloat($(that).val())
-
-        if (isNaN(val)) {
-            val = null;
-        }
-
-        chart.g.yAxis.min = val;
-
-        ChartBuilder.render()
-        ChartBuilder.inlineAllStyles();
-    },
-    axis_tick_override_change: function(that) {
-        var val = $(that).val()
-        val = val.split(',')
-        if(val.length > 1) {
-            for (var i = val.length - 1; i >= 0; i--){
-                val[i] = parseFloat(val[i])
-            };
-        }
-        else {
-            val = null
-        }
-        
-        chart.g.yAxis.tickValues = val
-
-        ChartBuilder.render()
-        ChartBuilder.inlineAllStyles();
-    },
 	showInvalidData: function(e) {
         e = e || 'Data could not be parsed.';
 
@@ -380,12 +410,15 @@ ChartBuilder = {
         /*
          * Load a chart from JSON representation.
          */
+        // Set field values from JSON blog
 		for (var key in d) {
 			if(key != 'name' && key != 'created') {
-				$('#'+key).val(d[key])
+				$('#' + key).val(d[key]);
 			}
 		}
-		$('input:not([id^=colorPicker]), textarea, select:not(#previous_charts)').keyup().change();
+
+        // Render the new chart
+        ChartBuilder.render();
 	},
 	getSavedCharts: function() {
         /*
@@ -435,7 +468,7 @@ ChartBuilder = {
         $('#chartContainer').css('height', 480)
         chart = Gneiss.setup(chartConfig)
 
-        var chartSelect = $('#previous_charts').chosen()
+        $('#previous_charts').chosen()
             .on('change', function() {
                 ChartBuilder.loadChart(d3.select(this.selectedOptions[0]).data()[0])
             });
@@ -456,82 +489,16 @@ ChartBuilder = {
             }
         })
 
-        $('#right_axis_prefix').keyup(function() {
-            ChartBuilder.axis_prefix_change(this)
-        })
-
-        $('#right_axis_suffix').keyup(function() {
-            ChartBuilder.axis_suffix_change(this)
-        })
-
-        $('#right_axis_precision').keyup(function() {
-            ChartBuilder.axis_precision_change(this)
-        })
-
-        $('#right_axis_tick_num').change(function() {
-            ChartBuilder.axis_tick_num_change(this)
-        })
-
-        $('#right_axis_max').keyup(function() {
-            ChartBuilder.axis_max_change(this)
-        })
-
-        $('#right_axis_min').keyup(function() {
-            ChartBuilder.axis_min_change(this)
-        })
-
-        $('#right_axis_tick_override').keyup(function() {
-            ChartBuilder.axis_tick_override_change(this)
-        })
-
-        $('#csvInput').keyup(function() {
-            if ($(this).val() == ChartBuilder.rawData) {
-                return false;
-            }
-
-            ChartBuilder.rawData = $(this).val()
-            
-            var csv = $('#csvInput').val();
-
-            try {
-                var rows = ChartBuilder.parseData(csv);
-            } catch(e) {
-                ChartBuilder.showInvalidData(e);
-                return false;
-            }
-
-            dataSeries = ChartBuilder.makeDataSeries(rows);
-
-            if (dataSeries == null) {
-                ChartBuilder.showInvalidData();
-                return;
-            }
-
-            ChartBuilder.hideInvalidData();
-            ChartBuilder.createTable(rows);
-
-            // First row is x axis, the rest is data
-            chart.g.xAxisRef = dataSeries.shift().data;
-            chart.g.series = dataSeries;
-
-            // Regenerate axes from data or min/max
-            chart.g.yAxis.domain = [null, null];
-            $("#right_axis_max").keyup();
-            $("#right_axis_min").keyup();
-
-            ChartBuilder.render();
-            ChartBuilder.inlineAllStyles();
-        }); 
-
-        $('#chart_title').keyup(function() {
-            var val = $(this).val()
-
-            chart.g.title = val;
-            
-            chart.render();
-            
-            chart.g.titleLine.text(chart.g.title)
-        });
+        $('#right_axis_prefix').keyup(ChartBuilder.render);
+        $('#right_axis_suffix').keyup(ChartBuilder.render);
+        $('#right_axis_precision').keyup(ChartBuilder.render);
+        $('#right_axis_tick_num').change(ChartBuilder.render);
+        $('#right_axis_max').keyup(ChartBuilder.render);
+        $('#right_axis_min').keyup(ChartBuilder.render);
+        $('#right_axis_tick_override').keyup(ChartBuilder.render);
+        $('#typePicker').on('change', ChartBuilder.render);		
+        $('#chart_title').keyup(ChartBuilder.render);
+        $('#csvInput').keyup(ChartBuilder.render); 
 
         // Clicking download closes the download modal
         $('#downloadImageLink').on('click', function(){

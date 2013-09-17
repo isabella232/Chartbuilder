@@ -7,7 +7,6 @@ BAR_MARGIN_PER_CHAR = 8
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
 var defaultGneissChartConfig = {
 	container: '#chartContainer', //css id of target chart container
-	editable: true, // reserved for enabling or dissabling on chart editing
 	legend: true, // whether or not there should be a legend
 	title: '', // the chart title 
 	colors: ['#ff4cf4','#ffb3ff','#e69ce6','#cc87cc','#b373b3','#995f99','#804c80','#665266','#158eff','#99cdff','#9cc2e6','#87abcc','#7394b3','#5f7d99','#466780','#525c66'], //this is the order of colors that the 
@@ -20,8 +19,6 @@ var defaultGneissChartConfig = {
 	},
 	xAxis: {
 		domain: [null, null],
-		prefix: '',
-		suffix: '',
 		numTicks: 5
 	},
 	yAxis: {
@@ -350,7 +347,7 @@ var Gneiss = {
         g.yAxis.domain[1] = Math.max(g.yAxis.domain[1], ex[1]);
 
         g.yAxis.scale.domain(g.yAxis.domain)
-            
+
         if (g.type == 'bar') {
             var leftOffset = 5;
             var rightOffset = (g.yAxis.prefix + g.yAxis.domain[1] + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
@@ -362,14 +359,14 @@ var Gneiss = {
             g.yAxis.scale.range([
                 g.padding.left + g.barOffset + leftOffset,
                 g.width - (g.padding.right + rightOffset)
-            ]).nice()
+            ]).nice();
         } else {
             g.yAxis.scale.range([
                 g.height - g.padding.bottom,
                 g.padding.top + 10
-            ]).nice()
+            ]).nice();
         }
-		
+
 		this.g = g;
 	},
 	calculateXScale: function() {
@@ -879,13 +876,13 @@ var Gneiss = {
                 g.series[i].color = g.colors[i];
             }
         };
-		
+	
+        this.calculateBarOffset();
+        this.calculateChartOffset();
+	
         this.calculatePadding();
 		this.calculateYScale();
         
-        this.calculateBarOffset();
-        this.calculateChartOffset();
-
         this.calculateXScale();
 
         this.setLineMakers();

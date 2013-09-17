@@ -271,19 +271,21 @@ var Gneiss = {
 	},
 	setXScales: function() {
 		/*
-			calculate and store the x-scales
+         * Calculate x-axis scale.
 		*/
 		var g = this.g
+        
+        g.xAxis.scale.domain(g.xAxisRef)
 
-        //calculate extremes of axis
+        // Calculate extremes of axis
         var maxLength = 0;
-        for (var i = g.series.length - 1; i >= 0; i--){
+
+        for (var i = g.series.length - 1; i >= 0; i--) {
             maxLength = Math.max(maxLength, g.series[i].data.length)
         };
 
-        g.xAxis.scale.domain(g.xAxisRef)
-            
-        g.maxLength = maxLength;
+        this.calculateColumnWidths(maxLength);
+        this.calculateBarHeights(maxLength);
 
 		//set the range of the x axis
 		var rangeArray = []
@@ -454,14 +456,14 @@ var Gneiss = {
 
 		return this;
 	},
-	calculateColumnWidths: function() {
+	calculateColumnWidths: function(maxLength) {
         /*
          * Calculate column widths.
          */
 		var g = this.g
 
         var chartWidth = g.width - (g.padding.right + g.padding.left);
-		var columnWidth = Math.floor((chartWidth / g.maxLength) / g.series.length) - 3;
+		var columnWidth = Math.floor((chartWidth / maxLength) / g.series.length) - 3;
 
 		columnWidth = Math.max(columnWidth, 1);
 		columnWidth = Math.min(columnWidth, chartWidth * 0.075);
@@ -474,14 +476,14 @@ var Gneiss = {
 
 		return this;
 	},
-    calculateBarHeights: function() {
+    calculateBarHeights: function(maxLength) {
         /*
          * Calculate bar heights.
          */
 		var g = this.g
 
         var chartHeight = g.height - (g.padding.top + g.padding.bottom);
-		var barHeight = Math.floor((chartHeight / g.maxLength) / g.series.length) - 3;
+		var barHeight = Math.floor((chartHeight / maxLength) / g.series.length) - 3;
 
 		barHeight = Math.max(barHeight, 1);
 		barHeight = Math.min(barHeight, chartHeight * 0.075);
@@ -789,9 +791,6 @@ var Gneiss = {
             }
         };
 		
-		this.calculateColumnWidths();
-        this.calculateBarHeights();
-        
         this.calculateChartOffset();
         this.calculateBarOffset();
 

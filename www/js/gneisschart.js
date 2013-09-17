@@ -353,10 +353,10 @@ var Gneiss = {
             
         if (g.type == 'bar') {
             var leftOffset = 5;
-            var rightOffset = (g.yAxis.prefix + g.yAxis.formatter(g.yAxis.domain[1]) + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
+            var rightOffset = (g.yAxis.prefix + g.yAxis.domain[1] + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
 
             if (g.yAxis.domain[0] < 0) {
-                leftOffset += (g.yAxis.prefix + g.yAxis.formatter(g.yAxis.domain[0]) + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
+                leftOffset += (g.yAxis.prefix + g.yAxis.domain[0] + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
             }
 
             g.yAxis.scale.range([

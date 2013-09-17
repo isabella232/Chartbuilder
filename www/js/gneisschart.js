@@ -605,7 +605,7 @@ var Gneiss = {
                 .attr('class', 'seriesBar')
                 .attr('fill', function(d,i) { return d.color })
                 .attr('transform', function(d,i) {
-                    return 'translate(0,' + (g.padding.top + (i * barGroupShift) - barHeight / 2) + ')';
+                    return 'translate(1,' + (g.padding.top + (i * barGroupShift) - barHeight / 2) + ')';
                 })
             
         barSeries.exit().remove()

@@ -292,8 +292,8 @@ var Gneiss = {
 
 		if (g.type == 'column') {
 			g.xAxis.scale.rangePoints([
-				g.padding.left + g.chartOffset + g.columnGroupWidth,
-				g.width - (g.padding.right + g.columnGroupWidth)
+				g.padding.left + g.chartOffset + (g.columnGroupWidth / 2),
+				g.width - (g.padding.right + g.columnGroupWidth / 2)
 			]);
 		} else if (g.type == 'bar') {
             g.xAxis.scale.rangePoints([

@@ -696,13 +696,13 @@ var Gneiss = {
         this.g = g;
     },
 	renderLegend: function() {
+        /*
+         * Render the legend to the top of the chart.
+         */
 		var g = this.g;
-		var legendItemY;
 		
-		//remove current legends
 		g.legendItemContainer.selectAll('g.legendItem').remove()
 		
-        //add legend to chart
         var legendGroups = g.legendItemContainer.selectAll('g')
             .data(g.series);
 
@@ -716,27 +716,24 @@ var Gneiss = {
         legendGroups.exit().remove()
 
         var legLabels = legItems.append('text')
-                .filter(function(){return g.series.length > 1})
-                .attr('class','legendLabel')
-                .attr('x',15)
-                .attr('y',10)
-                .text(function(d,i){return d.name});
+            .filter(function() { return g.series.length > 1; })
+            .attr('class', 'legendLabel')
+            .attr('x', 15)
+            .attr('y', 10)
+            .text(function(d,i) { return d.name });
         
-        //if there is more than one line
         if(g.series.length > 1) {
             legItems.append('rect')
-                .attr('width',10)
-                .attr('height',10)
-                .attr('x',0)
-                .attr('y',0)
-                .attr('fill', function(d,i){return d.color})
+                .attr('width', 10)
+                .attr('height', 10)
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('fill', function(d,i) { return d.color })
+		
+            var legendItemY;
 
-            legendGroups.filter(function(d){return d != g.series[0]})
-                .transition()
-                .duration(50)
-                .delay(function(d,i){return i * 50 + 50})
+            legendGroups.filter(function(d){ return d != g.series[0] })
                 .attr('transform',function(d,i) {
-                    //label isn't for the first series
                     var prev = d3.select(legendGroups[0][i])
                     var prevWidth = parseFloat(prev.node().getBBox().width)
                     var prevCoords = g.all.transformCoordOf(prev)
@@ -746,15 +743,16 @@ var Gneiss = {
                     var curCoords = g.all.transformCoordOf(cur)
 
                     legendItemY = prevCoords.y;
+                    
                     var x = prevCoords.x + prevWidth + 15
+                    
                     if(x + curWidth > g.width) {
                         x = g.padding.left
                         legendItemY += 15;						
                     }
-                    return 'translate('+x+','+legendItemY+')'
+                    
+                    return 'translate(' + x + ',' + legendItemY + ')';
             })
-
-			this.g = g;	
 		}
 		
 		this.g = g

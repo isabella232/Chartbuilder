@@ -115,26 +115,33 @@
                       </div>
                       <p class="help-block col-md-5">e.g. $50</p>
                     </div>
-  	    						<div class="form-group">
+  	    			<div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_suffix">Unit Label After Value</label>
                       <div class="col-md-4">
                         <input type="text" class="form-control" name="right_axis_suffix" value="" id="right_axis_suffix">
                       </div>
                       <p class="help-block col-md-5">e.g. 75%</p>
                     </div>
-      							<div class="form-group">
-                      <label class="col-md-3 control-label" for="right_axis_max">Maximum</label>
+  	    			<div class="form-group">
+                      <label class="col-md-3 control-label" for="right_axis_precision">Number of Decimal Places</label>
+                      <div class="col-md-4">
+                        <input type="text" class="form-control" name="right_axis_precision" value="" id="right_axis_precision">
+                      </div>
+                      <p class="help-block col-md-5">e.g. 2 for 2.00</p>
+                    </div>
+      				<div class="form-group">
+                      <label class="col-md-3 control-label" for="right_axis_max">Maximum Value</label>
                       <div class="col-md-4">
                         <input type="text" class="form-control" name="right_axis_max" value="" id="right_axis_max">
                       </div>
-                      <p class="help-block col-md-5">Must be greater than <strong>Minimum</strong>. If blank, the maximum value in the data.</p>
+                      <p class="help-block col-md-5">Must be greater than the <strong>Minimum Value</strong>. If blank, the maximum value in the data.</p>
                     </div>
       							<div class="form-group">
-                      <label class="col-md-3 control-label" for="right_axis_min">Minimum</label>
+                      <label class="col-md-3 control-label" for="right_axis_min">Minimum Value</label>
                       <div class="col-md-4">
                         <input type="text" class="form-control" name="right_axis_min" value="" id="right_axis_min">
                       </div>
-                      <p class="help-block col-md-5">Must be less than <strong>Maximum</strong>. If blank, the minimum value in the data. Should often be 0!</p>
+                      <p class="help-block col-md-5">Must be less than the <strong>Maximum Value</strong>. If blank, the minimum value in the data. Should often be 0!</p>
                     </div>
   	    						<div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_tick_num">Number of Ticks</label>
@@ -147,14 +154,14 @@
                             <option>6</option>
                         </select>
                       </div>
-                      <p class="help-block col-md-5">If data crosses 0 additional ticks may be automatically added.</p>
+                      <p class="help-block col-md-5">Additional ticks may be automatically added to balance the chart.</p>
                     </div>
       							<div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_tick_override">Override Ticks</label>
                       <div class="col-md-4">
                         <input type="text" class="form-control" name="right_axis_tick_override" value="" id="right_axis_tick_override">
                       </div>
-                      <p class="help-block col-md-5">e.g. 5,10,15,20,25</p>
+                      <p class="help-block col-md-5">e.g. 0,5,10,15,20,25</p>
                     </div>
                   </div>
                 </div>

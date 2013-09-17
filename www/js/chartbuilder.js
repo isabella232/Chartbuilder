@@ -233,11 +233,6 @@ ChartBuilder = {
 
             chart.g.type = val;
 
-            // Regenerate axes from data or min/max
-            chart.g.yAxis.domain = [null, null];
-            $("#right_axis_max").keyup();
-            $("#right_axis_min").keyup();
-
             ChartBuilder.render();
         });		
 		
@@ -278,6 +273,17 @@ ChartBuilder = {
         ChartBuilder.render()
         ChartBuilder.inlineAllStyles();
     },
+    axis_precision_change: function(that) {
+        var precision = parseInt($(that).val());
+
+        if (isNaN(precision)) {
+            precision = null;
+        }
+
+        chart.g.yAxis.precision = precision;
+        ChartBuilder.render()
+        ChartBuilder.inlineAllStyles();
+    },
     axis_tick_num_change: function(that) {
         chart.g.yAxis.numTicks = parseInt($(that).val())
         ChartBuilder.render()
@@ -287,29 +293,22 @@ ChartBuilder = {
         var val = parseFloat($(that).val())
         
         if (isNaN(val)) {
-            val = null
+            val = null;
         }
 
-        if (chart.g.yAxis.domain[0] !== null && chart.g.yAxis.domain[0] >= val) {
-            chart.g.yAxis.domain[1] = null;
-        } else {
-            chart.g.yAxis.domain[1] = val;
-        }
+        chart.g.yAxis.max = val;
 
         ChartBuilder.render()
         ChartBuilder.inlineAllStyles();
     },
     axis_min_change: function(that) {
         var val = parseFloat($(that).val())
-        if(isNaN(val)) {
-            val = null
+
+        if (isNaN(val)) {
+            val = null;
         }
 
-        if (chart.g.yAxis.domain[1] !== null && chart.g.yAxis.domain[1] <= val) {
-            chart.g.yAxis.domain[0] = null;
-        } else {
-            chart.g.yAxis.domain[0] = val;
-        }
+        chart.g.yAxis.min = val;
 
         ChartBuilder.render()
         ChartBuilder.inlineAllStyles();
@@ -479,6 +478,10 @@ ChartBuilder = {
 
         $('#right_axis_suffix').keyup(function() {
             ChartBuilder.axis_suffix_change(this)
+        })
+
+        $('#right_axis_precision').keyup(function() {
+            ChartBuilder.axis_precision_change(this)
         })
 
         $('#right_axis_tick_num').change(function() {

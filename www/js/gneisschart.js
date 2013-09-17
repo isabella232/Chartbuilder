@@ -29,7 +29,11 @@ var defaultGneissChartConfig = {
         tickValues: null,
         prefix: '',
         suffix: '', 
-        numTicks: 4
+        numTicks: 4,
+        formatter: null,
+        precision: null,
+        max: null,
+        min: null
     },
 	series: [
 		/*{
@@ -127,8 +131,9 @@ var Gneiss = {
 
 		g.yAxis.axis.scale(g.yAxis.scale)
 			.orient('left')
+            .tickSize(0)
+            .tickFormat(g.yAxis.formatter)
             .tickValues(g.yAxis.ticks)
-            .tickSize(0);
 
         // Find the widest label
         var width = 0;
@@ -148,11 +153,11 @@ var Gneiss = {
          */
         var g = this.g;
 
-        // Render the lates(0)t xAxis labels
+        // Render the latest xAxis labels
 		g.xAxis.axis.scale(g.xAxis.scale)
 			.orient('left')
-			.ticks(g.xAxis.numTicks)
-            .tickSize(0);
+            .tickSize(0)
+			.ticks(g.xAxis.numTicks);
 
         // Find the widest label
         var width = 0;
@@ -265,6 +270,33 @@ var Gneiss = {
         
         return ticks;
     },
+    makeTickFormatters: function() {
+        /*
+         * Generator D3 formatter functions for ticks.
+         */
+        var g = this.g;
+
+        if (g.yAxis.precision != null && g.yAxis.precision >= 0) {
+            var decimalPlaces = g.yAxis.precision;
+        } else {
+            var decimalPlaces = 0;
+
+            for (i = 0; i < g.yAxis.ticks.length; i++) {
+                if (g.yAxis.ticks[i] % 1 !== 0) {
+                    decimalPlaces = 2;
+                    break;
+                }
+            }
+        }
+
+        if (decimalPlaces > 0) {
+            g.yAxis.formatter = d3.format(',.' + decimalPlaces + 'f'); 
+        } else {
+            g.yAxis.formatter = d3.format(',.0f');
+        }
+
+        this.g = g;
+    },
 	calculateYScale: function() {
 		/*
          * Calculate y-axis scale.
@@ -281,12 +313,15 @@ var Gneiss = {
 
         var ex = d3.extent(extremes);
 
-        if (g.yAxis.domain[0] == null) {
-            g.yAxis.domain[0] = ex[0]
+        g.yAxis.domain[0] = ex[0];
+        g.yAxis.domain[1] = ex[1];
+
+        if (g.yAxis.min !== null) {
+            g.yAxis.domain[0] = g.yAxis.min;
         }
         
-        if (g.yAxis.domain[1] == null) {
-            g.yAxis.domain[1] = ex[1]
+        if (g.yAxis.max !== null) {
+            g.yAxis.domain[1] = g.yAxis.max;
         }
 
         // Column & bar charts must cross 0!
@@ -305,19 +340,24 @@ var Gneiss = {
             g.yAxis.ticks = this.exactTicks(g.yAxis.domain, g.yAxis.numTicks);
         }
 
+        // Create formatting functions for new ticks
+        this.makeTickFormatters();
+
         // Ensure domain includes all ticks
         ex = d3.extent(g.yAxis.ticks);
         g.yAxis.domain[0] = Math.min(g.yAxis.domain[0], ex[0]);
         g.yAxis.domain[1] = Math.max(g.yAxis.domain[1], ex[1]);
 
+        console.log(g.yAxis.domain);
+
         g.yAxis.scale.domain(g.yAxis.domain)
             
         if (g.type == 'bar') {
             var leftOffset = 5;
-            var rightOffset = (g.yAxis.prefix + g.yAxis.domain[1].toString() + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
+            var rightOffset = (g.yAxis.prefix + g.yAxis.formatter(g.yAxis.domain[1]) + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
 
             if (g.yAxis.domain[0] < 0) {
-                leftOffset += (g.yAxis.prefix + g.yAxis.domain[0].toString() + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
+                leftOffset += (g.yAxis.prefix + g.yAxis.formatter(g.yAxis.domain[0]) + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
             }
 
             g.yAxis.scale.range([
@@ -389,7 +429,8 @@ var Gneiss = {
         g.yAxis.axis.scale(g.yAxis.scale)
             .orient(g.type == 'bar' ? 'bottom' : 'left')
             .tickSize(tickSize)
-            .tickValues(g.yAxis.ticks)
+            .tickFormat(g.yAxis.formatter)
+            .tickValues(g.yAxis.ticks);
 
         var translate = (g.type == 'bar')
             ? 'translate(0,' + g.padding.top + ')'
@@ -690,7 +731,7 @@ var Gneiss = {
             .attr('height', barHeight)
 
         var barLabels = barGroups.append('text')
-            .text(function(d, i) { return g.yAxis.prefix + d + g.yAxis.suffix; } )
+            .text(function(d, i) { return g.yAxis.prefix + g.yAxis.formatter(d) + g.yAxis.suffix; } )
 			.attr('text-anchor', function(d, i) { return d <= 0 ? 'end' : 'start' })
             .attr('fill', '#333')
             .attr('x', function(d, i) {
@@ -840,11 +881,12 @@ var Gneiss = {
             }
         };
 		
-        this.calculateChartOffset();
-        this.calculateBarOffset();
-
         this.calculatePadding();
 		this.calculateYScale();
+        
+        this.calculateBarOffset();
+        this.calculateChartOffset();
+
         this.calculateXScale();
 
         this.setLineMakers();

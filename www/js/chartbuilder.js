@@ -279,7 +279,7 @@ ChartBuilder = {
         ChartBuilder.inlineAllStyles();
     },
     axis_tick_num_change: function(that) {
-        chart.g.yAxis.ticks = parseInt($(that).val())
+        chart.g.yAxis.numTicks = parseInt($(that).val())
         ChartBuilder.render()
         ChartBuilder.inlineAllStyles();
     },

@@ -22,14 +22,14 @@ var defaultGneissChartConfig = {
 		domain: [null, null],
 		prefix: '',
 		suffix: '',
-		ticks: 5
+		numTicks: 5
 	},
 	yAxis: {
         domain: [null, null],
         tickValues: null,
         prefix: '',
         suffix: '', 
-        ticks: 4
+        numTicks: 4
     },
 	series: [
 		/*{
@@ -127,7 +127,7 @@ var Gneiss = {
 
 		g.yAxis.axis.scale(g.yAxis.scale)
 			.orient('left')
-            .tickValues(g.yAxis.tickValues ? g.yAxis.tickValues : this.exactTicks(g.yAxis.scale.domain(), g.yAxis.ticks))
+            .tickValues(g.yAxis.ticks)
             .tickSize(0);
 
         // Find the widest label
@@ -151,7 +151,7 @@ var Gneiss = {
         // Render the lates(0)t xAxis labels
 		g.xAxis.axis.scale(g.xAxis.scale)
 			.orient('left')
-			.ticks(g.xAxis.ticks)
+			.ticks(g.xAxis.numTicks)
             .tickSize(0);
 
         // Find the widest label
@@ -167,9 +167,9 @@ var Gneiss = {
         this.g = g;
     },
 	calculatePadding: function() {
-		/*
-			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
-		*/
+        /*
+         * Calculate appropriate border padding.
+         */
 		var g = this.g
 		
         var padding_top = g.defaults.padding.top;
@@ -199,10 +199,76 @@ var Gneiss = {
 
 		this.g = g;
 	},
+    exactTicks: function(domain, numTicks) {
+        /*
+         * Precise tick generation. Will always include a 0-line
+         * if data crosses 0.
+         */
+        var ticks = [];
+        var delta = domain[1] - domain[0];
+        
+        for (var i = 0; i < numTicks; i++) {
+            ticks.push(domain[0] + (delta / numTicks) * i);
+        };
+        
+        ticks.push(domain[1]);
+
+        if(domain[1] > 0 && domain[0] < 0) {
+            var hasZeroTick = false;
+
+            for (var i = 0; i < ticks.length; i++){
+                if(ticks[i] == 0) {
+                    hasZeroTick = true;
+                }
+            };
+
+            // If no natural 0-tick emerges then we regenerate data centered around it
+            if(!hasZeroTick) {
+                ticks = [];
+                var positiveLarger = domain[1] > Math.abs(domain[0]);
+
+                // Approximate # of ticks per side of the 0-line
+                var ticksPerSign = Math.ceil((numTicks - 1) / 2);
+
+                if (positiveLarger) {
+                    var delta = domain[1] / ticksPerSign;
+                } else {
+                    var delta = Math.abs(domain[0]) / ticksPerSign;
+                }
+
+                var positiveEnd = false;
+                var negativeEnd = false;
+
+                for (var i = 1; i < ticksPerSign + 1; i++) {
+                    var tick = delta * i;
+
+                    if (!positiveEnd) {
+                        ticks.push(tick);
+
+                        if (tick >= domain[1]) {
+                            positiveEnd = true;
+                        }
+                    }
+
+                    if (!negativeEnd) {
+                        ticks.push(-tick);
+
+                        if (-tick <= domain[0]) {
+                            negativeEnd = true;
+                        }
+                    }
+                }
+
+                ticks.push(0)
+            }
+        }
+        
+        return ticks;
+    },
 	calculateYScale: function() {
 		/*
-			calculates and saves the y-scales from the existing data
-		*/
+         * Calculate y-axis scale.
+		 */
 		var g = this.g
 
 		var extremes = [];
@@ -232,15 +298,19 @@ var Gneiss = {
             }
         }
 
-        // Ensure scale includes all ticks
+        // Generate ticks
         if (g.yAxis.tickValues !== null) {
-            g.yAxis.domain[0] = Math.min(g.yAxis.domain[0], g.yAxis.tickValues[0]);
-            g.yAxis.domain[1] = Math.max(g.yAxis.domain[1], g.yAxis.tickValues[g.yAxis.tickValues.length - 1]);
+            g.yAxis.ticks = g.yAxis.tickValues;
+        } else {
+            g.yAxis.ticks = this.exactTicks(g.yAxis.domain, g.yAxis.numTicks);
         }
 
-        g.yAxis.domain = d3.extent(g.yAxis.domain)
-        g.yAxis.scale
-            .domain(g.yAxis.domain)
+        // Ensure domain includes all ticks
+        ex = d3.extent(g.yAxis.ticks);
+        g.yAxis.domain[0] = Math.min(g.yAxis.domain[0], ex[0]);
+        g.yAxis.domain[1] = Math.max(g.yAxis.domain[1], ex[1]);
+
+        g.yAxis.scale.domain(g.yAxis.domain)
             
         if (g.type == 'bar') {
             var leftOffset = 5;
@@ -266,7 +336,7 @@ var Gneiss = {
 	calculateXScale: function() {
 		/*
          * Calculate x-axis scale.
-		*/
+		 */
 		var g = this.g
         
         g.xAxis.scale.domain(g.xAxisRef)
@@ -319,7 +389,7 @@ var Gneiss = {
         g.yAxis.axis.scale(g.yAxis.scale)
             .orient(g.type == 'bar' ? 'bottom' : 'left')
             .tickSize(tickSize)
-            .tickValues(g.yAxis.tickValues ? g.yAxis.tickValues : this.exactTicks(g.yAxis.scale.domain(), g.yAxis.ticks))
+            .tickValues(g.yAxis.ticks)
 
         var translate = (g.type == 'bar')
             ? 'translate(0,' + g.padding.top + ')'
@@ -392,7 +462,7 @@ var Gneiss = {
 
 		g.xAxis.axis.scale(g.xAxis.scale)
 			.orient(g.type == 'bar' ? 'left' : 'bottom')
-			.ticks(g.xAxis.ticks)
+			.ticks(g.xAxis.numTicks)
             .tickSize(g.type == 'bar' ? 0 : 5);
 
         var translate = (g.type == 'bar')
@@ -785,32 +855,6 @@ var Gneiss = {
 		this.renderSeries();
         this.renderLegend();
 	},
-    exactTicks: function(domain,numticks) {
-        numticks -= 1;
-        var ticks = [];
-        var delta = domain[1] - domain[0];
-        
-        for (var i=0; i < numticks; i++) {
-            ticks.push(domain[0] + (delta/numticks)*i);
-        };
-        ticks.push(domain[1])
-        
-        if(domain[1]*domain[0] < 0) {
-            //if the domain crosses zero, make sure there is a zero line
-            var hasZero = false;
-            for (var i = ticks.length - 1; i >= 0; i--){
-                //check if there is already a zero line
-                if(ticks[i] == 0) {
-                    hasZero = true;
-                }
-            };
-            if(!hasZero) {
-                ticks.push(0)
-            }
-        }
-        
-        return ticks;
-    },
     transformCoordOf: function(elem){
         var trans = elem.attr('transform').split(',')
         return {x:parseFloat(trans[0].split('(')[1]) , y:parseFloat(trans[1].split(')')[0])}

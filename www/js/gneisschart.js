@@ -281,8 +281,7 @@ var Gneiss = {
             maxLength = Math.max(maxLength, g.series[i].data.length)
         };
 
-        g.xAxis.scale
-            .domain(g.xAxisRef)
+        g.xAxis.scale.domain(g.xAxisRef)
             
         g.maxLength = maxLength;
 
@@ -291,13 +290,13 @@ var Gneiss = {
 
 		if (g.type == 'column') {
 			rangeArray = [
-				g.padding.left + g.chartOffset + this.g.columnGroupWidth,
-				g.width - (g.padding.right + this.g.columnGroupWidth)
+				g.padding.left + g.chartOffset + g.columnGroupWidth,
+				g.width - (g.padding.right + g.columnGroupWidth)
 			];
 		} else if (g.type == 'bar') {
             rangeArray = [
-                (g.padding.top) - this.g.barGroupHeight,
-                g.height - (g.padding.top + g.padding.bottom + this.g.barGroupHeight) 
+                g.padding.top + (g.series.length > 1 ? 10 : 0) - g.barGroupHeight,
+                g.height - (g.padding.top + g.padding.bottom + g.barGroupHeight) 
             ];
         } else {
 			rangeArray = [

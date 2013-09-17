@@ -282,9 +282,10 @@ var Gneiss = {
             var decimalPlaces = 0;
 
             for (i = 0; i < g.yAxis.ticks.length; i++) {
-                if (g.yAxis.ticks[i] % 1 !== 0) {
-                    decimalPlaces = 2;
-                    break;
+                if ((g.yAxis.ticks[i] * 10) % 1 !== 0) {
+                    decimalPlaces = Math.max(decimalPlaces, 2);
+                } else if (g.yAxis.ticks[i] % 1 !== 0) {
+                    decimalPlaces = Math.max(decimalPlaces, 1);
                 }
             }
         }
@@ -729,7 +730,7 @@ var Gneiss = {
             .attr('height', barHeight)
 
         var barLabels = barGroups.append('text')
-            .text(function(d, i) { return g.yAxis.prefix + g.yAxis.formatter(d) + g.yAxis.suffix; } )
+            .text(function(d, i) { return g.yAxis.prefix + d + g.yAxis.suffix; } )
 			.attr('text-anchor', function(d, i) { return d <= 0 ? 'end' : 'start' })
             .attr('fill', '#333')
             .attr('x', function(d, i) {

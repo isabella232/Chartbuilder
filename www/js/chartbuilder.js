@@ -225,7 +225,7 @@ ChartBuilder = {
 				ChartBuilder.redraw()
 			})
 			
-			chart.redraw()
+			chart.draw()
 		}
 
         $('#typePicker').off('change').on('change', function() {
@@ -296,8 +296,6 @@ ChartBuilder = {
             chart.g.yAxis.domain[1] = val;
         }
 
-        chart.setYScales();
-        
         ChartBuilder.redraw()
         ChartBuilder.inlineAllStyles();
     },
@@ -313,8 +311,6 @@ ChartBuilder = {
             chart.g.yAxis.domain[0] = val;
         }
 
-        chart.setYScales();
-        
         ChartBuilder.redraw()
         ChartBuilder.inlineAllStyles();
     },
@@ -329,8 +325,9 @@ ChartBuilder = {
         else {
             val = null
         }
+        
         chart.g.yAxis.tickValues = val
-        chart.setYScales();
+
         ChartBuilder.redraw()
         ChartBuilder.inlineAllStyles();
     },
@@ -544,7 +541,7 @@ ChartBuilder = {
 
             chart.g.title = val;
             
-            chart.redraw();
+            chart.draw();
             
             chart.g.titleLine.text(chart.g.title)
         });

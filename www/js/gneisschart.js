@@ -202,7 +202,7 @@ var Gneiss = {
         
 		return this;
 	},
-	setYScales: function() {
+	calculateYScale: function() {
 		/*
 			calculates and saves the y-scales from the existing data
 		*/
@@ -267,7 +267,7 @@ var Gneiss = {
 		this.g = g;
 		return this
 	},
-	setXScales: function() {
+	calculateXScale: function() {
 		/*
          * Calculate x-axis scale.
 		*/
@@ -309,7 +309,7 @@ var Gneiss = {
 		return this;
 		
 	},
-	setYAxis: function() {
+	drawYAxis: function() {
 		/*
 		*
 		* Y-Axis Drawing Section
@@ -394,7 +394,7 @@ var Gneiss = {
 		return this
 	
 	},
-	setXAxis: function() {
+	drawXAxis: function() {
 		var g = this.g;
 
 		g.xAxis.axis.scale(g.xAxis.scale)
@@ -774,7 +774,7 @@ var Gneiss = {
 		this.g = g
 		return this
 	},
-	redraw: function() {
+	draw: function() {
 		/*
 			Redraw the chart
 		*/
@@ -791,13 +791,13 @@ var Gneiss = {
         this.calculateBarOffset();
 
         this.setPadding();
-		this.setYScales();
-        this.setXScales();
+		this.calculateYScale();
+        this.calculateXScale();
 
         this.setLineMakers();
 
-		this.setYAxis();
-		this.setXAxis();
+		this.drawYAxis();
+		this.drawXAxis();
 
 		this.drawSeries();
         this.drawLegend();

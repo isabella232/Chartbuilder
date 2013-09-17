@@ -121,10 +121,6 @@ ChartBuilder = {
         
 		for (var i = 1; i < rows.length; i++) {
 			if (rows[i]) {
-				for (var j = 0; j < rows[i].length; j++) {
-					rows[i][j] = ChartBuilder.addCommas(rows[i][j])
-				};
-
 				$('<tr><td>' + rows[i].join('</td><td>') + '</td></tr>')
 					.appendTo($table)
 			}				
@@ -250,18 +246,6 @@ ChartBuilder = {
 	idSafe: function(s) {
 		s = s.replace(/[^\w\d]+/gi,'-')
 		return s
-	},
-	addCommas: function(nStr)
-	{
-		nStr += '';
-		x = nStr.split('.');
-		x1 = x[0];
-		x2 = x.length > 1 ? '.' + x[1] : '';
-		var rgx = /(\d+)(\d{3})/;
-		while (rgx.test(x1)) {
-			x1 = x1.replace(rgx, '$1' + ',' + '$2'); //TODO localize this
-		}
-		return x1 + x2;
 	},
     axis_prefix_change: function(that) {
         chart.g.yAxis.prefix = $(that).val()

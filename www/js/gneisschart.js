@@ -1,8 +1,6 @@
 //add prepend ability
 Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
 
-Date.setLocale('en');
-
 BAR_MARGIN_PER_CHAR = 8
 
 //A default configuration 

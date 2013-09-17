@@ -101,7 +101,8 @@ var Gneiss = {
         g.yAxis.line = d3.svg.line();
 
 		this.g = g;
-		return this;
+
+        return this;
 	},
 	resize: function(){
 		/*
@@ -117,7 +118,6 @@ var Gneiss = {
 			.attr('height',g.height)
 			
 		this.g = g;
-		return this
 	},
     calculateChartOffset: function() {
         /*
@@ -127,7 +127,7 @@ var Gneiss = {
 
 		g.yAxis.axis.scale(g.yAxis.scale)
 			.orient('left')
-            .tickValues(g.yAxis.tickValues ? g.yAxis.tickValues : this.helper.exactTicks(g.yAxis.scale.domain(), g.yAxis.ticks))
+            .tickValues(g.yAxis.tickValues ? g.yAxis.tickValues : this.exactTicks(g.yAxis.scale.domain(), g.yAxis.ticks))
             .tickSize(0);
 
         // Find the widest label
@@ -185,7 +185,6 @@ var Gneiss = {
 		g.padding.bottom = padding_bottom
 			
 		this.g = g
-		return this
 	},
 	setLineMakers: function() {
 		var g = this.g;
@@ -199,8 +198,6 @@ var Gneiss = {
         });
 
 		this.g = g;
-        
-		return this;
 	},
 	calculateYScale: function() {
 		/*
@@ -265,7 +262,6 @@ var Gneiss = {
         }
 		
 		this.g = g;
-		return this
 	},
 	calculateXScale: function() {
 		/*
@@ -306,7 +302,6 @@ var Gneiss = {
 		};
 
 		this.g = g;
-		return this;
 		
 	},
 	renderYAxis: function() {
@@ -324,7 +319,7 @@ var Gneiss = {
         g.yAxis.axis.scale(g.yAxis.scale)
             .orient(g.type == 'bar' ? 'bottom' : 'left')
             .tickSize(tickSize)
-            .tickValues(g.yAxis.tickValues ? g.yAxis.tickValues : this.helper.exactTicks(g.yAxis.scale.domain(), g.yAxis.ticks))
+            .tickValues(g.yAxis.tickValues ? g.yAxis.tickValues : this.exactTicks(g.yAxis.scale.domain(), g.yAxis.ticks))
 
         var translate = (g.type == 'bar')
             ? 'translate(0,' + g.padding.top + ')'
@@ -391,8 +386,6 @@ var Gneiss = {
 		d3.selectAll('#ground').each(function(){this.parentNode.prependChild(this);})
 
 		this.g = g
-		return this
-	
 	},
 	renderXAxis: function() {
 		var g = this.g;
@@ -449,8 +442,6 @@ var Gneiss = {
         }
 		
 		this.g = g;
-
-		return this;
 	},
 	calculateColumnWidths: function(maxLength) {
         /*
@@ -469,8 +460,6 @@ var Gneiss = {
 		g.columnGroupShift = columnWidth + 1;
 
         this.g = g;
-
-		return this;
 	},
     calculateBarHeights: function(maxLength) {
         /*
@@ -489,8 +478,23 @@ var Gneiss = {
 		g.barGroupShift = barHeight + 1;
 
         this.g = g;
-
-		return this;
+    },
+    rectBase: function(d, domain) {
+        /*
+         * Calculate where the a column or bar should start.
+         */
+        // Value greater than 0 and min greater than 0?
+        if(d > 0 && domain[0] > 0) {
+            // Start at min
+            return domain[0];
+        // Value less than 0 and min less than 0?
+        } else if (d < 0 && domain[1] < 0) {
+            // Start at max
+            return domain[1];
+        }
+        
+        // Start at 0
+        return 0;
     },
 	renderSeries: function() {
 		/*
@@ -518,8 +522,6 @@ var Gneiss = {
         }
 			
 		this.g = g;
-
-		return this;
 	},
     renderColumns: function() {
         /*
@@ -529,6 +531,8 @@ var Gneiss = {
 
 		var columnWidth = this.g.columnWidth;
 		var columnGroupShift = this.g.columnGroupShift;
+        
+        var domain = g.xAxis.scale.domain();
 		
         var columnGroups = g.seriesContainer.selectAll('g.seriesColumn')
             .data(g.series)
@@ -542,7 +546,7 @@ var Gneiss = {
                 })
             
         columnGroups.exit().remove()
-    
+
         var columnRects = columnGroups.selectAll('rect')
             .data(function(d,i) { return d.data })
         
@@ -550,14 +554,14 @@ var Gneiss = {
             .append('rect')
                 .attr('width', columnWidth)
                 .attr('height', function(d,i) {
-                    return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnHeight(d, g.yAxis.scale.domain()))) 
+                    return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.rectBase(d, domain))) 
                 })
                 .attr('x', function(d,i) {
                     return g.xAxis.scale(Gneiss.g.xAxisRef[i]) - (columnWidth / 2)
                 })
                 .attr('y', function(d,i) {
-                    if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.helper.columnHeight(d, g.yAxis.scale.domain())) >= 0) {
-                        return g.yAxis.scale(Gneiss.helper.columnHeight(d,g.yAxis.scale.domain()));
+                    if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.rectBase(d, domain)) >= 0) {
+                        return g.yAxis.scale(Gneiss.rectBase(d, domain));
                     } else {
                         return g.yAxis.scale(d);
                     }
@@ -577,23 +581,6 @@ var Gneiss = {
 		var barGroupShift = this.g.barGroupShift;
 
         var domain = g.yAxis.scale.domain();
-
-        // Helper
-        function barBase(d) {
-            // Value greater than 0 and min greater than 0?
-			if(d > 0 && domain[0] > 0) {
-                // Start at min
-				return domain[0]
-			}
-            // Value less than 0 and min less than 0?
-            // Start at min
-			else if (d < 0 && domain[1] < 0) {
-				return domain[1]
-			}
-			
-            // Start at 0
-			return 0
-        }
 
         var barSeries = g.seriesContainer.selectAll('g.seriesBar')
             .data(g.series)
@@ -618,7 +605,7 @@ var Gneiss = {
                 var y = g.xAxis.scale(i);
 
                 if (d >= 0) {
-                    x = g.yAxis.scale(barBase(d));
+                    x = g.yAxis.scale(Gneiss.rectBase(d, domain));
                 } else {
                     x = g.yAxis.scale(d);
                 }
@@ -628,7 +615,7 @@ var Gneiss = {
 
         var barRects = barGroups.append('rect')
             .attr('width', function(d, i) {
-                return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(barBase(d)));
+                return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.rectBase(d, domain)));
             })
             .attr('height', barHeight)
 
@@ -651,7 +638,6 @@ var Gneiss = {
             });
 
         this.g = g;
-
     },
     renderLines: function() {
         /*
@@ -753,11 +739,11 @@ var Gneiss = {
                     //label isn't for the first series
                     var prev = d3.select(legendGroups[0][i])
                     var prevWidth = parseFloat(prev.node().getBBox().width)
-                    var prevCoords = g.all.helper.transformCoordOf(prev)
+                    var prevCoords = g.all.transformCoordOf(prev)
 
                     var cur = d3.select(this)
                     var curWidth = parseFloat(cur.node().getBBox().width)
-                    var curCoords = g.all.helper.transformCoordOf(cur)
+                    var curCoords = g.all.transformCoordOf(cur)
 
                     legendItemY = prevCoords.y;
                     var x = prevCoords.x + prevWidth + 15
@@ -772,7 +758,6 @@ var Gneiss = {
 		}
 		
 		this.g = g
-		return this
 	},
 	render: function() {
 		/*
@@ -801,50 +786,35 @@ var Gneiss = {
 
 		this.renderSeries();
         this.renderLegend();
-
-		return this
 	},
-	helper: {
-		columnHeight: function(d, domain) {
-			if(d > 0 && domain[0] > 0) {
-				return domain[0]
-			}
-			else if (d < 0 && domain[1] < 0) {
-				return domain[1]
-			}
-			
-			return 0
-		},
-		exactTicks: function(domain,numticks) {
-			numticks -= 1;
-			var ticks = [];
-			var delta = domain[1] - domain[0];
-			
-			for (var i=0; i < numticks; i++) {
-				ticks.push(domain[0] + (delta/numticks)*i);
-			};
-			ticks.push(domain[1])
-			
-			if(domain[1]*domain[0] < 0) {
-				//if the domain crosses zero, make sure there is a zero line
-				var hasZero = false;
-				for (var i = ticks.length - 1; i >= 0; i--){
-					//check if there is already a zero line
-					if(ticks[i] == 0) {
-						hasZero = true;
-					}
-				};
-				if(!hasZero) {
-					ticks.push(0)
-				}
-			}
-			
-			return ticks;
-		},
-		transformCoordOf: function(elem){
-			var trans = elem.attr('transform').split(',')
-			return {x:parseFloat(trans[0].split('(')[1]) , y:parseFloat(trans[1].split(')')[0])}
-		}
-	},
-	q: {}
+    exactTicks: function(domain,numticks) {
+        numticks -= 1;
+        var ticks = [];
+        var delta = domain[1] - domain[0];
+        
+        for (var i=0; i < numticks; i++) {
+            ticks.push(domain[0] + (delta/numticks)*i);
+        };
+        ticks.push(domain[1])
+        
+        if(domain[1]*domain[0] < 0) {
+            //if the domain crosses zero, make sure there is a zero line
+            var hasZero = false;
+            for (var i = ticks.length - 1; i >= 0; i--){
+                //check if there is already a zero line
+                if(ticks[i] == 0) {
+                    hasZero = true;
+                }
+            };
+            if(!hasZero) {
+                ticks.push(0)
+            }
+        }
+        
+        return ticks;
+    },
+    transformCoordOf: function(elem){
+        var trans = elem.attr('transform').split(',')
+        return {x:parseFloat(trans[0].split('(')[1]) , y:parseFloat(trans[1].split(')')[0])}
+    }
 }

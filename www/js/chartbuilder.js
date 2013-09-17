@@ -198,7 +198,7 @@ ChartBuilder = {
         ChartBuilder.setSavedChartList(charts);
 		
 	},
-	redraw: function() {
+	render: function() {
         /*
          * Redraw the chart and update series options as appropriate.
          */
@@ -222,10 +222,10 @@ ChartBuilder = {
 			seriesItem.data('index',i)
 			picker.change(function() {
 				chart.g.series[$(this).parent().data().index].color = $(this).val()
-				ChartBuilder.redraw()
+				ChartBuilder.render()
 			})
 			
-			chart.draw()
+			chart.render()
 		}
 
         $('#typePicker').off('change').on('change', function() {
@@ -238,7 +238,7 @@ ChartBuilder = {
             $("#right_axis_max").keyup();
             $("#right_axis_min").keyup();
 
-            ChartBuilder.redraw();
+            ChartBuilder.render();
         });		
 		
 		chart.g = g;
@@ -270,17 +270,17 @@ ChartBuilder = {
 	},
     axis_prefix_change: function(that) {
         chart.g.yAxis.prefix = $(that).val()
-        ChartBuilder.redraw()
+        ChartBuilder.render()
         ChartBuilder.inlineAllStyles();
     },
     axis_suffix_change: function(that) {
         chart.g.yAxis.suffix = $(that).val()
-        ChartBuilder.redraw()
+        ChartBuilder.render()
         ChartBuilder.inlineAllStyles();
     },
     axis_tick_num_change: function(that) {
         chart.g.yAxis.ticks = parseInt($(that).val())
-        ChartBuilder.redraw()
+        ChartBuilder.render()
         ChartBuilder.inlineAllStyles();
     },
     axis_max_change: function(that) {
@@ -296,7 +296,7 @@ ChartBuilder = {
             chart.g.yAxis.domain[1] = val;
         }
 
-        ChartBuilder.redraw()
+        ChartBuilder.render()
         ChartBuilder.inlineAllStyles();
     },
     axis_min_change: function(that) {
@@ -311,7 +311,7 @@ ChartBuilder = {
             chart.g.yAxis.domain[0] = val;
         }
 
-        ChartBuilder.redraw()
+        ChartBuilder.render()
         ChartBuilder.inlineAllStyles();
     },
     axis_tick_override_change: function(that) {
@@ -328,7 +328,7 @@ ChartBuilder = {
         
         chart.g.yAxis.tickValues = val
 
-        ChartBuilder.redraw()
+        ChartBuilder.render()
         ChartBuilder.inlineAllStyles();
     },
 	showInvalidData: function(e) {
@@ -450,7 +450,7 @@ ChartBuilder = {
         var chartConfig = $.extend(defaultGneissChartConfig, chartbuilderDefaultConfig, config);
 
         $('#chartContainer').css('height', 480)
-        chart = Gneiss.build(chartConfig)
+        chart = Gneiss.setup(chartConfig)
 
         var chartSelect = $('#previous_charts').chosen()
             .on('change', function() {
@@ -532,7 +532,7 @@ ChartBuilder = {
             $("#right_axis_max").keyup();
             $("#right_axis_min").keyup();
 
-            ChartBuilder.redraw();
+            ChartBuilder.render();
             ChartBuilder.inlineAllStyles();
         }); 
 
@@ -541,7 +541,7 @@ ChartBuilder = {
 
             chart.g.title = val;
             
-            chart.draw();
+            chart.render();
             
             chart.g.titleLine.text(chart.g.title)
         });

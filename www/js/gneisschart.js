@@ -47,7 +47,7 @@ var defaultGneissChartConfig = {
 }
 
 var Gneiss = {
-	build: function(config) {
+	setup: function(config) {
 		/*
 			Initializes the chart from a config object
 		*/
@@ -166,7 +166,7 @@ var Gneiss = {
 
         this.g = g;
     },
-	setPadding: function() {
+	calculatePadding: function() {
 		/*
 			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
 		*/
@@ -309,7 +309,7 @@ var Gneiss = {
 		return this;
 		
 	},
-	drawYAxis: function() {
+	renderYAxis: function() {
 		/*
 		*
 		* Y-Axis Drawing Section
@@ -394,7 +394,7 @@ var Gneiss = {
 		return this
 	
 	},
-	drawXAxis: function() {
+	renderXAxis: function() {
 		var g = this.g;
 
 		g.xAxis.axis.scale(g.xAxis.scale)
@@ -492,7 +492,7 @@ var Gneiss = {
 
 		return this;
     },
-	drawSeries: function() {
+	renderSeries: function() {
 		/*
 		*
 		* Series Drawing Section
@@ -508,20 +508,20 @@ var Gneiss = {
 		
         // Draw new elements
         if (g.type == 'column') {
-            this.drawColumns();
+            this.renderColumns();
         } else if (g.type == 'bar') {
-            this.drawBars();
+            this.renderBars();
         } else if (g.type == 'line') {
-            this.drawLines();
+            this.renderLines();
         } else if (g.type == 'scatter') {
-            this.drawScatter();
+            this.renderScatter();
         }
 			
 		this.g = g;
 
 		return this;
 	},
-    drawColumns: function() {
+    renderColumns: function() {
         /*
          * Draw series as columns.
          */
@@ -567,7 +567,7 @@ var Gneiss = {
 
         this.g = g;
     },
-    drawBars: function() {
+    renderBars: function() {
         /*
          * Draw series as bars.
          */
@@ -653,7 +653,7 @@ var Gneiss = {
         this.g = g;
 
     },
-    drawLines: function() {
+    renderLines: function() {
         /*
          * Draw series as a line chart.
          */
@@ -677,7 +677,7 @@ var Gneiss = {
 
         this.g = g;
     },
-    drawScatter: function() {
+    renderScatter: function() {
         /*
          * Draw series as a scatter plot.
          */
@@ -709,7 +709,7 @@ var Gneiss = {
 
         this.g = g;
     },
-	drawLegend: function() {
+	renderLegend: function() {
 		var g = this.g;
 		var legendItemY;
 		
@@ -774,9 +774,9 @@ var Gneiss = {
 		this.g = g
 		return this
 	},
-	draw: function() {
+	render: function() {
 		/*
-			Redraw the chart
+			Render the chart
 		*/
 		var g = this.g
 
@@ -790,17 +790,17 @@ var Gneiss = {
         this.calculateChartOffset();
         this.calculateBarOffset();
 
-        this.setPadding();
+        this.calculatePadding();
 		this.calculateYScale();
         this.calculateXScale();
 
         this.setLineMakers();
 
-		this.drawYAxis();
-		this.drawXAxis();
+		this.renderYAxis();
+		this.renderXAxis();
 
-		this.drawSeries();
-        this.drawLegend();
+		this.renderSeries();
+        this.renderLegend();
 
 		return this
 	},

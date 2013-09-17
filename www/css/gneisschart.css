@@ -5,10 +5,10 @@ svg #ground {
 	stroke: none;
 }
 
-/*svg .axis line {
+svg .axis line {
 	fill: none;
 	shape-rendering: crispEdges;
-}*/
+}
 
 svg .axis g.zero line {
 	stroke: #666666;
@@ -66,4 +66,8 @@ svg #titleLine {
   font-size: 18px;
   font-weight: bold;
   fill: #333;
+}
+
+svg rect {
+	shape-rendering: crispEdges;
 }

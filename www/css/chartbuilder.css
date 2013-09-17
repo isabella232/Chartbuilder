@@ -39,6 +39,10 @@ body {
 	font-size: 24px;
 }
 
+.navbar-right {
+	margin: 9px 15px 6px;
+}
+
 
 #rightAxisControls .form-control {
 	width: 100px;

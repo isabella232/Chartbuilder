@@ -120,6 +120,33 @@ var Gneiss = {
 			
 		this.g = g;
 	},
+    inlineStyles: function() {
+        /*
+         * Inline all css styles onto SVG elements so they render correctly for export.
+         */
+        var chartStyle, selector, cssText;
+		
+		for (var i = 0; i < document.styleSheets.length; i++) {
+			if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('gneisschart.css') != -1) {
+				if (document.styleSheets[i].rules != undefined) {
+					chartStyle = document.styleSheets[i].rules;
+				}
+				else {
+					chartStyle = document.styleSheets[i].cssRules;
+				}
+			}
+		}
+
+		if (chartStyle != null && chartStyle != undefined) {
+			for (var i = 0; i < chartStyle.length; i++) {
+				if(chartStyle[i].type == 1) {
+					selector = chartStyle[i].selectorText;
+					cssText = chartStyle[i].style.cssText;
+					d3.selectAll(selector).attr('style', cssText);
+				}
+			};
+		}
+    },
     calculateChartOffset: function() {
         /*
          * Calculate the left offset for a chart based on y-axis label width.
@@ -132,6 +159,8 @@ var Gneiss = {
             .each(function() { width = Math.max(width, this.getComputedTextLength()); });
 
         g.chartOffset = width + 10;
+
+        console.log(g.chartOffset);
 
         this.g = g;
     },
@@ -905,6 +934,8 @@ var Gneiss = {
 
 		this.renderSeries();
         this.renderLegend();
+
+        this.inlineStyles();
 	},
     transformCoordOf: function(elem){
         var trans = elem.attr('transform').split(',')

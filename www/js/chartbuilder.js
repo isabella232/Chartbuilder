@@ -126,31 +126,6 @@ ChartBuilder = {
 			}				
 		};
     },
-	inlineAllStyles: function() {
-		var chartStyle, selector, cssText;
-		
-		for (var i = document.styleSheets.length - 1; i >= 0; i--){
-			if(document.styleSheets[i].href && document.styleSheets[i].href.indexOf('gneisschart.css') != -1) {
-				if (document.styleSheets[i].rules != undefined) {
-					chartStyle = document.styleSheets[i].rules 
-				}
-				else {
-					chartStyle = document.styleSheets[i].cssRules
-				}
-			}
-		}
-		if(chartStyle != null && chartStyle != undefined)
-		{
-			for (var i=0; i < chartStyle.length; i++) {
-				if(chartStyle[i].type == 1) {
-					//cssRule is a style rule
-					selector = chartStyle[i].selectorText;
-					cssText = chartStyle[i].style.cssText;
-					d3.selectAll(selector).attr('style',cssText)
-				}
-			};
-		}
-	},
 	createChartImage: function() {
         /*
          * Create PNG and SVG versions of the chart.
@@ -327,7 +302,6 @@ ChartBuilder = {
         
         // Render!
 		chart.render()
-		ChartBuilder.inlineAllStyles();
 
 		chart.g = g;
 	},
@@ -482,7 +456,6 @@ ChartBuilder = {
 
                 $('#createImageButton p').text('Reset');
 
-                ChartBuilder.inlineAllStyles();
                 ChartBuilder.createChartImage();
             } else {
                 $('#createImageButton p').text('Create Image of Chart');

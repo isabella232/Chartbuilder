@@ -346,6 +346,8 @@ var Gneiss = {
                 leftOffset += (g.yAxis.prefix + g.yAxis.domain[0] + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
             }
 
+            this.calculateBarOffset();
+
             g.yAxis.scale.range([
                 g.padding.left + g.barOffset + leftOffset,
                 g.width - (g.padding.right + rightOffset)
@@ -413,23 +415,33 @@ var Gneiss = {
 		*/
 		var g = this.g;
 
-        var tickSize = (g.type == 'bar')
-            ? g.height - (g.padding.top + g.padding.bottom)
-            : -(g.width - (g.padding.left + g.padding.right + g.chartOffset));
-
-        g.yAxis.axis.scale(g.yAxis.scale)
-            .orient(g.type == 'bar' ? 'bottom' : 'left')
-            .tickSize(tickSize)
-            .tickFormat(g.yAxis.formatter)
-            .tickValues(g.yAxis.ticks);
+        function render(tickSize) {
+            return g.yAxis.axis.scale(g.yAxis.scale)
+                .orient(g.type == 'bar' ? 'bottom' : 'left')
+                .tickSize(tickSize)
+                .tickFormat(g.yAxis.formatter)
+                .tickValues(g.yAxis.ticks);
+        }
 
         var translate = (g.type == 'bar')
             ? 'translate(0,' + g.padding.top + ')'
             : 'translate(' + g.padding.left + ',0)';
                 
+        // Render the axis first without ticks
         var axisGroup = g.chart.selectAll('#yAxis')
             .attr('transform', translate)
-            .call(g.yAxis.axis)
+            .call(render(0))
+
+        // Measure the axis labels
+        this.calculateChartOffset();
+           
+        var size = (g.type == 'bar')
+            ? g.height - (g.padding.top + g.padding.bottom)
+            : -(g.width - (g.padding.left + g.padding.right + g.chartOffset));
+     
+        // Rerender the axis with appropriate padding
+        var axisGroup = g.chart.selectAll('#yAxis')
+            .call(render(size))
 
         var translate = (g.type == 'bar')
             ? 'translate(0,0)'
@@ -880,13 +892,11 @@ var Gneiss = {
         if (g.type == 'bar') {
             this.calculateXRange();
 		    this.renderXAxis();
-            this.calculateBarOffset();
 		    this.calculateYRange();
 		    this.renderYAxis();
         } else {
 		    this.calculateYRange();
 		    this.renderYAxis();
-            this.calculateChartOffset();
             this.calculateXRange();
 		    this.renderXAxis();
         }

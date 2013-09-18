@@ -529,7 +529,7 @@ var Gneiss = {
             .tickSize(g.type == 'bar' ? 0 : 5);
 
         var translate = (g.type == 'bar')
-            ? 'translate(' + g.padding.left + ',' + (g.padding.top + (g.series.length == 1 ? 15 : 0)) + ')'
+            ? 'translate(' + g.padding.left + ',' + (g.padding.top ) + ')'
             : 'translate(0,' + (g.height - g.padding.bottom) + ')';
 
 		g.chart.selectAll('#xAxis')
@@ -540,6 +540,8 @@ var Gneiss = {
             .attr('transform', 'translate(10,0)');
 
         if (g.type == 'bar') {
+
+
             var width = 0;
 
             g.chart.selectAll('#xAxis text')

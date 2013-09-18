@@ -400,17 +400,17 @@ ChartBuilder = {
          *
          * Will create a sample chart if none exist.
          */
-		var charts = []
+		var charts = [];
 
 		try {
-			charts = JSON.parse(localStorage['savedCharts'])
+			charts = JSON.parse(localStorage['savedCharts']);
 		}
 		catch(e) {
             // If no charts exist, store demo chart
             charts = JSON.stringify([SAMPLE_CHART]);
             localStorage['savedCharts'] = charts;
         }
-		
+
 		return charts
 	},
     setSavedChartList: function(charts) {
@@ -479,7 +479,8 @@ ChartBuilder = {
         });
 
         // Get the list of saved charts and load the last one
-        var charts = ChartBuilder.getSavedCharts().reverse();
+        var charts = ChartBuilder.getSavedCharts();
+        charts.reverse();
         ChartBuilder.setSavedChartList(charts); 
         ChartBuilder.loadChart(charts[0]);
 

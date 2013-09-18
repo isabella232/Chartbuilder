@@ -160,8 +160,6 @@ var Gneiss = {
 
         g.chartOffset = width + 10;
 
-        console.log(g.chartOffset);
-
         this.g = g;
     },
     calculateBarOffset: function() {

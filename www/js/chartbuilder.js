@@ -407,8 +407,8 @@ ChartBuilder = {
 		}
 		catch(e) {
             // If no charts exist, store demo chart
-            charts = JSON.stringify([SAMPLE_CHART]);
-            localStorage['savedCharts'] = charts;
+            charts = [SAMPLE_CHART];
+            localStorage['savedCharts'] = JSON.stringify(charts);
         }
 
 		return charts

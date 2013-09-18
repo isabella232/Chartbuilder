@@ -110,3 +110,8 @@ div.colorPicker-picker {
 .modal-backdrop.fade.in {
 	opacity: 0.8;
 }
+
+#font-sample {
+	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
+    display: none;
+}

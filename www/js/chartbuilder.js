@@ -489,6 +489,13 @@ ChartBuilder = {
     }
 };
 
-$(document).ready(function() {
-    ChartBuilder.start();
+WebFont.load({
+    monotype: {
+        projectId: '65980087-55e2-40ca-85ae-729fca359467',
+    },
+    active: function(name) {
+        $(document).ready(function() {
+            ChartBuilder.start();
+        });
+    }
 });

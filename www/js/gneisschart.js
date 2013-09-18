@@ -9,7 +9,7 @@ var defaultGneissChartConfig = {
 	container: '#chartContainer', //css id of target chart container
 	legend: true, // whether or not there should be a legend
 	title: '', // the chart title 
-	colors: ['#ff4cf4','#ffb3ff','#e69ce6','#cc87cc','#b373b3','#995f99','#804c80','#665266','#158eff','#99cdff','#9cc2e6','#87abcc','#7394b3','#5f7d99','#466780','#525c66'], //this is the order of colors that the 
+	colors: [], 
     type: 'line',
 	padding :{
 		top: 40,
@@ -126,43 +126,25 @@ var Gneiss = {
          */
         var g = this.g;
 
-		g.yAxis.axis.scale(g.yAxis.scale)
-			.orient('left')
-            .tickSize(0)
-            .tickFormat(g.yAxis.formatter)
-            .tickValues(g.yAxis.ticks)
-
-        // Find the widest label
         var width = 0;
 
-        g.chart.selectAll('#yAxis text')
-            .each(function() {
-                width = Math.max(width, this.getBBox().width);
-            });
+        var labels = g.chart.selectAll('#yAxis text')
+            .each(function() { width = Math.max(width, this.getComputedTextLength()); });
 
-        g.chartOffset = width + 5;
+        g.chartOffset = width + 10;
 
         this.g = g;
     },
     calculateBarOffset: function() {
         /*
-         * Calculate the left offset of the bar chart based on label width.
+         * Calculate the left offset of the bar chart based on endcap label width.
          */
         var g = this.g;
 
-        // Render the latest xAxis labels
-		g.xAxis.axis.scale(g.xAxis.scale)
-			.orient('left')
-            .tickSize(0)
-			.ticks(g.xAxis.numTicks);
-
-        // Find the widest label
         var width = 0;
 
-        g.chart.selectAll('#xAxis text')
-            .each(function() {
-                width = Math.max(width, this.parentNode.getBBox().width);
-            });
+        var labels = g.chart.selectAll('#xAxis text')
+            .each(function() { width = Math.max(width, this.getComputedTextLength()); });
 
         g.barOffset = width;
 
@@ -295,10 +277,10 @@ var Gneiss = {
 
         this.g = g;
     },
-	calculateYScale: function() {
-		/*
-         * Calculate y-axis scale.
-		 */
+    calculateYDomain: function() {
+        /*
+         * Calculate y-axis domain.
+         */
 		var g = this.g
 
 		var extremes = [];
@@ -348,6 +330,14 @@ var Gneiss = {
 
         g.yAxis.scale.domain(g.yAxis.domain)
 
+        this.g = g;
+    },
+	calculateYRange: function() {
+		/*
+         * Calculate y-axis range.
+		 */
+		var g = this.g
+
         if (g.type == 'bar') {
             var leftOffset = 5;
             var rightOffset = (g.yAxis.prefix + g.yAxis.domain[1] + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
@@ -369,10 +359,10 @@ var Gneiss = {
 
 		this.g = g;
 	},
-	calculateXScale: function() {
-		/*
-         * Calculate x-axis scale.
-		 */
+    calculateXDomain: function() {
+        /*
+         * Calculate x-axis domain.
+         */
 		var g = this.g
         
         g.xAxis.scale.domain(g.xAxisRef)
@@ -387,8 +377,13 @@ var Gneiss = {
         this.calculateColumnWidths(maxLength);
         this.calculateBarHeights(maxLength);
 
-		//set the range of the x axis
-		var rangeArray = []
+        this.g = g;
+    },
+	calculateXRange: function() {
+		/*
+         * Calculate x-axis range.
+		 */
+        var g = this.g;
 
 		if (g.type == 'column') {
 			g.xAxis.scale.rangePoints([
@@ -876,19 +871,27 @@ var Gneiss = {
                 g.series[i].color = g.colors[i];
             }
         };
-	
-        this.calculateBarOffset();
-        this.calculateChartOffset();
-	
-        this.calculatePadding();
-		this.calculateYScale();
         
-        this.calculateXScale();
+        this.calculateYDomain();
+        this.calculateXDomain();
+
+        this.calculatePadding();
+
+        if (g.type == 'bar') {
+            this.calculateXRange();
+		    this.renderXAxis();
+            this.calculateBarOffset();
+		    this.calculateYRange();
+		    this.renderYAxis();
+        } else {
+		    this.calculateYRange();
+		    this.renderYAxis();
+            this.calculateChartOffset();
+            this.calculateXRange();
+		    this.renderXAxis();
+        }
 
         this.setLineMakers();
-
-		this.renderYAxis();
-		this.renderXAxis();
 
 		this.renderSeries();
         this.renderLegend();

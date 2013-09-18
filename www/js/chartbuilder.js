@@ -8,7 +8,7 @@ var SAMPLE_CHART = {
     chart_title: 'Unemployment (seasonally adjusted)',
     right_axis_max: 10,
     right_axis_min: 0,
-    right_axis_tick_num: 6,
+    right_axis_tick_num: 5,
     name: 'Unemployment (seasonally adjusted)',
     created: 1378850793427,
     csvInput: "\

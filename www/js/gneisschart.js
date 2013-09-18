@@ -451,7 +451,6 @@ var Gneiss = {
 
             g.chart.selectAll('#yAxis g')
                 .each(function(d, j) {
-                    console.log(d);
                     var y = parseFloat(d3.select(this)
                         .attr('transform')
                             .split(')')[0]

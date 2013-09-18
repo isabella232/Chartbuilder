@@ -69,6 +69,10 @@ h2 {
 	margin-bottom: 5px;
 }
 
+.seriesItemGroup label {
+	line-height: 25px;
+}
+
 div.colorPicker-picker {
 	float: left;
 	margin-right: 25px;

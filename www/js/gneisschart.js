@@ -1,6 +1,3 @@
-//add prepend ability
-Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
-
 BAR_MARGIN_PER_CHAR = 8
 
 //A default configuration 
@@ -442,12 +439,42 @@ var Gneiss = {
 		*/
 		var g = this.g;
 
-        function render(tickSize) {
-            return g.yAxis.axis.scale(g.yAxis.scale)
+        function render(axis,tickSize) {
+            axis.call(g.yAxis.axis.scale(g.yAxis.scale)
                 .orient(g.type == 'bar' ? 'bottom' : 'left')
                 .tickSize(tickSize)
                 .tickFormat(g.yAxis.formatter)
-                .tickValues(g.yAxis.ticks);
+                .tickValues(g.yAxis.ticks));
+
+            var topAxisLabel = null;
+            var minY = Infinity;
+
+            g.chart.selectAll('#yAxis g')
+                .each(function(d, j) {
+                    console.log(d);
+                    var y = parseFloat(d3.select(this)
+                        .attr('transform')
+                            .split(')')[0]
+                            .split(',')[1]
+                        )
+                    
+                    var text = d3.select(this).select('text')
+
+                    if(y < minY) {
+                        topAxisLabel = text
+                        minY = y
+                    }
+                    
+                    if(d == 0) {
+                        //if the axisItem represents the zero line
+                        //change it's class and make sure there's no decimal
+                        d3.select(this).classed('zero', true)
+                        text.text('0')
+                    }
+                })
+			            
+            // Add the prefix and suffix to the top most label as appropriate
+            topAxisLabel.text(g.yAxis.prefix + topAxisLabel.text() + g.yAxis.suffix);
         }
 
         var translate = (g.type == 'bar')
@@ -455,9 +482,10 @@ var Gneiss = {
             : 'translate(' + g.padding.left + ',0)';
                 
         // Render the axis first without ticks
-        var axisGroup = g.chart.selectAll('#yAxis')
-            .attr('transform', translate)
-            .call(render(0))
+        var axis = g.chart.selectAll('#yAxis')
+            .attr('transform', translate);
+            
+        render(axis, 0);
 
         // Measure the axis labels
         this.calculateChartOffset();
@@ -467,8 +495,7 @@ var Gneiss = {
             : -(g.width - (g.padding.left + g.padding.right + g.chartOffset));
      
         // Rerender the axis with appropriate padding
-        var axisGroup = g.chart.selectAll('#yAxis')
-            .call(render(size))
+        render(axis, size);
 
         var translate = (g.type == 'bar')
             ? 'translate(0,0)'
@@ -476,38 +503,7 @@ var Gneiss = {
                 
         g.chart.selectAll('#yAxis .tick')
             .attr('transform', translate)
-				
-        //adjust label position and add prefix and suffix
-        var topAxisLabel = '';
-        var minY = Infinity;
-        
-        axisGroup
-            .selectAll('g')
-            .each(function(d,j) {
-                var y = parseFloat(d3.select(this)
-                    .attr('transform')
-                        .split(')')[0]
-                        .split(',')[1]
-                    )
-                
-                var text = d3.select(this).select('text')
-
-                if(y < minY) {
-                    topAxisLabel = text
-                    minY = y
-                }
-                
-                if(d == 0) {
-                    //if the axisItem represents the zero line
-                    //change it's class and make sure there's no decimal
-                    d3.select(this).classed('zero', true)
-                    text.text('0')
-                }
-            })
-
-        //add the prefix and suffix to the top most label as appropriate
-        topAxisLabel.text(g.yAxis.prefix + topAxisLabel.text() + g.yAxis.suffix)
-		
+	
         if (g.type != 'bar') {
             var width = 0;
 
@@ -522,9 +518,6 @@ var Gneiss = {
                     this.setAttribute('x', width);
                 })
         }
-
-		d3.selectAll('#yAxis').each(function(){this.parentNode.prependChild(this);})
-		d3.selectAll('#ground').each(function(){this.parentNode.prependChild(this);})
 
 		this.g = g
 	},

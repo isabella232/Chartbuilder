@@ -318,10 +318,10 @@ var Gneiss = {
 			extremes.push(e[1])
 		};
 
-        var ex = d3.extent(extremes);
+        g.yAxis.extremes = d3.extent(extremes);
 
-        g.yAxis.domain[0] = ex[0];
-        g.yAxis.domain[1] = ex[1];
+        g.yAxis.domain[0] = g.yAxis.extremes[0];
+        g.yAxis.domain[1] = g.yAxis.extremes[1];
 
         if (g.yAxis.min !== null) {
             g.yAxis.domain[0] = g.yAxis.min;
@@ -367,10 +367,10 @@ var Gneiss = {
 
         if (g.type == 'bar') {
             var leftOffset = 5;
-            var rightOffset = (g.yAxis.prefix + g.yAxis.domain[1] + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
+            var rightOffset = (g.yAxis.prefix + g.yAxis.extremes[1] + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
 
             if (g.yAxis.domain[0] < 0) {
-                leftOffset += (g.yAxis.prefix + g.yAxis.domain[0] + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
+                leftOffset += (g.yAxis.prefix + g.yAxis.extremes[0] + g.yAxis.suffix).length * BAR_MARGIN_PER_CHAR;
             }
 
             this.calculateBarOffset();

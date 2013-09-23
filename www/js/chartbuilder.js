@@ -531,6 +531,10 @@ ChartBuilder = {
     }
 };
 
+if($.browser.msie === true){
+    alert('Sorry, Chart Builder requires Chrome, Firefox or Safari.');
+}
+
 WebFont.load({
     monotype: {
         projectId: '65980087-55e2-40ca-85ae-729fca359467',

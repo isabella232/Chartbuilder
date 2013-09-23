@@ -11,8 +11,11 @@ svg .axis line {
 	shape-rendering: crispEdges;
 }
 
-svg .axis g.zero line {
+svg #baseline g.zero line {
 	stroke: #666666;
+	shape-rendering: crispEdges;
+	fill: none;
+	stroke-width: 1px;
 }
 
 svg #xAxis line {
@@ -38,7 +41,9 @@ svg #yAxis .zero .tick {
 	stroke-dasharray: 0;
 }
 
-svg .axis text,svg .bar text {
+svg #baseline text,
+svg .axis text,
+svg .bar text {
 	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
 	font-size: 15px;
 }

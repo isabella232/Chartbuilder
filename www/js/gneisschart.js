@@ -85,9 +85,12 @@ var Gneiss = {
 			.attr('id','titleLine')
 			.attr('transform','translate(' + g.padding.left + ',25)')
 			.text(g.title);
-		
+
         g.seriesContainer = g.chart.append('g')
             .attr('id','seriesContainer');
+
+        g.chart.append('g')
+            .attr('id','baseline');
             
         g.legendItemContainer = g.chart.append('g')
             .attr('id','legendItemContainer');
@@ -677,7 +680,7 @@ var Gneiss = {
                 .attr('class', 'seriesColumn')
                 .attr('fill', function(d,i) { return d.color })
                 .attr('transform', function(d,i) {
-                    return 'translate(' + (i * columnGroupShift - (columnGroupShift * (g.series.length - 1) / 2)) + ',0)' 
+                    return 'translate(' + (i * columnGroupShift - (columnGroupShift * (g.series.length - 1) / 2)) + ',1)' 
                 })
             
         columnGroups.exit().remove()
@@ -725,7 +728,7 @@ var Gneiss = {
                 .attr('class', 'seriesBar')
                 .attr('fill', function(d,i) { return d.color })
                 .attr('transform', function(d,i) {
-                    return 'translate(1,' + (g.padding.top + (i * barGroupShift) - barHeight / 2) + ')';
+                    return 'translate(0,' + (g.padding.top + (i * barGroupShift) - barHeight / 2) + ')';
                 })
             
         barSeries.exit().remove()
@@ -926,6 +929,12 @@ var Gneiss = {
 
 		this.renderSeries();
         this.renderLegend();
+
+        var baseline = $('#yAxis .zero').remove();
+        $('#baseline')
+            .empty()
+            .append(baseline)
+            .attr('transform', $('#yAxis').attr('transform'));
 
         this.inlineStyles();
 	},

@@ -40,17 +40,17 @@ svg #yAxis .zero .tick {
 
 svg .axis text,svg .bar text {
 	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
-	font-size: 14px;
+	font-size: 15px;
 }
 
 svg .legendItem text {
 	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
-	font-size:  14px;
+	font-size:  15px;
 }
 
 svg text.metaText {
 	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
-	font-size:  14px;
+	font-size:  15px;
 	text-rendering:   optimizeLegibility;
 	fill:  #999999;
 }
@@ -58,7 +58,7 @@ svg text.metaText {
 svg text.barLabel, 
 svg text.bargridLabel {
 	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
-	font-size: 14px
+	font-size: 15px
 }
 
 svg #titleLine {

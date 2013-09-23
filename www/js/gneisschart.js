@@ -173,7 +173,7 @@ var Gneiss = {
         var labels = g.chart.selectAll('#xAxis text')
             .each(function() { width = Math.max(width, this.getComputedTextLength()); });
 
-        g.barOffset = width;
+        g.barOffset = width + 5;
 
         this.g = g;
     },

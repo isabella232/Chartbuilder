@@ -217,6 +217,12 @@ ChartBuilder = {
         // Type
         chart.g.type = $("#typePicker").val();
 
+        if (chart.g.type == 'bar'){
+            $('#axis-title').text('Horizontal Axis Options');
+        } else {
+            $('#axis-title').text('Vertical Axis Options');
+        }
+
         // Title
         chart.g.title = $("#chart_title").val();;
         chart.g.titleLine.text(chart.g.title)

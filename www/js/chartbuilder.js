@@ -220,6 +220,11 @@ ChartBuilder = {
         // Title
         chart.g.title = $("#chart_title").val();;
         chart.g.titleLine.text(chart.g.title)
+        if (chart.g.title === ''){
+            $('#chart_title').fieldMessage('has-error','The chart needs a title');
+        } else {
+            $('#chart_title').clearFieldMessage();
+        }
         
         // Prefix/suffix
         chart.g.yAxis.prefix = $('#right_axis_prefix').val();
@@ -485,11 +490,6 @@ ChartBuilder = {
                 
         $('#createImageButton').click(function() {
             if(!$('#download-modal').hasClass('in')) {
-                if ($('#chart_title').val() == '') {
-                    alert('You must supply a chart title.');
-                    return false;
-                }
-
                 $('#createImageButton p').text('Reset');
 
                 ChartBuilder.createChartImage();

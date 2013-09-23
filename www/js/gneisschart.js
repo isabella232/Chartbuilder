@@ -449,24 +449,33 @@ var Gneiss = {
                 .tickFormat(g.yAxis.formatter)
                 .tickValues(g.yAxis.ticks));
 
-            var topAxisLabel = null;
-            var minY = Infinity;
+            var firstAxisLabel = null;
+            var min = Infinity;
 
             g.chart.selectAll('#yAxis g')
                 .each(function(d, j) {
-                    var y = parseFloat(d3.select(this)
+                    var split = d3.select(this)
                         .attr('transform')
                             .split(')')[0]
-                            .split(',')[1]
-                        )
+                            .split(',')
+
+                    var x = parseFloat(split[0].split('(')[1]);
+                    var y = parseFloat(split[1]);
                     
                     var text = d3.select(this).select('text')
 
-                    if(y < minY) {
-                        topAxisLabel = text
-                        minY = y
+                    if(g.type == 'bar') {
+                        if (x < min){
+                            firstAxisLabel = text
+                            min = x
+                        }
+                    } else {
+                        if (y < min){
+                            firstAxisLabel = text
+                            min = y
+                        }
                     }
-                    
+
                     if(d == 0) {
                         //if the axisItem represents the zero line
                         //change it's class and make sure there's no decimal
@@ -476,7 +485,7 @@ var Gneiss = {
                 })
 			            
             // Add the prefix and suffix to the top most label as appropriate
-            topAxisLabel.text(g.yAxis.prefix + topAxisLabel.text() + g.yAxis.suffix);
+            firstAxisLabel.text(g.yAxis.prefix + firstAxisLabel.text() + g.yAxis.suffix);
         }
 
         var translate = (g.type == 'bar')

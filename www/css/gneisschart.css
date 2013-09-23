@@ -46,6 +46,7 @@ svg .axis text,
 svg .bar text {
 	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
 	font-size: 15px;
+	fill: #333;
 }
 
 svg .legendItem text {
@@ -57,7 +58,6 @@ svg text.metaText {
 	font-family: 'HelveticaNeueW01-57Cn','Gotham SSm',Helvetica, sans-serif;
 	font-size:  15px;
 	text-rendering:   optimizeLegibility;
-	fill:  #999999;
 }
 
 svg text.barLabel, 

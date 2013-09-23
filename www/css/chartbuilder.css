@@ -96,6 +96,10 @@ div.colorPicker-picker {
 	margin-bottom: 10px;
 }
 
+#chart-options .text-muted {
+	font-weight: normal;
+}
+
 #download-modal {
 	padding-top: 15%;
 }

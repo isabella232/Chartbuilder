@@ -224,7 +224,7 @@ ChartBuilder = {
         }
 
         // Title
-        chart.g.title = $("#chart_title").val();;
+        chart.g.title = $("#chart_title").val();
         chart.g.titleLine.text(chart.g.title)
         if (chart.g.title === ''){
             $('#chart_title').fieldMessage('has-error','The chart needs a title');

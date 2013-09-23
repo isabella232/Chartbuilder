@@ -24,6 +24,19 @@ Name,Unemployment\n\
 '13,7.9"
 }
 
+$.fn.fieldMessage = function(type, message){
+    var formGroup = this.parent().parent();
+    this.clearFieldMessage();
+    formGroup.addClass(type);
+    formGroup.find('.help-block').text(message);
+}
+
+$.fn.clearFieldMessage = function(){
+    var formGroup = this.parent().parent();
+    formGroup.removeClass('has-error has-warning has-success');
+    formGroup.find('.help-block').text('');
+}
+
 ChartBuilder = {
 	allColors: ['db4730','e58d3c','f0c74f','04807e','4da9da',
 				'6d2217','72461d','776326','04403e','26546d',
@@ -213,33 +226,58 @@ ChartBuilder = {
         chart.g.yAxis.suffix = $('#right_axis_suffix').val();
 
         // Precision
-        var precision = parseInt($("#right_axis_precision").val());
-
-        if (isNaN(precision)) {
-            precision = null;
+        var precision = $("#right_axis_precision").val();
+        if (precision !== ''){
+            precision = parseInt(precision);
+            if (isNaN(precision)) {
+                precision = null;
+                $('#right_axis_precision').fieldMessage('has-error','Must be a number');
+            } 
+            chart.g.yAxis.precision = precision;
+        } else {
+            $('#right_axis_precision').clearFieldMessage();
+            chart.g.yAxis.precision = null;
         }
-
-        chart.g.yAxis.precision = precision;
 
         // Ticks
-        chart.g.yAxis.numTicks = parseInt($("#right_axis_tick_num").val())
+        chart.g.yAxis.numTicks = parseInt($("#right_axis_tick_num").val());
 
         // Min/max
-        var val = parseFloat($("#right_axis_min").val())
+        var min = $("#right_axis_min").val();
 
-        if (isNaN(val)) {
-            val = null;
-        }
+        if (min !== ''){
+            min = parseFloat(min);
+            if (isNaN(min)) {
+                min = null;
+                $('#right_axis_min').fieldMessage('has-error','Must be a number');
+            } 
+            chart.g.yAxis.min = min;
+        } else {
+            $('#right_axis_min').clearFieldMessage();
+            chart.g.yAxis.min = null;
+        }        
 
-        chart.g.yAxis.min = val;
-
-        var val = parseFloat($("#right_axis_max").val())
+        var max = $("#right_axis_max").val();
         
-        if (isNaN(val)) {
-            val = null;
+        if (max !== ''){
+            max = parseFloat(max);
+            if (isNaN(max)) {
+                max = null;
+                $('#right_axis_max').fieldMessage('has-error','Must be a number');
+            } else {
+                if (!isNaN(min) && max < min){
+                    $('#right_axis_max').fieldMessage('has-error','Maximum must be greater than minimum');
+                } else {
+                    $('#right_axis_max').clearFieldMessage();
+                }
+                chart.g.yAxis.max = max;
+            }
+        } else {
+            $('#right_axis_max').clearFieldMessage();
+            chart.g.yAxis.max = null;
         }
 
-        chart.g.yAxis.max = val;
+        
 
         // Tick override
         var val = $("#right_axis_tick_override").val().split(',');

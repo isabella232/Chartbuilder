@@ -50,24 +50,29 @@
   		  <div id="rightColumn" class="container">
   			<div class="cbInner">
 
+            <div id="previous-charts" class="row">
+              <div class="form-group col-md-6">
+                
+                <div class="load-previous">
+                  <label for="previous_charts">Load a previously created chart</label>
+                  <select name="previous_charts" id="previous_charts" class="form-control"></select>
+                </div>
+              </div>
+            </div>
+
     		    <div id="import" class="row">
 
               <div class="col-xs-12 col-md-12">
                	<div class="inputGroup">
                   
                   <div class="row">
-                    <div class="col-md-7">
+                    <div class="col-md-12">
                       <h2 id="inputDataHeading"><span class="step-header">1</span> Import Data</h2>
-                      <p>Copy and paste cells from your spreadsheet into this text field. </p>
-                    </div>
-                    <div class="form-group col-md-5">
-                      <div class="load-previous well well-sm">
-                        <label for="previous_charts">Load a previously created chart</label>
-                        <select name="previous_charts" id="previous_charts" class="form-control"></select>
-                      </div>
+                      <button id="reset-form" class="btn btn-danger">Reset Form</button>
                     </div>
                   </div>
                   
+                  <p>Copy and paste cells from your spreadsheet into the text field below. </p>
                   <p id="invalidDataSpan" class="alert alert-danger hide">Data could not be parsed.</p>
                   <textarea id="csvInput" class="input-box form-control" name="csvInput" rows="8"></textarea>
 
@@ -80,28 +85,31 @@
               </div>
             </div>
             <div id="chart-options" class="row">
-              <div class="col-md-12 topOptionBlock form-inline">
+              <div class="col-md-12 topOptionBlock form-horizontal">
                 <h2><span class="step-header">2</span> Chart Options</h2>
-                <div class="row">
-                  <div id="seriesItems" class="col-sm-12 col-md-3 form-group">
-                    <label for="typePicker" class="control-label">Select Chart Type</label>
-                      <select id="typePicker" class="form-control">
-                          <option selected="selected" value="line">Line</option>
-                          <option value="column">Column</option>
-                          <option value="bar">Bar</option>
-                          <option value="scatter">Scatter</option>
-                      </select>
-                    <h5>Select Series Colors</h5>
+                
+                <div class="form-group">
+                  <label for="typePicker" class="col-md-3 control-label">Select Chart Type</label>
+                  <div class="col-md-4">
+                    <select id="typePicker" class="form-control">
+                        <option selected="selected" value="line">Line</option>
+                        <option value="column">Column</option>
+                        <option value="bar">Bar</option>
+                        <option value="scatter">Scatter</option>
+                    </select>
                   </div>
-                  <div class="form-group col-sm-12 col-md-9">
-                    <label class="control-label" for="chart_title">Title <span class="text-muted">(required)</span></label>
-                    <div>
-                      <input type="text" class="form-control" name="chart_title" value="Stock Prices" id="chart_title">
-                    </div>
-                    <p class="help-block"></p>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 series-colors control-label">Select Series Colors</label>
+                  <div id="seriesItems" class="col-md-9"></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="chart_title">Title</label>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control" name="chart_title" value="Stock Prices" id="chart_title" placeholder="(required)">
+                  </div>
+                  <p class="help-block"></p>
 
-                  </div>
-                  
                 </div>
 
       				</div>
@@ -114,35 +122,35 @@
       							<div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_prefix">Unit Prefix</label>
                       <div class="col-md-4">
-                        <input type="text" class="form-control" name="right_axis_prefix" value="" id="right_axis_prefix" placeholder="e.g. $50">
+                        <input type="text" class="form-control" name="right_axis_prefix" value="" id="right_axis_prefix" placeholder="e.g. $50 (optional)">
                       </div>
                       <p class="help-block col-md-5"></p>
                     </div>
   	    			      <div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_suffix">Unit Suffix</label>
                       <div class="col-md-4">
-                        <input type="text" class="form-control" name="right_axis_suffix" value="" id="right_axis_suffix" placeholder="e.g. 50%">
+                        <input type="text" class="form-control" name="right_axis_suffix" value="" id="right_axis_suffix" placeholder="e.g. 50% (optional)">
                       </div>
                       <p class="help-block col-md-5"></p>
                     </div>
   	    			      <div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_precision">Decimal Places</label>
                       <div class="col-md-4">
-                        <input type="text" class="form-control" name="right_axis_precision" value="" id="right_axis_precision" placeholder="e.g. 2 for 2.00">
+                        <input type="text" class="form-control" name="right_axis_precision" value="" id="right_axis_precision" placeholder="e.g. 2 for 2.00 (optional)">
                       </div>
                       <p class="help-block col-md-5"></p>
                     </div>
       				      <div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_max">Maximum</label>
                       <div class="col-md-4">
-                        <input type="text" class="form-control" name="right_axis_max" value="" id="right_axis_max">
+                        <input type="text" class="form-control" name="right_axis_max" value="" id="right_axis_max" placeholder="(optional)">
                       </div>
                       <p class="help-block col-md-5"></p>
                     </div>
       							<div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_min">Minimum</label>
                       <div class="col-md-4">
-                        <input type="text" class="form-control" name="right_axis_min" value="" id="right_axis_min">
+                        <input type="text" class="form-control" name="right_axis_min" value="" id="right_axis_min" placeholder="(optional)">
                       </div>
                       <p class="help-block col-md-5"></p>
                     </div>

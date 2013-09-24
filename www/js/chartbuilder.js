@@ -299,22 +299,32 @@ ChartBuilder = {
         chart.g.yAxis.prefix = $('#right_axis_prefix').val();
         chart.g.yAxis.suffix = $('#right_axis_suffix').val();
 
-        // Precision
-        var precision = $("#right_axis_precision").val();
-        if (precision !== ''){
-            precision = parseInt(precision);
-            if (isNaN(precision)) {
-                precision = null;
-                $('#right_axis_precision').fieldMessage('has-error','Must be a number');
-            } 
-            chart.g.yAxis.precision = precision;
-        } else {
-            $('#right_axis_precision').clearFieldMessage();
-            chart.g.yAxis.precision = null;
-        }
-
         // Ticks
-        chart.g.yAxis.numTicks = parseInt($("#right_axis_tick_num").val());
+        var tickInterval = $("#axis_interval").val();
+
+        if (tickInterval !== ''){
+            tickInterval = parseFloat(tickInterval);
+            if (isNaN(tickInterval)) {
+                tickInterval = null;
+                $('#axis_interval').fieldMessage('has-error','Must be a number');
+            }
+
+            chart.calculateYDomain();
+
+            if (tickInterval <= 0){
+                tickInterval = null;
+                $('#axis_interval').fieldMessage('has-error','Error! Choose a larger interval.');
+            } else if (((chart.g.yAxis.domain[1] - chart.g.yAxis.domain[0]) / tickInterval) > 20) {
+                tickInterval = null;
+                $('#axis_interval').fieldMessage('has-error','Too many ticks! Choose a larger interval.');
+            } else {
+                chart.g.yAxis.tickInterval = tickInterval;
+            }
+        } else {
+            $('#axis_interval').clearFieldMessage();
+            chart.g.yAxis.tickInterval = null;
+        }        
+
 
         // Min/max
         var min = $("#right_axis_min").val();
@@ -350,22 +360,6 @@ ChartBuilder = {
             $('#right_axis_max').clearFieldMessage();
             chart.g.yAxis.max = null;
         }
-
-        
-
-        // Tick override
-        var val = $("#right_axis_tick_override").val().split(',');
-
-        if(val.length > 1) {
-            for (var i = val.length - 1; i >= 0; i--){
-                val[i] = parseFloat(val[i]);
-            };
-        }
-        else {
-            val = null;
-        }
-        
-        chart.g.yAxis.tickValues = val;
 
         return true;
     },
@@ -569,11 +563,9 @@ ChartBuilder = {
 
         $('#right_axis_prefix').keyup(ChartBuilder.render);
         $('#right_axis_suffix').keyup(ChartBuilder.render);
-        $('#right_axis_precision').keyup(ChartBuilder.render);
-        $('#right_axis_tick_num').change(ChartBuilder.render);
         $('#right_axis_max').keyup(ChartBuilder.render);
         $('#right_axis_min').keyup(ChartBuilder.render);
-        $('#right_axis_tick_override').keyup(ChartBuilder.render);
+        $('#axis_interval').keyup(ChartBuilder.render);
         $('#typePicker').on('change', ChartBuilder.render);		
         $('#chart_title').keyup(ChartBuilder.render);
         $('#csvInput').keyup(ChartBuilder.render); 

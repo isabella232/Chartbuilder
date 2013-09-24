@@ -58,6 +58,9 @@
                   <select name="previous_charts" id="previous_charts" class="form-control"></select>
                 </div>
               </div>
+              <div class="col-md-6">
+                <button id="reset-form" class="btn btn-danger">Reset Form</button>
+              </div>
             </div>
 
     		    <div id="import" class="row">
@@ -68,7 +71,7 @@
                   <div class="row">
                     <div class="col-md-12">
                       <h2 id="inputDataHeading"><span class="step-header">1</span> Import Data</h2>
-                      <button id="reset-form" class="btn btn-danger">Reset Form</button>
+                      
                     </div>
                   </div>
                   
@@ -120,27 +123,6 @@
                 <div class="inputGroup">
      							<h2><span class="step-header">3</span> <span id="axis-title">Vertical Axis Options</span></h2>
       						<div id="rightAxisControls form-inline">
-      							<div class="form-group">
-                      <label class="col-md-3 control-label" for="right_axis_prefix">Unit Prefix</label>
-                      <div class="col-md-4">
-                        <input type="text" class="form-control" name="right_axis_prefix" value="" id="right_axis_prefix" placeholder="e.g. $50 (optional)">
-                      </div>
-                      <p class="help-block col-md-5"></p>
-                    </div>
-  	    			      <div class="form-group">
-                      <label class="col-md-3 control-label" for="right_axis_suffix">Unit Suffix</label>
-                      <div class="col-md-4">
-                        <input type="text" class="form-control" name="right_axis_suffix" value="" id="right_axis_suffix" placeholder="e.g. 50% (optional)">
-                      </div>
-                      <p class="help-block col-md-5"></p>
-                    </div>
-  	    			      <div class="form-group">
-                      <label class="col-md-3 control-label" for="right_axis_precision">Decimal Places</label>
-                      <div class="col-md-4">
-                        <input type="text" class="form-control" name="right_axis_precision" value="" id="right_axis_precision" placeholder="e.g. 2 for 2.00 (optional)">
-                      </div>
-                      <p class="help-block col-md-5"></p>
-                    </div>
       				      <div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_max">Maximum</label>
                       <div class="col-md-4">
@@ -155,23 +137,24 @@
                       </div>
                       <p class="help-block col-md-5"></p>
                     </div>
-  	    						<div class="form-group">
-                      <label class="col-md-3 control-label" for="right_axis_tick_num">Number of Ticks</label>
+                    <div class="form-group">
+                      <label class="col-md-3 control-label" for="axis_interval">Tick Interval</label>
                       <div class="col-md-4">
-                        <select class="form-control" name="right_axis_tick_num" id="right_axis_tick_num">
-                            <option>2</option>
-                            <option>3</option>
-                            <option selected >4</option>
-                            <option>5</option>
-                            <option>6</option>
-                        </select>
+                        <input type="text" class="form-control" name="axis_interval" value="" id="axis_interval" placeholder="(optional)">
                       </div>
-                      <p class="help-block col-md-5">Additional ticks may be automatically added to balance the chart.</p>
+                      <p class="help-block col-md-5"></p>
                     </div>
-      							<div class="form-group">
-                      <label class="col-md-3 control-label" for="right_axis_tick_override">Override Ticks</label>
+                    <div class="form-group">
+                      <label class="col-md-3 control-label" for="right_axis_prefix">Unit Prefix</label>
                       <div class="col-md-4">
-                        <input type="text" class="form-control" name="right_axis_tick_override" value="" id="right_axis_tick_override" placeholder="e.g. 0,5,10,15,20,25">
+                        <input type="text" class="form-control" name="right_axis_prefix" value="" id="right_axis_prefix" placeholder="e.g. $50 (optional)">
+                      </div>
+                      <p class="help-block col-md-5"></p>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-3 control-label" for="right_axis_suffix">Unit Suffix</label>
+                      <div class="col-md-4">
+                        <input type="text" class="form-control" name="right_axis_suffix" value="" id="right_axis_suffix" placeholder="e.g. 50% (optional)">
                       </div>
                       <p class="help-block col-md-5"></p>
                     </div>

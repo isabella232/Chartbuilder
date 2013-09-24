@@ -21,9 +21,9 @@ var defaultGneissChartConfig = {
 	yAxis: {
         domain: [null, null],
         tickValues: null,
+        tickInterval: null,
         prefix: '',
         suffix: '', 
-        numTicks: 4,
         formatter: null,
         precision: null,
         max: null,
@@ -210,70 +210,56 @@ var Gneiss = {
 
 		this.g = g;
 	},
-    exactTicks: function(domain, numTicks) {
+    exactTicks: function(domain, tickInterval) {
         /*
          * Precise tick generation. Will always include a 0-line
          * if data crosses 0.
          */
         var ticks = [];
-        var delta = domain[1] - domain[0];
+        var i = 0;
         
-        for (var i = 0; i < numTicks; i++) {
-            ticks.push(domain[0] + (delta / numTicks) * i);
-        };
-        
-        ticks.push(domain[1]);
+        // Handle all-positive domain        
+        if (domain[0] >= 0){
+            i = parseInt(domain[0]/tickInterval) * tickInterval;
+            while(i < domain[1]){
+                ticks.push(i);
+                i += tickInterval;
+            }
 
-        if(domain[1] > 0 && domain[0] < 0) {
-            var hasZeroTick = false;
+            ticks.push(i);
+        } else {
+            i = 0;
 
-            for (var i = 0; i < ticks.length; i++){
-                if(ticks[i] == 0) {
-                    hasZeroTick = true;
-                }
-            };
-
-            // If no natural 0-tick emerges then we regenerate data centered around it
-            if(!hasZeroTick) {
-                ticks = [];
-                var positiveLarger = domain[1] > Math.abs(domain[0]);
-
-                // Approximate # of ticks per side of the 0-line
-                var ticksPerSign = Math.ceil((numTicks - 1) / 2);
-
-                if (positiveLarger) {
-                    var delta = domain[1] / ticksPerSign;
-                } else {
-                    var delta = Math.abs(domain[0]) / ticksPerSign;
+            // Handle all-negative domain
+            if (domain[1] <= 0){
+                i = parseInt(domain[1]/tickInterval) * tickInterval;
+                while(i > domain[0]){
+                    ticks.push(i);
+                    i -= tickInterval;
                 }
 
-                var positiveEnd = false;
-                var negativeEnd = false;
+                ticks.push(i);
 
-                for (var i = 1; i < ticksPerSign + 1; i++) {
-                    var tick = delta * i;
-
-                    if (!positiveEnd) {
-                        ticks.push(tick);
-
-                        if (tick >= domain[1]) {
-                            positiveEnd = true;
-                        }
-                    }
-
-                    if (!negativeEnd) {
-                        ticks.push(-tick);
-
-                        if (-tick <= domain[0]) {
-                            negativeEnd = true;
-                        }
-                    }
+            // Handle zero-crossing domain
+            } else {
+                i = 0;
+                while (i < domain[1]){
+                    ticks.push(i);
+                    i += tickInterval;
                 }
 
-                ticks.push(0)
+                ticks.push(i);
+
+                i = 0;
+                while (i > domain[0]){
+                    ticks.push(i);
+                    i -= tickInterval;
+                }
+
+                ticks.push(i);
             }
         }
-        
+
         return ticks;
     },
     makeTickFormatters: function() {
@@ -341,11 +327,12 @@ var Gneiss = {
         }
 
         // Generate ticks
-        if (g.yAxis.tickValues !== null) {
-            g.yAxis.ticks = g.yAxis.tickValues;
-        } else {
-            g.yAxis.ticks = this.exactTicks(g.yAxis.domain, g.yAxis.numTicks);
+        var tickInterval = g.yAxis.tickInterval;
+
+        if (g.yAxis.tickInterval === null){
+            tickInterval = (g.yAxis.domain[1] - g.yAxis.domain[0])/5;
         }
+        g.yAxis.ticks = this.exactTicks(g.yAxis.domain, tickInterval);
 
         // Create formatting functions for new ticks
         this.makeTickFormatters();

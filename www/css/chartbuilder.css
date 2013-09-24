@@ -78,14 +78,32 @@ div.colorPicker-picker {
 	margin-right: 25px;
 }
 
-.load-previous {
-	margin-top: 20px;
+#previous-charts {
+	border-top: none;
+	background: #f5f5f5;
+	padding-top: 15px;
 }
 
-#seriesItems h5 {
-	font-weight: bold;
+#import {
+	position: relative;
+}
+
+#import h2 {
 	margin-top: 0;
-	line-height: 20px;
+}
+
+#import > div {
+	margin-top: 0;
+}
+
+#reset-form {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+}
+
+.series-colors.control-label {
+	padding-top: 0;
 }
 
 #csvInput {

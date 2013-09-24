@@ -573,6 +573,13 @@ ChartBuilder = {
             $('#download-modal').modal('hide');
         });
 
+        // Attach reset action
+        $('#reset-form').on('click', function(){
+            $('input, textarea').val('');
+            $('#csvInput').focus();
+            ChartBuilder.render();
+        });
+
         // Get the list of saved charts and load the last one
         var charts = ChartBuilder.getSavedCharts();
         charts.reverse();

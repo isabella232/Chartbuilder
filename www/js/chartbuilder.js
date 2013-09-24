@@ -141,6 +141,11 @@ ChartBuilder = {
          * Transpose rows and columns in the data.
          */
         var data = $("#csvInput").val();
+
+        if (!data) {
+            return;
+        }
+
         var rows = ChartBuilder.parseData(data);
 
         var maxLength = 0;
@@ -231,6 +236,13 @@ ChartBuilder = {
          * Update the chart config from the latest UI state.
          */
         var data = $.trim($("#csvInput").val());
+
+        if (!data) {
+            ChartBuilder.showInvalidData('Copy and paste some data from your spreadsheet!');
+
+            return false;
+        }
+
         var comma_count = data.split(COMMA).length - 1;
         var tab_count = data.split(TAB).length - 1;
 

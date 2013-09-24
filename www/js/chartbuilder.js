@@ -100,17 +100,22 @@ ChartBuilder = {
 				// If it's a data point
 				else {
 					var value = rows[j][i];
+
 					if (value == 'null' || value == '') {
 						// allow for nulls or blank cells
 						value = null
-					}
-					else if (isNaN(value)){
-						// data isn't valid
-						return null;
-					}
-					else {
-						value = parseFloat(value);
-					}
+					} else {
+                        if (value.indexOf('$') >= 0 || value.indexOf('%') >= 0) {
+                            throw "Data should not include unit labels such as $ or %. (You will be able to add them in Step 3.)";
+                        }
+
+                        if (isNaN(value)){
+                            throw "Value \"" + value + "\" can not be parsed as a number.";
+                        }
+                        else {
+                            value = parseFloat(value);
+                        }
+                    }
 					
 					obj.data.push(value);
 				}
@@ -198,11 +203,11 @@ ChartBuilder = {
                 return false;
             }
 
-            dataSeries = ChartBuilder.makeDataSeries(rows);
+            try {
+                dataSeries = ChartBuilder.makeDataSeries(rows);
+            } catch(e) {
+                ChartBuilder.showInvalidData(e);
 
-            if (dataSeries == null) {
-                ChartBuilder.showInvalidData();
-                
                 return false;
             }
 

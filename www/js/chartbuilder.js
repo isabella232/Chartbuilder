@@ -318,6 +318,7 @@ ChartBuilder = {
                     $('#axis_interval').fieldMessage('has-error','Too many ticks! Choose a larger interval.');
                 } else {
                     chart.g.yAxis.tickInterval = tickInterval;
+                    $('#axis_interval').clearFieldMessage();
                 }
             }
         } else {

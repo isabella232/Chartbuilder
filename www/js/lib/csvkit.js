@@ -1,4 +1,4 @@
-(function(){
+(function() {
     this.CSVKit = {};
 
     /* Utils */
@@ -15,13 +15,12 @@
     CSVKit.Reader = function(options) {
         options = options || {};
 
-        this.separator    = options.separator        || ',';
-        this.quote_char   = options.quote_char       || '"';
-        this.escape_char  = options.escape_char      || '"';
-        this.column_names = options.column_names     || [];
+        this.separator    = options.separator || ',';
+        this.quote_char   = options.quote_char || '"';
+        this.escape_char  = options.escape_char || '"';
+        this.column_names = options.column_names || [];
         this.columns_from_header = 'columns_from_header' in options ? options.columns_from_header : true;
         this.nested_quotes = 'nested_quotes' in options ? options.nested_quotes : false;
-
         this.rows = [];
 
         this.state = {
@@ -167,6 +166,85 @@
         }
 
         return obj;
+    };
+
+    /* CSVKit.Writer */
+    
+    CSVKit.Writer = function(options) {
+        options = options || {};
+
+        this.separator    = options.separator || ',';
+        this.quote_char   = options.quote_char || '"';
+        this.escape_char  = options.escape_char || '"';
+        this.quote_all    = options.quote_all || false;
+        this.newline      = '\n';
+
+        CSVKit.Writer.prototype.write = function(rows) {
+            var formatted_rows = [];
+
+            for (var i = 0; i < rows.length; i++) {
+                formatted_rows.push(this._serialize_row(rows[i]));
+             }
+
+            return formatted_rows.join(this.newline);
+        };
+
+        CSVKit.Writer.prototype._serialize_row = function(row) {
+            var formatted_cells = [];
+
+            for (var i = 0; i < row.length; i++) {
+                formatted_cells.push(this._serialize_cell(row[i]));
+            }
+
+            return formatted_cells.join(this.separator);
+        };
+
+        CSVKit.Writer.prototype._serialize_cell = function(cell) {
+            if (cell.indexOf(this.quote_char) >= 0) {
+                cell = cell.replace(new RegExp(this.quote_char, 'g'), this.escape_char + this.quote_char);
+            }
+
+            if (this.quote_all || cell.indexOf(this.separator) >= 0 || cell.indexOf(this.newline) >= 0) {
+                return this.quote_char + cell + this.quote_char;
+            }
+
+            return cell;
+        };
+    }
+
+    /* CSVKit.ObjectWriter */
+
+    CSVKit.ObjectWriter = function(options) {
+        CSVKit.Writer.call(this, options);
+
+        if (!('column_names' in options)) {
+            throw "The column_names option is required.";
+        }
+
+        this.column_names = options.column_names;
+    };
+    inherits(CSVKit.ObjectWriter, CSVKit.Writer);
+
+    CSVKit.ObjectWriter.prototype.write = function(rows) {
+        var header = {};
+
+        for (var i = 0; i < this.column_names.length; i++) {
+            header[this.column_names[i]] = this.column_names[i];
+        }
+
+        rows.splice(0, 0, header); 
+
+        return CSVKit.Writer.prototype.write.call(this, rows);
+    }
+
+    CSVKit.ObjectWriter.prototype._serialize_row = function(row) {
+        var cells = [];
+        
+        for (var i = 0; i < this.column_names.length; i++) {
+            cells.push(row[this.column_names[i]]);
+        }
+
+        return CSVKit.Writer.prototype._serialize_row.call(this, cells);
     };
 
 }).call(this);

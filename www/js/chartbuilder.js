@@ -52,17 +52,8 @@ ChartBuilder = {
          *
          * Returns a list of rows.
          */
-        var separator = COMMA;
-
-        var comma_count = csv.split(COMMA).length - 1;
-        var tab_count = csv.split(TAB).length - 1;
-
-        if (tab_count >= comma_count) {
-            separator = TAB;
-        }
-
         var reader = new CSVKit.Reader({
-            separator: separator,
+            separator: COMMA,
             columns_from_header: false
         });
 
@@ -80,6 +71,25 @@ ChartBuilder = {
 
         return reader.rows;
 	},
+    convertTSVtoCSV: function(tsv) {
+        /*
+         * Convert TSV to CSV.
+         */
+        var reader = new CSVKit.Reader({
+            separator: TAB,
+            columns_from_header: false
+        });
+
+        reader.parse(tsv);
+
+        var writer = new CSVKit.Writer();
+
+        var csv = writer.write(reader.rows);
+
+        $("#csvInput").val(csv);
+        
+        return csv;
+    },
 	makeDataSeries: function(rows) {
         /*
          * Convert rows from CSV/TSV to data series for gneiss.
@@ -126,10 +136,13 @@ ChartBuilder = {
 
 		return data;
 	},
-    transposeData: function(rows) {
+    transposeData: function() {
         /*
          * Transpose rows and columns in the data.
          */
+        var data = $("#csvInput").val();
+        var rows = ChartBuilder.parseData(data);
+
         var maxLength = 0;
         var newRows = [];
 
@@ -147,7 +160,12 @@ ChartBuilder = {
             newRows.push(newRow);
         }
 
-        return newRows;
+        var writer = new CSVKit.Writer();
+        data = writer.write(newRows);
+
+        $("#csvInput").val(data);
+
+        ChartBuilder.render();
     },
 	createTable: function(rows) {
         /*
@@ -212,8 +230,13 @@ ChartBuilder = {
         /*
          * Update the chart config from the latest UI state.
          */
-        // Data
         var data = $.trim($("#csvInput").val());
+        var comma_count = data.split(COMMA).length - 1;
+        var tab_count = data.split(TAB).length - 1;
+
+        if (tab_count >= comma_count) {
+            data = ChartBuilder.convertTSVtoCSV(data);
+        }
 
         if (data !== ChartBuilder.rawData) {
             ChartBuilder.rawData = data;
@@ -542,6 +565,8 @@ ChartBuilder = {
         $('#typePicker').on('change', ChartBuilder.render);		
         $('#chart_title').keyup(ChartBuilder.render);
         $('#csvInput').keyup(ChartBuilder.render); 
+
+        $('#transpose-data').click(ChartBuilder.transposeData);
 
         // Clicking download closes the download modal
         $('#downloadImageLink').on('click', function(){

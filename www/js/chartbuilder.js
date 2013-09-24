@@ -100,17 +100,22 @@ ChartBuilder = {
 				// If it's a data point
 				else {
 					var value = rows[j][i];
+
 					if (value == 'null' || value == '') {
 						// allow for nulls or blank cells
 						value = null
-					}
-					else if (isNaN(value)){
-						// data isn't valid
-						return null;
-					}
-					else {
-						value = parseFloat(value);
-					}
+					} else {
+                        if (value.indexOf('$') >= 0 || value.indexOf('%') >= 0) {
+                            throw "Data should not include unit labels such as $ or %. (You will be able to add them in Step 3.)";
+                        }
+
+                        if (isNaN(value)){
+                            throw "Value \"" + value + "\" can not be parsed as a number.";
+                        }
+                        else {
+                            value = parseFloat(value);
+                        }
+                    }
 					
 					obj.data.push(value);
 				}
@@ -121,6 +126,29 @@ ChartBuilder = {
 
 		return data;
 	},
+    transposeData: function(rows) {
+        /*
+         * Transpose rows and columns in the data.
+         */
+        var maxLength = 0;
+        var newRows = [];
+
+        for (var i = 0; i < rows.length; i++) {
+            maxLength = Math.max(rows[i].length, maxLength);
+        }
+
+        for (var i = 0; i < maxLength; i++) {
+            var newRow = [];
+
+            for (j = 0; j < rows.length; j++) {
+                newRow.push(rows[j][i]);
+            }
+
+            newRows.push(newRow);
+        }
+
+        return newRows;
+    },
 	createTable: function(rows) {
         /*
          * Render an HTML table from data rows, for validation.
@@ -185,7 +213,7 @@ ChartBuilder = {
          * Update the chart config from the latest UI state.
          */
         // Data
-        var data = $("#csvInput").val();
+        var data = $.trim($("#csvInput").val());
 
         if (data !== ChartBuilder.rawData) {
             ChartBuilder.rawData = data;
@@ -198,11 +226,11 @@ ChartBuilder = {
                 return false;
             }
 
-            dataSeries = ChartBuilder.makeDataSeries(rows);
+            try {
+                dataSeries = ChartBuilder.makeDataSeries(rows);
+            } catch(e) {
+                ChartBuilder.showInvalidData(e);
 
-            if (dataSeries == null) {
-                ChartBuilder.showInvalidData();
-                
                 return false;
             }
 

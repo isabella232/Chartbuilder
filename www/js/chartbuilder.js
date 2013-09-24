@@ -335,8 +335,11 @@ ChartBuilder = {
             if (isNaN(min)) {
                 min = null;
                 $('#right_axis_min').fieldMessage('has-error','Must be a number');
-            } 
-            chart.g.yAxis.min = min;
+            } else {
+                chart.g.yAxis.min = min;
+                $('#right_axis_min').clearFieldMessage();
+            }
+            
         } else {
             $('#right_axis_min').clearFieldMessage();
             chart.g.yAxis.min = null;
@@ -353,9 +356,9 @@ ChartBuilder = {
                 if (!isNaN(min) && max < min){
                     $('#right_axis_max').fieldMessage('has-error','Maximum must be greater than minimum');
                 } else {
+                    chart.g.yAxis.max = max;
                     $('#right_axis_max').clearFieldMessage();
                 }
-                chart.g.yAxis.max = max;
             }
         } else {
             $('#right_axis_max').clearFieldMessage();

@@ -185,7 +185,7 @@ ChartBuilder = {
          * Update the chart config from the latest UI state.
          */
         // Data
-        var data = $("#csvInput").val();
+        var data = $.trim($("#csvInput").val());
 
         if (data !== ChartBuilder.rawData) {
             ChartBuilder.rawData = data;

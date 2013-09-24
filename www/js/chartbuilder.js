@@ -307,18 +307,18 @@ ChartBuilder = {
             if (isNaN(tickInterval)) {
                 tickInterval = null;
                 $('#axis_interval').fieldMessage('has-error','Must be a number');
-            }
-
-            chart.calculateYDomain();
-
-            if (tickInterval <= 0){
-                tickInterval = null;
-                $('#axis_interval').fieldMessage('has-error','Error! Choose a larger interval.');
-            } else if (((chart.g.yAxis.domain[1] - chart.g.yAxis.domain[0]) / tickInterval) > 20) {
-                tickInterval = null;
-                $('#axis_interval').fieldMessage('has-error','Too many ticks! Choose a larger interval.');
             } else {
-                chart.g.yAxis.tickInterval = tickInterval;
+                chart.calculateYDomain();
+
+                if (tickInterval <= 0){
+                    tickInterval = null;
+                    $('#axis_interval').fieldMessage('has-error','Error! Choose a larger interval.');
+                } else if (((chart.g.yAxis.domain[1] - chart.g.yAxis.domain[0]) / tickInterval) > 20) {
+                    tickInterval = null;
+                    $('#axis_interval').fieldMessage('has-error','Too many ticks! Choose a larger interval.');
+                } else {
+                    chart.g.yAxis.tickInterval = tickInterval;
+                }
             }
         } else {
             $('#axis_interval').clearFieldMessage();

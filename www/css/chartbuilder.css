@@ -106,6 +106,10 @@ div.colorPicker-picker {
 	padding-top: 0;
 }
 
+.control-instructions {
+	padding-top: 10px;
+}
+
 #csvInput {
 	margin-bottom: 10px;
 }

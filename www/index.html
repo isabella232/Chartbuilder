@@ -17,14 +17,13 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/webfont/1.4.10/webfont.js" ></script>
 
 		<!-- Libraries CSS -->
-		<link rel="stylesheet" href="css/normalize.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/main.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/chosen.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/colorPicker.css" type="text/css" media="screen" charset="utf-8">
 		
 		<!-- Chartbuilder CSS -->
-        <link rel="stylesheet" href="css/chartbuilder.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="css/chartbuilder.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/gneisschart.css" type="text/css" media="screen" charset="utf-8">
 	</head>
 	<body>
@@ -59,7 +58,7 @@
                 </div>
               </div>
               <div class="col-md-6">
-                <button id="reset-form" class="btn btn-danger">Reset Form</button>
+                <button id="reset-form" class="btn btn-danger">Reset Form <span class="glyphicon glyphicon-repeat"></span></button>
               </div>
             </div>
 
@@ -78,7 +77,7 @@
                   <p>Copy and paste cells from your spreadsheet into the text field below. </p>
                   <p id="invalidDataSpan" class="alert alert-danger hide">Data could not be parsed.</p>
                   <textarea id="csvInput" class="input-box form-control" name="csvInput" rows="8"></textarea>
-                  <a id="transpose-data" class="btn btn-warning" href="#">Swap rows and columns</a>
+                  <a id="transpose-data" class="btn btn-warning" href="#">Swap rows and columns <span class="glyphicon glyphicon-retweet"></span></a>
 
                   <p>Verify your data appears correct in this table. The first column will become labels for the horizontal axis. Remaining columns will be plotted on the vertical axis. (Except on bar charts.)</p>
                   <div id="dataTable" class="input-box">
@@ -94,7 +93,7 @@
                 
                 <div class="form-group">
                   <label for="typePicker" class="col-md-3 control-label">Select Chart Type</label>
-                  <div class="col-md-4">
+                  <div class="col-md-5">
                     <select id="typePicker" class="form-control">
                         <option selected="selected" value="line">Line</option>
                         <option value="column">Column</option>
@@ -109,10 +108,10 @@
                 </div>
                 <div class="form-group">
                   <label class="col-md-3 control-label" for="chart_title">Title</label>
-                  <div class="col-md-4">
+                  <div class="col-md-5">
                     <input type="text" class="form-control" name="chart_title" value="Stock Prices" id="chart_title" placeholder="(required)">
                   </div>
-                  <p class="help-block"></p>
+                  <p class="help-block col-md-4"></p>
 
                 </div>
 
@@ -125,38 +124,39 @@
       						<div id="rightAxisControls form-inline">
       				      <div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_max">Maximum</label>
-                      <div class="col-md-4">
+                      <div class="col-md-5">
                         <input type="text" class="form-control" name="right_axis_max" value="" id="right_axis_max" placeholder="(optional)">
                       </div>
-                      <p class="help-block col-md-5"></p>
+                      <p class="help-block col-md-4"></p>
                     </div>
       							<div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_min">Minimum</label>
-                      <div class="col-md-4">
+                      <div class="col-md-5">
                         <input type="text" class="form-control" name="right_axis_min" value="" id="right_axis_min" placeholder="(optional)">
                       </div>
-                      <p class="help-block col-md-5"></p>
+                      <p class="help-block col-md-4"></p>
                     </div>
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="axis_interval">Tick Interval</label>
-                      <div class="col-md-4">
+                      <div class="col-md-5">
                         <input type="text" class="form-control" name="axis_interval" value="" id="axis_interval" placeholder="(optional)">
                       </div>
-                      <p class="help-block col-md-5"></p>
+                      <p class="help-block col-md-4"></p>
+                      <p class="control-instructions col-md-5 col-md-offset-3">Adjusts the position and frequency of the axis lines.</p>
                     </div>
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_prefix">Unit Prefix</label>
-                      <div class="col-md-4">
+                      <div class="col-md-5">
                         <input type="text" class="form-control" name="right_axis_prefix" value="" id="right_axis_prefix" placeholder="e.g. $50 (optional)">
                       </div>
-                      <p class="help-block col-md-5"></p>
+                      <p class="help-block col-md-4"></p>
                     </div>
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_suffix">Unit Suffix</label>
-                      <div class="col-md-4">
+                      <div class="col-md-5">
                         <input type="text" class="form-control" name="right_axis_suffix" value="" id="right_axis_suffix" placeholder="e.g. 50% (optional)">
                       </div>
-                      <p class="help-block col-md-5"></p>
+                      <p class="help-block col-md-4"></p>
                     </div>
                   </div>
                 </div>
@@ -166,7 +166,7 @@
               <div class="col-md-12 full">
                 <div class="inputGroup">
                   <h2><span class="step-header">4</span> Export</h2>
-                  <a id="createImageButton" class="btn btn-primary btn-lg" data-toggle="modal" href="#download-modal">Create Chart Image</a>
+                  <a id="createImageButton" class="btn btn-primary btn-lg" data-toggle="modal" href="#download-modal">Create Chart Image <span class="glyphicon glyphicon-stats"></span></a>
                 </div>
               </div>
             </div>
@@ -207,8 +207,8 @@
             <p>(Designer? <a id="downloadSVGLink" href="javascript:;">Click here to download an SVG.</a>)</p>
           </div>
           <div class="modal-footer">
-            <a download="new_chart.png" id="downloadImageLink" class="downloadLink btn btn-primary" href="#" target="_blank">Download</a> 
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <a download="new_chart.png" id="downloadImageLink" class="downloadLink btn btn-lg btn-primary" href="#" target="_blank">Download <span class="glyphicon glyphicon-download"></span></a> 
+            <button type="button" class="btn btn-lg btn-default" data-dismiss="modal">Close</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->

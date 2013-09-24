@@ -126,6 +126,29 @@ ChartBuilder = {
 
 		return data;
 	},
+    transposeData: function(rows) {
+        /*
+         * Transpose rows and columns in the data.
+         */
+        var maxLength = 0;
+        var newRows = [];
+
+        for (var i = 0; i < rows.length; i++) {
+            maxLength = Math.max(rows[i].length, maxLength);
+        }
+
+        for (var i = 0; i < maxLength; i++) {
+            var newRow = [];
+
+            for (j = 0; j < rows.length; j++) {
+                newRow.push(rows[j][i]);
+            }
+
+            newRows.push(newRow);
+        }
+
+        return newRows;
+    },
 	createTable: function(rows) {
         /*
          * Render an HTML table from data rows, for validation.

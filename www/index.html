@@ -90,7 +90,14 @@
             <div id="chart-options" class="row">
               <div class="col-md-12 topOptionBlock form-horizontal">
                 <h2><span class="step-header">2</span> Chart Options</h2>
-                
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="chart_title">Title</label>
+                  <div class="col-md-5">
+                    <input type="text" class="form-control" name="chart_title" value="Stock Prices" id="chart_title" placeholder="(required)">
+                  </div>
+                  <p class="help-block col-md-4"></p>
+
+                </div>
                 <div class="form-group">
                   <label for="typePicker" class="col-md-3 control-label">Select Chart Type</label>
                   <div class="col-md-5">
@@ -106,15 +113,6 @@
                   <label class="col-md-3 series-colors control-label">Select Series Colors</label>
                   <div id="seriesItems" class="col-md-9"></div>
                 </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label" for="chart_title">Title</label>
-                  <div class="col-md-5">
-                    <input type="text" class="form-control" name="chart_title" value="Stock Prices" id="chart_title" placeholder="(required)">
-                  </div>
-                  <p class="help-block col-md-4"></p>
-
-                </div>
-
       				</div>
             </div>
             <div id="axis-options" class="row">

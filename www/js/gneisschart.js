@@ -250,7 +250,7 @@ var Gneiss = {
 
                 ticks.push(i);
 
-                i = 0;
+                i = -tickInterval;
                 while (i > domain[0]){
                     ticks.push(i);
                     i -= tickInterval;
@@ -438,7 +438,6 @@ var Gneiss = {
 
             var firstAxisLabel = null;
             var min = Infinity;
-
             g.chart.selectAll('#yAxis g')
                 .each(function(d, j) {
                     var split = d3.select(this)
@@ -466,8 +465,8 @@ var Gneiss = {
                     if(d == 0) {
                         //if the axisItem represents the zero line
                         //change it's class and make sure there's no decimal
-                        d3.select(this).classed('zero', true)
-                        text.text('0')
+                        d3.select(this).classed('zero', true);
+                        text.text('0');
                     }
                 })
 			            

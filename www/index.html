@@ -118,9 +118,17 @@
             <div id="axis-options" class="row">
       				<div class="form-horizontal col-md-12">
                 <div class="inputGroup">
-     							<h2><span class="step-header">3</span> <span id="axis-title">Vertical Axis Options</span></h2>
-      						<div id="rightAxisControls form-inline">
-      				      <div class="form-group">
+     			<h2><span class="step-header">3</span> <span id="axis-title">Vertical Axis Options</span></h2>
+      			<div id="rightAxisControls form-inline">
+                    <div class="form-group">
+                      <label class="col-md-3 control-label" for="axis_interval">Tick Interval</label>
+                      <div class="col-md-5">
+                        <input type="text" class="form-control" name="axis_interval" value="" id="axis_interval" placeholder="(required)">
+                      </div>
+                      <p class="help-block col-md-4"></p>
+                      <p class="control-instructions col-md-5 col-md-offset-3">The space between the axis lines, e.g. 0.25, 5, 100.</p>
+                    </div>
+      				<div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_max">Maximum</label>
                       <div class="col-md-5">
                         <input type="text" class="form-control" name="right_axis_max" value="" id="right_axis_max" placeholder="(optional)">
@@ -133,14 +141,6 @@
                         <input type="text" class="form-control" name="right_axis_min" value="" id="right_axis_min" placeholder="(optional)">
                       </div>
                       <p class="help-block col-md-4"></p>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-3 control-label" for="axis_interval">Tick Interval</label>
-                      <div class="col-md-5">
-                        <input type="text" class="form-control" name="axis_interval" value="" id="axis_interval" placeholder="(required)">
-                      </div>
-                      <p class="help-block col-md-4"></p>
-                      <p class="control-instructions col-md-5 col-md-offset-3">The space between the axis lines, e.g. 0.25, 5, 100.</p>
                     </div>
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="right_axis_prefix">Unit Prefix</label>

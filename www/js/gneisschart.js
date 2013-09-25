@@ -932,14 +932,15 @@ var Gneiss = {
 		this.renderSeries();
         this.renderLegend();
 
+        $('#baseline').empty();
+
         if (g.type === 'bar' || g.type === 'column'){
             var baseline = $('#yAxis .zero').remove();
+
             $('#baseline')
-                .empty()
                 .append(baseline)
                 .attr('transform', $('#yAxis').attr('transform'));
         }
-
         this.inlineStyles();
 	},
     transformCoordOf: function(elem){

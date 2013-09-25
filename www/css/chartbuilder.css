@@ -2,6 +2,20 @@ body {
 	padding-top: 50px;
 }
 
+h2 {
+	font-size: 24px;
+	margin-top: 20px;
+}
+
+.btn-lg,
+.glyphicon {
+	-webkit-font-smoothing: antialiased;
+}
+
+.btn .glyphicon {
+	margin-right: 5px;
+}
+
 #main-wrapper {
 /*	display: table;*/
 }
@@ -46,11 +60,6 @@ body {
 
 #rightAxisControls .form-control {
 	width: 100px;
-}
-
-h2 {
-	font-size: 24px;
-	margin-top: 20px;
 }
 
 .step-header {

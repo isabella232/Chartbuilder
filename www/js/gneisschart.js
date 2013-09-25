@@ -693,7 +693,7 @@ var Gneiss = {
                 })
                 .attr('y', function(d,i) {
                     if (g.yAxis.scale(d) - g.yAxis.scale(Gneiss.rectBase(d, domain)) >= 0) {
-                        return g.yAxis.scale(Gneiss.rectBase(d, domain));
+                        return g.yAxis.scale(Gneiss.rectBase(d, domain)) - 1;
                     } else {
                         return g.yAxis.scale(d) - 1;
                     }
@@ -750,6 +750,14 @@ var Gneiss = {
                 return Math.abs(g.yAxis.scale(d) - g.yAxis.scale(Gneiss.rectBase(d, domain)));
             })
             .attr('height', barHeight)
+            .attr('transform', function(d, i){
+
+                if (d < 0){
+                    return 'translate(1,0)';
+                } else {
+                    return 'translate(0,0)';
+                }
+            });
 
         var barLabels = barGroups.append('text')
             .text(function(d, i) { return g.yAxis.prefix + d + g.yAxis.suffix; } )

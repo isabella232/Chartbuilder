@@ -11,7 +11,7 @@ var defaultGneissChartConfig = {
 	padding :{
 		top: 40,
 		bottom: 40,
-		left: 10,
+		left: 0,
 		right: 10
 	},
 	xAxis: {
@@ -20,6 +20,7 @@ var defaultGneissChartConfig = {
 	},
 	yAxis: {
         domain: [null, null],
+        extremes: [null, null],
         tickValues: null,
         tickInterval: null,
         prefix: '',
@@ -524,7 +525,7 @@ var Gneiss = {
 		g.xAxis.axis.scale(g.xAxis.scale)
 			.orient(g.type == 'bar' ? 'left' : 'bottom')
 			.ticks(g.xAxis.numTicks)
-            .tickSize(g.type == 'bar' ? 0 : 5);
+            .tickSize(g.type == 'bar' ? 0 : 6);
 
         var translate = (g.type == 'bar')
             ? 'translate(' + g.padding.left + ',' + (g.padding.top ) + ')'
@@ -536,6 +537,9 @@ var Gneiss = {
 
         g.chart.selectAll('#xAxis path')
             .attr('transform', 'translate(10,0)');
+
+        g.chart.selectAll('#xAxis text')
+            .attr('transform', 'translate(0,3)');
 
         if (g.type == 'bar') {
 
@@ -562,14 +566,9 @@ var Gneiss = {
                     var x = Number(transform.split('(')[1].split(',')[0]);
 
                     // Off right edge of chart
-                    if (halfLabelWidth + x > g.width - g.padding.right) {
+                    if (halfLabelWidth + x > g.width) {
                         this.setAttribute('text-anchor', 'end');
-                        this.setAttribute('x', (g.width - g.padding.right) - x);
-                    }
-                    // Off left edge of chart
-                    else if (x - halfLabelWidth < g.padding.left + g.chartOffset) {
-                        this.setAttribute('text-anchor', 'start');
-                        this.setAttribute('x', (g.padding.left + g.chartOffset) - x);
+                        this.setAttribute('x', (g.width) - x);
                     }
                 })
         }

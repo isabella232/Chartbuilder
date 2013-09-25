@@ -337,6 +337,10 @@ ChartBuilder = {
             if (isNaN(min)) {
                 min = null;
                 $('#right_axis_min').fieldMessage('has-error','Must be a number');
+            } else if (min > chart.g.yAxis.extremes[0]){
+                chart.calculateYDomain();
+                chart.g.yAxis.min = min;
+                $('#right_axis_min').fieldMessage('has-error','Data is outside the chart area. Your smallest value is ' + chart.g.yAxis.extremes[0]);
             } else {
                 chart.g.yAxis.min = min;
                 $('#right_axis_min').clearFieldMessage();
@@ -354,6 +358,10 @@ ChartBuilder = {
             if (isNaN(max)) {
                 max = null;
                 $('#right_axis_max').fieldMessage('has-error','Must be a number');
+            } else if (max < chart.g.yAxis.extremes[1]){
+                chart.calculateYDomain();
+                chart.g.yAxis.max = max;
+                $('#right_axis_max').fieldMessage('has-error','Data is outside the chart area. Your largest value is ' + chart.g.yAxis.extremes[1]);
             } else {
                 if (!isNaN(min) && max < min){
                     $('#right_axis_max').fieldMessage('has-error','Maximum must be greater than minimum');

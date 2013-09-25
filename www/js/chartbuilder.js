@@ -241,6 +241,8 @@ ChartBuilder = {
             ChartBuilder.showInvalidData('Copy and paste some data from your spreadsheet!');
 
             return false;
+        } else {
+            ChartBuilder.hideInvalidData();
         }
 
         var comma_count = data.split(COMMA).length - 1;
@@ -294,7 +296,7 @@ ChartBuilder = {
         } else {
             $('#chart_title').clearFieldMessage();
         }
-        
+
         // Prefix/suffix
         chart.g.yAxis.prefix = $('#right_axis_prefix').val();
         chart.g.yAxis.suffix = $('#right_axis_suffix').val();
@@ -322,7 +324,7 @@ ChartBuilder = {
                 }
             }
         } else {
-            $('#axis_interval').clearFieldMessage();
+            $('#axis_interval').fieldMessage('has-error','Please define a tick interval.');
             chart.g.yAxis.tickInterval = null;
         }        
 

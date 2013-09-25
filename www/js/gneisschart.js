@@ -275,7 +275,7 @@ var Gneiss = {
             var decimalPlaces = 0;
 
             for (i = 0; i < g.yAxis.ticks.length; i++) {
-                if ((g.yAxis.ticks[i] * 10) % 1 !== 0) {
+                if ((Math.round(g.yAxis.ticks[i] * 100) / 10) % 1 !== 0) {
                     decimalPlaces = Math.max(decimalPlaces, 2);
                 } else if (g.yAxis.ticks[i] % 1 !== 0) {
                     decimalPlaces = Math.max(decimalPlaces, 1);

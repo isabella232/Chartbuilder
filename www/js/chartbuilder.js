@@ -95,17 +95,32 @@ ChartBuilder = {
          * Convert rows from CSV/TSV to data series for gneiss.
          */
 		var data = [];
+        var columnNames = [];
+        var rowNames = [];
 
 		for(var i = 0; i < rows[0].length; i++) {
+            // Make sure we don't have duplicate columns
+            if (columnNames.indexOf(rows[0][i]) >= 0){
+                throw('Duplicate column name: ' + rows[0][i]);
+            }
+
 			var obj = {
                 name: rows[0][i],
                 data: []
             };
 
+            columnNames.push(rows[0][i]);
+
 			for(var j = 1; j < rows.length; j++) {
 				// If it is the first column, containing the names
 				if(i == 0) {
+                    // Check for duplicate row names
+                    if (rowNames.indexOf(rows[j][i]) >= 0){
+                        throw('Duplicate row name: ' + rows[j][i]);
+                    }
+
 					obj.data.push(rows[j][i]);
+                    rowNames.push(rows[j][i]);
 				}
 				// If it's a data point
 				else {
@@ -266,9 +281,9 @@ ChartBuilder = {
             try {
                 dataSeries = ChartBuilder.makeDataSeries(rows);
             } catch(e) {
-                ChartBuilder.showInvalidData(e);
+               ChartBuilder.showInvalidData(e);
 
-                return false;
+               return false;
             }
 
             ChartBuilder.hideInvalidData();

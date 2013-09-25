@@ -365,7 +365,7 @@ var Gneiss = {
 
             g.yAxis.scale.range([
                 g.padding.left + g.barOffset + leftOffset,
-                g.width - (g.padding.right + rightOffset)
+                g.width - (rightOffset)
             ]).nice();
         } else {
             g.yAxis.scale.range([

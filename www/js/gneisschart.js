@@ -760,7 +760,7 @@ var Gneiss = {
             });
 
         var barLabels = barGroups.append('text')
-            .text(function(d, i) { return g.yAxis.prefix + d + g.yAxis.suffix; } )
+            .text(function(d, i) { return d != null ? g.yAxis.prefix + d + g.yAxis.suffix : ''; } )
 			.attr('text-anchor', function(d, i) { return d <= 0 ? 'end' : 'start' })
             .attr('fill', '#333')
             .attr('x', function(d, i) {
@@ -791,13 +791,13 @@ var Gneiss = {
 
         lineSeries.enter()
             .append('path')
-                .attr('d',function(d,j) { pathString = g.yAxis.line(d.data).split('L0,0L').join('M0,0L'); return pathString;})
-                .attr('class','seriesLine')
-                .attr('stroke',function(d,i){return d.color})
-                .attr('stroke-width',3)
-                .attr('stroke-linejoin','round')
-                .attr('stroke-linecap','round')
-                .attr('fill','none');
+                .attr('d',function(d,j) { return d != null ? g.yAxis.line(d.data).split('L0,0L').join('M0,0L') : ''; })
+                .attr('class', 'seriesLine')
+                .attr('stroke', function(d,i) { return d.color })
+                .attr('stroke-width', 3)
+                .attr('stroke-linejoin', 'round')
+                .attr('stroke-linecap', 'round')
+                .attr('fill', 'none');
 
         lineSeries.exit().remove()
 

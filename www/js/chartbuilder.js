@@ -119,7 +119,7 @@ ChartBuilder = {
 				else {
 					var value = rows[j][i];
 
-					if (value == 'null' || value == '') {
+                    if (value === undefined || value === 'null' || value === '') {
 						// allow for nulls or blank cells
 						value = null
 					} else {

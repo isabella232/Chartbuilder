@@ -1,11 +1,9 @@
-BAR_MARGIN_PER_CHAR = 8
+var BAR_MARGIN_PER_CHAR = 8
 
-//A default configuration 
-//Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
+// Default configuration 
 var defaultGneissChartConfig = {
-	container: '#chartContainer', //css id of target chart container
-	legend: true, // whether or not there should be a legend
-	title: '', // the chart title 
+	container: '#chartContainer',
+	title: '',
 	colors: [], 
     type: 'line',
 	padding :{
@@ -187,10 +185,6 @@ var Gneiss = {
         var padding_top = g.defaults.padding.top;
 		var padding_bottom = g.defaults.padding.bottom;
 		
-		if (!g.legend) {
-			padding_top = 5;
-		}
-
 		padding_top += (g.title == '' || g.series.length == 1) ? 0 : 25
 		
 		g.padding.top = padding_top

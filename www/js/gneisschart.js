@@ -13,7 +13,7 @@ var defaultGneissChartConfig = {
 	colors: [], 
     type: 'line',
 	basePadding : {
-		top: 40,
+		top: 0,
 		bottom: 40,
 		left: 0,
 		right: 10
@@ -182,7 +182,10 @@ var Gneiss = {
          */
 		var g = this.g
 
-        g.padding.top = g.basePadding.top + (g.title == '' ? 0 : 25) + (g.series.length == 1 ? 0 : 10);
+        console.log(g.series.length);
+        console.log(g.title);
+        g.padding.top = g.basePadding.top + (g.title == '' ? 0 : 40) + (g.series.length == 1 ? 0 : 25);
+        console.log(g.padding.top);
         g.padding.bottom = g.basePadding.bottom;
         g.padding.left = g.basePadding.left;
         g.padding.right = g.basePadding.right;

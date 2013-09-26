@@ -9,18 +9,12 @@ var SAMPLE_CHART = {
     name: 'Sample data',
     created: (new Date()).valueOf(),
     csvInput: "\
-Name,Unemployment\n\
-'03,5.8\n\
-'04,5.7\n\
-'05,5.3\n\
-'06,4.7\n\
-'07,4.6\n\
-'08,5.0\n\
-'09,7.8\n\
-'10,9.8\n\
-'11,9.1\n\
-'12,8.3\n\
-'13,7.9"
+Name,First value,Second value\n\
+2009,7.8,10.1\n\
+2010,9.8,0\n\
+2011,9.1,-3.6\n\
+2012,8.3,2.2\n\
+2013,7.9,5"
 }
 
 $.fn.fieldMessage = function(type, message){

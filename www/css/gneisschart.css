@@ -69,8 +69,7 @@ svg text.bargridLabel {
 svg #titleLine {
   font-family: 'HelveticaNeueW01-77BdCn 692722','Gotham SSm',Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 17px;
   fill: #333;
 }
 

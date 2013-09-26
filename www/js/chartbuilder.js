@@ -4,11 +4,10 @@ var TAB = String.fromCharCode(9);
 var chart;
 
 var SAMPLE_CHART = {
-    typePicker: 'bar',
-    chart_title: 'Unemployment (seasonally adjusted)',
-    right_axis_tick_num: 5,
-    name: 'Unemployment (seasonally adjusted)',
-    created: 1378850793427,
+    typePicker: 'column',
+    chart_title: 'Sample data',
+    name: 'Sample data',
+    created: (new Date()).valueOf(),
     csvInput: "\
 Name,Unemployment\n\
 '03,5.8\n\

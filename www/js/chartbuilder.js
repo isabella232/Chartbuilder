@@ -22,12 +22,22 @@ $.fn.fieldMessage = function(type, message){
     this.clearFieldMessage();
     formGroup.addClass(type);
     formGroup.find('.help-block').text(message);
+
+    if (type == 'has-error') {
+        $('#createImageButton').attr('disabled', 'disabled');
+        $('#export .help-block').text('You must correct the following error before exporting your chart: ' + message); 
+    }
 }
 
 $.fn.clearFieldMessage = function(){
     var formGroup = this.parent().parent();
     formGroup.removeClass('has-error has-warning has-success');
     formGroup.find('.help-block').text('');
+
+    if ($('.has-error').length == 0) {
+        $('#createImageButton').removeAttr('disabled');
+        $('#export .help-block').text(''); 
+    }
 }
 
 ChartBuilder = {
@@ -300,7 +310,7 @@ ChartBuilder = {
         chart.g.title = $("#chart_title").val();
         chart.g.titleLine.text(chart.g.title)
         if (chart.g.title === ''){
-            $('#chart_title').fieldMessage('has-error','The chart needs a title');
+            $('#chart_title').fieldMessage('has-error','Chart must have a title.');
         } else {
             $('#chart_title').clearFieldMessage();
         }
@@ -316,26 +326,25 @@ ChartBuilder = {
             tickInterval = parseFloat(tickInterval);
             if (isNaN(tickInterval)) {
                 tickInterval = null;
-                $('#axis_interval').fieldMessage('has-error','Must be a number');
+                $('#axis_interval').fieldMessage('has-error', 'Tick interval must be a number.');
             } else {
                 chart.calculateYDomain();
 
                 if (tickInterval <= 0){
                     tickInterval = null;
-                    $('#axis_interval').fieldMessage('has-error','Error! Choose a larger interval.');
+                    $('#axis_interval').fieldMessage('has-error', 'You must choose a larger tick interval.');
                 } else if (((chart.g.yAxis.domain[1] - chart.g.yAxis.domain[0]) / tickInterval) > 20) {
                     tickInterval = null;
-                    $('#axis_interval').fieldMessage('has-error','Too many ticks! Choose a larger interval.');
+                    $('#axis_interval').fieldMessage('has-error', 'Too many ticks! Choose a larger tick interval.');
                 } else {
                     chart.g.yAxis.tickInterval = tickInterval;
                     $('#axis_interval').clearFieldMessage();
                 }
             }
         } else {
-            $('#axis_interval').fieldMessage('has-error','Please define a tick interval.');
+            $('#axis_interval').fieldMessage('has-error', 'You must define a tick interval.');
             chart.g.yAxis.tickInterval = null;
         }        
-
 
         // Min/max
         var min = $("#right_axis_min").val();
@@ -344,11 +353,11 @@ ChartBuilder = {
             min = parseFloat(min);
             if (isNaN(min)) {
                 min = null;
-                $('#right_axis_min').fieldMessage('has-error','Must be a number');
+                $('#right_axis_min').fieldMessage('has-error', 'Minimum must be a number.');
             } else if (min > chart.g.yAxis.extremes[0]){
                 chart.calculateYDomain();
                 chart.g.yAxis.min = min;
-                $('#right_axis_min').fieldMessage('has-error','Data is outside the chart area. Your smallest value is ' + chart.g.yAxis.extremes[0]);
+                $('#right_axis_min').fieldMessage('has-error', 'Minimum puts data outside the chart area. Your smallest value is ' + chart.g.yAxis.extremes[0] + '.');
             } else {
                 chart.g.yAxis.min = min;
                 $('#right_axis_min').clearFieldMessage();
@@ -365,14 +374,14 @@ ChartBuilder = {
             max = parseFloat(max);
             if (isNaN(max)) {
                 max = null;
-                $('#right_axis_max').fieldMessage('has-error','Must be a number');
+                $('#right_axis_max').fieldMessage('has-error', 'Maximum must be a number');
             } else if (max < chart.g.yAxis.extremes[1]){
                 chart.calculateYDomain();
                 chart.g.yAxis.max = max;
-                $('#right_axis_max').fieldMessage('has-error','Data is outside the chart area. Your largest value is ' + chart.g.yAxis.extremes[1]);
+                $('#right_axis_max').fieldMessage('has-error', 'Maximum puts data outside the chart area. Your largest value is ' + chart.g.yAxis.extremes[1] + '.');
             } else {
                 if (!isNaN(min) && max < min){
-                    $('#right_axis_max').fieldMessage('has-error','Maximum must be greater than minimum');
+                    $('#right_axis_max').fieldMessage('has-error', 'Maximum must be greater than Minimum.');
                 } else {
                     chart.g.yAxis.max = max;
                     $('#right_axis_max').clearFieldMessage();

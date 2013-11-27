@@ -92,11 +92,50 @@ textarea {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
+.main-wrapper {
+    margin-top: 40px;
+}
 
+#chart-column {
+    background: #eee !important;
+}
 
+.navbar {
+    padding-top: 20px;
+    padding-left: 65px;
+    min-height: 89px !important;
+    color: #eeeeee;
+    margin-bottom: 0 !important;
+}
+ 
+.navbar, .navbar-brand, .navbar a {
+    color: #eeeeee !important;
+}
 
+.navbar-brand {
+    font-size: 36px !important;
+}
 
+.navbar-text {
+   margin-left: 15px !important;
+}
 
+a:hover {
+    color: #555 !important;
+    text-decoration: none !important;
+}
+
+.icon-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 30px 15px 0 15px;
+    min-height: 89px !important;
+    border-style: solid;
+    border-color: #eeeeee;
+    border-width: 0 1px 0 0;
+    font-size: 35px;
+}
 
 
 

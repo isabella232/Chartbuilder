@@ -116,7 +116,7 @@ var Gneiss = {
 		d3.select('rect#ground')
 			.attr('width', g.width)
 			.attr('height', g.height)
-			
+
 		this.g = g;
 	},
     inlineStyles: function() {
@@ -182,10 +182,7 @@ var Gneiss = {
          */
 		var g = this.g
 
-        console.log(g.series.length);
-        console.log(g.title);
         g.padding.top = g.basePadding.top + (g.title == '' ? 0 : 40) + (g.series.length == 1 ? 0 : 25);
-        console.log(g.padding.top);
         g.padding.bottom = g.basePadding.bottom;
         g.padding.left = g.basePadding.left;
         g.padding.right = g.basePadding.right;
@@ -375,7 +372,7 @@ var Gneiss = {
          * Calculate x-axis domain.
          */
 		var g = this.g
-        
+
         g.xAxis.scale.domain(g.xAxisRef)
 
         // Calculate extremes of axis
@@ -395,6 +392,7 @@ var Gneiss = {
          * Calculate x-axis range.
 		 */
         var g = this.g;
+
 
 		if (g.type == 'column') {
 			g.xAxis.scale.rangePoints([
@@ -893,10 +891,10 @@ var Gneiss = {
             }
         };
 
+        this.calculatePadding();
+
         this.calculateYDomain();
         this.calculateXDomain();
-
-        this.calculatePadding();
 
         if (g.type == 'bar') {
             var chartHeight = g.padding.top + g.padding.bottom + (g.barGroupShift * g.series.length * g.maxLength) + g.barGroupHeight;

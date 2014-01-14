@@ -121,8 +121,8 @@ textarea {
 }
 
 a:hover {
-    color: #555 !important;
-    text-decoration: none !important;
+    color: #555;
+    text-decoration: none;
 }
 
 .icon-wrapper {

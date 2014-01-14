@@ -180,9 +180,9 @@ var Gneiss = {
         /*
          * Calculate appropriate border padding.
          */
-		var g = this.g
+		var g = this.g;
 
-        g.padding.top = g.basePadding.top + (g.title == '' ? 0 : 40) + (g.series.length == 1 ? 0 : 25);
+        g.padding.top = g.basePadding.top + (g.title == '' ? 0 : 40) + g.legendHeight;
         g.padding.bottom = g.basePadding.bottom;
         g.padding.left = g.basePadding.left;
         g.padding.right = g.basePadding.right;
@@ -827,11 +827,13 @@ var Gneiss = {
         var legendGroups = g.legendItemContainer.selectAll('g')
             .data(g.series);
 
+        var legendTop = (g.basePadding.top + (g.title == '' ? 0 : 40));
+
         var legItems = 	legendGroups.enter()
             .append('g')
             .attr('class', 'legendItem')
             .attr('transform', function(d,i) {
-                return 'translate(' + g.padding.left + ',' + (g.padding.top - 25) + ')';
+                return 'translate(' + g.basePadding.left + ',' + legendTop + ')';
             });
 
         legendGroups.exit().remove()
@@ -868,13 +870,17 @@ var Gneiss = {
                     var x = prevCoords.x + prevWidth + 15
                     
                     if(x + curWidth > g.width) {
-                        x = g.padding.left
+                        x = g.basePadding.left
                         legendItemY += 15;						
                     }
                     
                     return 'translate(' + x + ',' + legendItemY + ')';
             })
-		}
+
+            g.legendHeight = (legendItemY + 20) - legendTop;
+		} else { 
+            g.legendHeight = 0;
+        }
 		
 		this.g = g
 	},
@@ -891,6 +897,7 @@ var Gneiss = {
             }
         };
 
+        this.renderLegend();
         this.calculatePadding();
 
         this.calculateYDomain();
@@ -916,7 +923,6 @@ var Gneiss = {
         this.setLineMakers();
 
 		this.renderSeries();
-        this.renderLegend();
 
         $('#baseline').empty();
 

@@ -1,4 +1,16 @@
 Fabric==1.4.3
+awscli==1.2.10
+bcdoc==0.12.0
+botocore==0.30.0
+colorama==0.2.5
+docutils==0.11
+jmespath==0.2.1
+ply==3.4
+pyasn1==0.1.7
 pycrypto==2.6
-ssh==1.7.14
+python-dateutil==2.2
 requests==1.1.0
+rsa==3.1.2
+six==1.5.2
+ssh==1.7.14
+wsgiref==0.1.2

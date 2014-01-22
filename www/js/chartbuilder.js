@@ -217,7 +217,7 @@ ChartBuilder = {
 
 		var canvasContext = canvas.getContext('2d');
 		var svg = $.trim(document.getElementById('chartContainer').innerHTML);
-		canvasContext.drawSvg(svg,0,0,600,960);
+		canvasContext.drawSvg(svg,0,0,canvas.width,canvas.height);
 		
 		
 		var filename = [];

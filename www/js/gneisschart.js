@@ -63,6 +63,8 @@ var Gneiss = {
 
 		g.chart = d3.select(g.container).append('svg')
 			.attr('id','chart')
+            .attr('width','100%') //set width to 100%
+            .attr('height','100%') //set height to 100%
 		
         g.chart.append('rect')
 			.attr('id', 'ground')

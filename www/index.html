@@ -14,14 +14,29 @@
 		<link id="favicon" rel="shortcut icon" type="image/png" href="" />
 
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/webfont/1.4.10/webfont.js" ></script>
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.10/webfont.js"></script>
+    <script>
+        WebFont.load({
+             custom: {
+                 families: [
+                     'Gotham SSm:n4,n7',
+                     'Gotham:n4,n7'
+                 ],
+                 urls: [
+                     'http://s.npr.org/templates/css/fonts/GothamSSm.css',
+                     'http://s.npr.org/templates/css/fonts/Gotham.css'
+                 ]
+             },
+             timeout: 10000
+        });
+    </script>
 
 		<!-- Libraries CSS -->
 		<link rel="stylesheet" href="css/main.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/chosen.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/colorPicker.css" type="text/css" media="screen" charset="utf-8">
-		
+
 		<!-- Chartbuilder CSS -->
     <link rel="stylesheet" href="css/chartbuilder.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="css/gneisschart.css" type="text/css" media="screen" charset="utf-8">
@@ -53,11 +68,11 @@
       <div id="chart-column">
         <div id="staticContainer">
           <div id="chartContainer"></div>
-          <canvas id="canvas" width="640px" height="960px"></canvas> 
-          <canvas id="favicanvas" width="16px" height="16px"></canvas> 
+          <canvas id="canvas" width="640px" height="960px"></canvas>
+          <canvas id="favicanvas" width="16px" height="16px"></canvas>
         </div>
         <p>Not getting the results you need? Email <a href="mailto:nprapps@npr.org">nprapps@npr.org</a> for help or to request a custom chart!</p>
-        
+
       </div>
   		<div id="main">
   		  <div id="rightColumn" class="container">
@@ -65,7 +80,7 @@
 
             <div id="previous-charts" class="row">
               <div class="form-group col-md-6">
-                
+
                 <div class="load-previous">
                   <label for="previous_charts">Load a previously created chart</label>
                   <select name="previous_charts" id="previous_charts" class="form-control"></select>
@@ -80,14 +95,14 @@
 
               <div class="col-xs-12 col-md-12">
                	<div class="inputGroup">
-                  
+
                   <div class="row">
                     <div class="col-md-12">
                       <h2 id="inputDataHeading"><span class="step-header">1</span> Import Data</h2>
-                      
+
                     </div>
                   </div>
-                  
+
                   <p>Copy and paste cells from your spreadsheet into the text field below. </p>
                   <p id="invalidDataSpan" class="alert alert-danger hide">Data could not be parsed.</p>
                   <textarea id="csvInput" class="input-box form-control" name="csvInput" rows="8"></textarea>
@@ -192,7 +207,7 @@
                     <li>Select the custom crop and expand the crop box to fit the entire image, including the title.</li>
                     <li>Make sure "enlargement" is set to none, set the primary crop to "custom" and click "perform crop."</li>
                   </ul>
-                  <p><img src="img/seamus-crop.png" class="img-responsive"></p>
+                  <p><img src="assets/seamus-crop.png" class="img-responsive"></p>
                   <ul>
                     <li>Click "next" and add a source and caption for your chart. Always credit your data source!</li>
                   </ul>
@@ -219,7 +234,7 @@
             <p>(Designer? <a id="downloadSVGLink" href="javascript:;">Click here to download an SVG.</a>)</p>
           </div>
           <div class="modal-footer">
-            <a download="new_chart.png" id="downloadImageLink" class="downloadLink btn btn-lg btn-primary" href="#" target="_blank"><span class="glyphicon glyphicon-circle-arrow-down"></span> Download</a> 
+            <a download="new_chart.png" id="downloadImageLink" class="downloadLink btn btn-lg btn-primary" href="#" target="_blank"><span class="glyphicon glyphicon-circle-arrow-down"></span> Download</a>
             <button type="button" class="btn btn-lg btn-default" data-dismiss="modal">Close</button>
           </div>
         </div><!-- /.modal-content -->
@@ -236,7 +251,7 @@
 		<script src="js/lib/csvkit.js" charset="utf-8"></script>
 		<script src="js/lib/chosen.jquery.min.js" charset="utf-8"></script>
         <script src="js/lib/bootstrap.min.js" charset="utf-8"></script>
-		
+
 		<!-- Chartbuilder JS -->
 		<script src="js/gneisschart.js" charset="utf-8"></script>
 		<script src="js/chartbuilder.js"></script>

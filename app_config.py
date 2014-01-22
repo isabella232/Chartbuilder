@@ -32,6 +32,7 @@ DEPLOYMENT
 """
 PRODUCTION_S3_BUCKETS = ['tools.apps.npr.org']
 STAGING_S3_BUCKETS = ['stage-tools.apps.npr.org']
+ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
 PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['50.112.92.131']
@@ -60,7 +61,7 @@ def configure_targets(deployment_target):
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
         DEBUG = True
     else:
-        S3_BUCKETS = [] 
+        S3_BUCKETS = []
         S3_BASE_URL = 'http://127.0.0.1:8000'
         DEBUG = True
 

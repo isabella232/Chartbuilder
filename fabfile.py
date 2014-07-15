@@ -74,20 +74,11 @@ Changes to deployment requires a full-stack test. Deployment
 has two primary functions: Pushing flat files to S3 and deploying
 code to a remote server if required.
 """
-def _deploy_to_s3(path='.gzip'):
-    """
-    Deploy the gzipped stuff to S3.
-    """
-    # Clear files that should never be deployed
+def _deploy_to_file_server(path='www'):
     local('rm -rf %s/live-data' % path)
     local('rm -rf %s/sitemap.xml' % path)
 
-    s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude-from gzip_types.txt sync %s/ %s'
-    s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude "*" --include-from gzip_types.txt sync %s/ %s'
-
-    for bucket in app_config.S3_BUCKETS:
-        local(s3cmd % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
-        local(s3cmd_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+    local('rsync -vr %s ubuntu@%s:~/www/%s/' % (path, app_config.FILE_SERVER, app_config.PROJECT_SLUG))
 
 def assets_down(path='www/assets'):
     """
@@ -144,8 +135,8 @@ def deploy(remote='origin'):
     if (app_config.DEPLOYMENT_TARGET == 'production' and env.branch != 'stable'):
         _confirm("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch)
 
-    _gzip('www', '.gzip')
-    _deploy_to_s3()
+    #_gzip('www', '.gzip')
+    _deploy_to_file_server('www')
 
 """
 Destruction

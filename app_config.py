@@ -30,7 +30,7 @@ PROJECT_FILENAME = 'chartbuilder'
 """
 DEPLOYMENT
 """
-FILE_SERVER = '10.53.32.11'
+FILE_SERVER = 'tools.apps.npr.org'
 
 # These variables will be set at runtime. See configure_targets() below
 DEBUG = True

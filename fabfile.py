@@ -3,69 +3,6 @@
 from fabric.api import *
 
 import app_config
-from etc import github
-
-"""
-Base configuration
-"""
-env.settings = None
-
-"""
-Environments
-
-Changing environment requires a full-stack test.
-An environment points to both a server and an S3
-bucket.
-"""
-def production():
-    """
-    Run as though on production.
-    """
-    env.settings = 'production'
-    app_config.configure_targets(env.settings)
-
-def staging():
-    """
-    Run as though on staging.
-    """
-    env.settings = 'staging'
-    app_config.configure_targets(env.settings)
-
-"""
-Branches
-
-Changing branches requires deploying that branch to a host.
-"""
-def stable():
-    """
-    Work on stable branch.
-    """
-    env.branch = 'stable'
-
-def master():
-    """
-    Work on development branch.
-    """
-    env.branch = 'master'
-
-def branch(branch_name):
-    """
-    Work on any specified branch.
-    """
-    env.branch = branch_name
-
-"""
-Miscellaneous
-"""
-def bootstrap_issues():
-    """
-    Bootstraps Github issues with default configuration.
-    """
-    auth = github.get_auth()
-    github.delete_existing_labels(auth)
-    github.create_labels(auth)
-    github.create_tickets(auth)
-    github.create_milestones(auth)
 
 """
 Deployment
@@ -130,12 +67,6 @@ def deploy(remote='origin'):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
     """
-    require('settings', provided_by=[production, staging])
-
-    if (app_config.DEPLOYMENT_TARGET == 'production' and env.branch != 'stable'):
-        _confirm("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch)
-
-    #_gzip('www', '.gzip')
     _deploy_to_file_server('www')
 
 """
@@ -155,12 +86,6 @@ def shiva_the_destroyer():
     """
     Deletes the app from s3
     """
-    require('settings', provided_by=[production, staging])
-
     _confirm("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?" % app_config.DEPLOYMENT_TARGET)
 
-    with settings(warn_only=True):
-        s3cmd = 's3cmd del --recursive %s'
-
-        for bucket in app_config.S3_BUCKETS:
-            local(s3cmd % ('s3://%s/%s' % (bucket, app_config.PROJECT_SLUG)))
+    # Not updated for fileserver

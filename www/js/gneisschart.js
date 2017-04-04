@@ -81,8 +81,7 @@ var Gneiss = {
 
         g.titleLine = g.chart.append('text')
             .attr('id','titleLine')
-            .attr('transform','translate(' + g.basePadding.left + ',25)')
-            .text(g.title);
+            .attr('transform','translate(' + g.basePadding.left + ',25)');
 
         g.seriesContainer = g.chart.append('g')
             .attr('id','seriesContainer');
@@ -120,6 +119,43 @@ var Gneiss = {
             .attr('height', g.height)
 
         this.g = g;
+    },
+    wrapTitle: function() {
+        /*
+         * Wraps title to allow multiple lines
+         */
+        var g = this.g;
+        g.titleHeight = 40;
+        g.titleLine.each(function () {
+            var el = d3.select(this),
+                words = g.title.split(/\s+/).reverse(),
+                word,
+                line = [],
+                lineNumber = 0,
+                lineHeight = 1.1, // ems
+                x = el.attr("x"),
+                y = el.attr("y"),
+                dy = 0;
+                tspan = el.text(null)
+                            .append("tspan")
+                            .attr("dy", dy + "em");
+            while (word = words.pop()) {
+                line.push(word);
+                tspan.text(line.join(" "));
+                if (tspan.node().getComputedTextLength() > g.width) {
+                    g.titleHeight += 25;
+                    line.pop();
+                    tspan.text(line.join(" "));
+                    line = [word];
+                    console.log("x",x,"y",y,"dy",dy)
+                    tspan = el.append("tspan")
+                                .attr("x", 0)
+                                .attr("y", 0)
+                                .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                                .text(word);
+                }
+            }
+        });
     },
     inlineStyles: function() {
         /*
@@ -184,7 +220,7 @@ var Gneiss = {
          */
         var g = this.g;
 
-        g.padding.top = g.basePadding.top + (g.title == '' ? 0 : 40) + g.legendHeight;
+        g.padding.top = g.basePadding.top + g.titleHeight + g.legendHeight;
         g.padding.bottom = g.basePadding.bottom;
         g.padding.left = g.basePadding.left;
         g.padding.right = g.basePadding.right;
@@ -818,6 +854,13 @@ var Gneiss = {
 
         this.g = g;
     },
+    renderTitle: function() {
+        /*
+         * Render the title to the top of the chart
+         */
+        var g = this.g;
+        this.wrapTitle();
+    },
     renderLegend: function() {
         /*
          * Render the legend to the top of the chart.
@@ -829,7 +872,7 @@ var Gneiss = {
         var legendGroups = g.legendItemContainer.selectAll('g')
             .data(g.series);
 
-        var legendTop = (g.basePadding.top + (g.title == '' ? 0 : 40));
+        var legendTop = (g.basePadding.top + g.titleHeight);
 
         var legItems =     legendGroups.enter()
             .append('g')
@@ -898,7 +941,7 @@ var Gneiss = {
                 g.series[i].color = g.colors[i];
             }
         };
-
+        this.renderTitle();
         this.renderLegend();
         this.calculatePadding();
 

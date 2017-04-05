@@ -125,34 +125,51 @@ var Gneiss = {
          * Wraps title to allow multiple lines
          */
         var g = this.g;
-        g.titleHeight = 40;
+        var firstLineHeight = 40;
+        var restLineHeight = 25;
+        var lineNumber = 0,
+            lineHeight = 1.1, // ems
+            dy = 0;
+
         g.titleLine.each(function () {
-            var el = d3.select(this),
-                words = g.title.split(/\s+/).reverse(),
-                word,
-                line = [],
-                lineNumber = 0,
-                lineHeight = 1.1, // ems
-                x = el.attr("x"),
-                y = el.attr("y"),
-                dy = 0;
-                tspan = el.text(null)
-                            .append("tspan")
-                            .attr("dy", dy + "em");
-            while (word = words.pop()) {
-                line.push(word);
-                tspan.text(line.join(" "));
-                if (tspan.node().getComputedTextLength() > g.width) {
-                    g.titleHeight += 25;
-                    line.pop();
-                    tspan.text(line.join(" "));
-                    line = [word];
-                    console.log("x",x,"y",y,"dy",dy)
+            // Take forced breaks into account
+            var el = d3.select(this);
+            // Reset text and rebuild
+            el.text(null);
+            var match = /\r|\n|\r\n/.exec(g.title);
+            if (match) {
+                lines = g.title.split(/\r|\n|\r\n/);
+                for(var i=0; i < lines.length; i++){
                     tspan = el.append("tspan")
-                                .attr("x", 0)
-                                .attr("y", 0)
-                                .attr("dy", ++lineNumber * lineHeight + dy + "em")
-                                .text(word);
+                              .attr("x", 0)
+                              .attr("y", 0)
+                              .attr("dy", lineNumber++ * lineHeight + dy + "em")
+                              .text(lines[i]);
+                }
+                g.titleHeight = firstLineHeight + (lines.length - 1) * restLineHeight;
+            }
+            else {
+                var words = g.title.split(/\s+/).reverse(),
+                    word,
+                    line = [];
+                g.titleHeight = firstLineHeight;
+                // Reset text and rebuild
+                tspan = el.append("tspan")
+                          .attr("dy", dy + "em");
+                while (word = words.pop()) {
+                    line.push(word);
+                    tspan.text(line.join(" "));
+                    if (tspan.node().getComputedTextLength() > g.width) {
+                        g.titleHeight += restLineHeight;
+                        line.pop();
+                        tspan.text(line.join(" "));
+                        line = [word];
+                        tspan = el.append("tspan")
+                                    .attr("x", 0)
+                                    .attr("y", 0)
+                                    .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                                    .text(word);
+                    }
                 }
             }
         });

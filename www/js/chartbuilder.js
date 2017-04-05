@@ -225,9 +225,14 @@ ChartBuilder = {
         if(chart.g.title.length > 0) {
             filename.unshift(chart.g.title)
         }
-
         filename = filename.join('-').replace(/[^\w\d]+/gi, '-');
-
+        // Generate a shorter file name for long titles
+        if (filename.length > 40) {
+            var ix = filename.lastIndexOf('-', 39);
+            if (ix !== -1) {
+                filename = filename.substring(0,ix);
+            }
+        }
 
         $('#downloadImageLink')
             .attr('href',canvas.toDataURL('png'))

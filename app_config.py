@@ -30,7 +30,7 @@ PROJECT_FILENAME = 'chartbuilder'
 """
 DEPLOYMENT
 """
-FILE_SERVER = '10.36.2.26'
+FILE_SERVER = '10.36.1.8'
 
 # These variables will be set at runtime. See configure_targets() below
 DEBUG = True
